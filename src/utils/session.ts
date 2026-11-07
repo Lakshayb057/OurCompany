@@ -51,10 +51,8 @@ export function getStoredTheme(): 'light' | 'dark' {
     const cookie = getCookie(COOKIE_THEME_KEY);
     if (cookie === 'dark' || cookie === 'light') return cookie;
 
-    // 3. Fallback to system preference
-    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
+    // 3. First time default is always light mode
+    return 'light';
   } catch (err) {
     console.error('Error reading stored theme:', err);
   }

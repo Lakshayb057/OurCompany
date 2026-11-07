@@ -34,7 +34,8 @@
             var match = document.cookie.match(/(^|;)\s*codeverse_theme=([^;]+)/);
             if (match) theme = decodeURIComponent(match[2]);
           }
-          if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          // Default for first-time visitors is always light mode
+          if (theme === 'dark') {
             document.documentElement.classList.add('dark');
             document.documentElement.classList.remove('light');
           } else {
