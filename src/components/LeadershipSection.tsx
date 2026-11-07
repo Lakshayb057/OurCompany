@@ -202,14 +202,9 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
 
                 {/* 2. Top Bar: Floating Stream Tag & LinkedIn (Over Background) */}
                 <div className="relative z-10 p-5 sm:p-6 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-purple-200/90 dark:border-white/20 text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow shadow-md">
-                      {member.role.split(' ')[0]}
-                    </span>
-                    <span className="text-[11px] font-mono font-bold text-light-subtext dark:text-gray-300 px-2 py-0.5 rounded-md bg-white/70 dark:bg-black/50 backdrop-blur-md border border-purple-200/50 dark:border-white/10">
-                      0{originalIndex + 1}
-                    </span>
-                  </div>
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-purple-200/90 dark:border-white/20 text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow shadow-md">
+                    {member.role.split(' ')[0]}
+                  </span>
 
                   {member.linkedin && (
                     <a
@@ -225,30 +220,30 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                   )}
                 </div>
 
-                {/* 3. Bottom Content Dock: Cleanly Organized in Frosted Glass Panel */}
-                <div className="relative z-10 p-4 sm:p-5 flex flex-col justify-end">
-                  <div className="rounded-2xl p-4 sm:p-4.5 bg-white/92 dark:bg-black/80 backdrop-blur-md border border-purple-200/80 dark:border-white/15 shadow-lg group-hover:border-electric-purple/50 transition-all duration-300">
+                {/* 3. Bottom Content Dock: Lies Flush at the Bottom of Outer Container */}
+                <div className="relative z-10 mt-auto w-full">
+                  <div className="rounded-b-3xl p-5 sm:p-6 bg-white/95 dark:bg-black/85 backdrop-blur-xl border-t border-purple-200/80 dark:border-white/15 shadow-2xl transition-all duration-300">
                     
                     {/* Name & Designation Header */}
                     <div>
                       <h3 className="text-xl sm:text-2xl font-black text-light-text dark:text-white tracking-tight leading-tight group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors truncate">
                         {member.name}
                       </h3>
-                      <div className="text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow mt-0.5">
+                      <div className="text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow mt-1">
                         {member.designation}
                       </div>
                     </div>
 
                     {/* Subtle Divider */}
-                    <div className="h-[1px] w-full bg-gradient-to-r from-purple-200/80 via-purple-300/40 to-transparent dark:from-white/15 dark:via-white/5 dark:to-transparent my-2.5" />
+                    <div className="h-[1px] w-full bg-gradient-to-r from-purple-200 via-purple-300/40 to-transparent dark:from-white/15 dark:via-white/5 dark:to-transparent my-3" />
 
                     {/* Primary Responsibility */}
                     <div>
-                      <div className="text-[10px] font-mono uppercase tracking-wider text-light-subtext dark:text-gray-400 font-bold flex items-center gap-1.5 mb-1">
+                      <div className="text-[10px] font-mono uppercase tracking-wider text-light-subtext dark:text-gray-400 font-bold flex items-center gap-1.5 mb-1.5">
                         <Shield className="w-3.5 h-3.5 text-electric-purple" />
                         <span>Primary Responsibility</span>
                       </div>
-                      <p className="text-xs sm:text-[13px] text-light-text dark:text-gray-200 font-medium leading-snug">
+                      <p className="text-xs sm:text-[13px] text-light-text dark:text-gray-200 font-semibold leading-relaxed">
                         {member.primaryResponsibility}
                       </p>
                     </div>
@@ -307,7 +302,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
             </button>
           </div>
 
-          {/* Sequential 1-2-3-4-5 Numbered Indicators */}
+          {/* Executive Direct Selector Pills */}
           <div className="flex flex-wrap items-center justify-center gap-2">
             {teamList.map((member, idx) => {
               const isSelected = activeIndex === idx;
@@ -315,14 +310,14 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                 <button
                   key={member.id}
                   onClick={() => handleSelectMember(idx)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-mono font-bold transition-all duration-300 flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 flex items-center gap-2 ${
                     isSelected
                       ? 'bg-electric-purple text-white shadow-md shadow-purple-500/30 scale-105 ring-2 ring-purple-300 dark:ring-electric-purple/50'
                       : 'bg-white/70 dark:bg-midnight-card/70 border border-purple-200/60 dark:border-midnight-border text-light-subtext dark:text-gray-300 hover:border-electric-purple hover:text-electric-purple'
                   }`}
                 >
-                  <span>0{idx + 1}</span>
-                  <span className="hidden md:inline font-sans">{member.name.split(' ')[0]}</span>
+                  <span className={`h-1.5 w-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-electric-purple/40'}`} />
+                  <span>{member.name.split(' ')[0]}</span>
                 </button>
               );
             })}
