@@ -101,8 +101,6 @@ export const ProcessSection: React.FC = () => {
     });
   };
 
-  const current = steps[activeStep];
-
   return (
     <section
       ref={sectionRef}
@@ -203,46 +201,6 @@ export const ProcessSection: React.FC = () => {
                     </button>
                   );
                 })}
-              </div>
-
-              {/* Active Deliverables Card */}
-              <div className="hidden sm:block p-3.5 sm:p-4 rounded-2xl bg-white/70 dark:bg-midnight-card/60 backdrop-blur-md border border-light-border dark:border-midnight-border/70 space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-mono uppercase tracking-wider text-light-subtext dark:text-muted-gray text-[10px] font-bold">
-                    Stage {current.num} Core Deliverables:
-                  </span>
-                  <span className="text-electric-purple dark:text-lavender-glow font-semibold text-[11px]">
-                    {current.shortTitle}
-                  </span>
-                </div>
-                <div className="grid grid-cols-1 gap-1.5">
-                  {current.deliverables.map((item, dIdx) => (
-                    <div
-                      key={dIdx}
-                      className="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-gray-300"
-                    >
-                      <Check className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                      <span className="truncate">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Scroll Scrub Progress Indicator */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-[11px] font-mono text-light-subtext dark:text-muted-gray">
-                  <span>Scroll scrubbing: Stage {activeStep + 1} of 5</span>
-                  <span>{Math.round(progress * 100)}%</span>
-                </div>
-                <div className="h-1.5 w-full bg-purple-100 dark:bg-midnight-border rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-electric-purple via-lavender-glow to-deep-violet rounded-full transition-all duration-300 ease-out"
-                    style={{ width: `${Math.max(5, progress * 100)}%` }}
-                  />
-                </div>
-                <p className="text-[10px] text-light-subtext/80 dark:text-muted-gray/80 text-center sm:text-left">
-                  Scroll down through all 5 stages to naturally proceed to the next section.
-                </p>
               </div>
 
             </div>
