@@ -118,14 +118,17 @@ export const ProcessSection: React.FC = () => {
       <div className="absolute bottom-1/4 right-10 w-[450px] h-[450px] bg-lavender-glow/5 dark:bg-deep-violet/15 blur-[120px] rounded-full pointer-events-none" />
 
       {/* Pinned Sticky Viewport Container - Top padded to ALWAYS clear the navbar completely */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-start pt-20 sm:pt-24 pb-6 sm:pb-8 overflow-hidden px-4 sm:px-6 lg:px-8">
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-start pt-16 sm:pt-20 pb-4 sm:pb-6 overflow-hidden px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col h-full justify-between min-h-0">
           
-          {/* Section Header - Always visible, never cut off */}
-          <div className="mb-3 sm:mb-6 flex-shrink-0">
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-light-text dark:text-white">
+          {/* Section Header - Perfectly aligned with other sections with one-line explanation */}
+          <div className="max-w-3xl mx-auto text-center space-y-2.5 mb-4 sm:mb-7 flex-shrink-0">
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
               Discovery-to-Delivery <span className="text-gradient-purple">Process</span>
             </h2>
+            <p className="text-light-subtext dark:text-muted-gray text-sm sm:text-base leading-relaxed">
+              A milestone-driven engineering lifecycle executed from architectural design to zero-downtime global deployment.
+            </p>
           </div>
 
           {/* Main 2-Column Split: Single Container (Left) + Stacked Files (Right) */}
