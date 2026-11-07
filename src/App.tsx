@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { SplashScreen } from './components/SplashScreen';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -32,6 +32,10 @@ export const App: React.FC = () => {
 
   // Splash Screen initial display state
   const [showSplash, setShowSplash] = useState(true);
+
+  const handleSplashComplete = useCallback(() => {
+    setShowSplash(false);
+  }, []);
 
   // Prevent scroll during initial cinematic splash
   useEffect(() => {
@@ -202,7 +206,7 @@ export const App: React.FC = () => {
     <>
       {/* 3D Cinematic Animated Splash Screen on First Load */}
       {showSplash && (
-        <SplashScreen onComplete={() => setShowSplash(false)} />
+        <SplashScreen onComplete={handleSplashComplete} />
       )}
 
       <div className="min-h-screen bg-light text-light-text dark:bg-midnight dark:text-white flex flex-col selection:bg-electric-purple selection:text-white transition-colors duration-300">

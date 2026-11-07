@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Linkedin, Shield, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { Linkedin, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
 import { TeamMember } from '../types';
 
 interface LeadershipSectionProps {
@@ -23,9 +23,6 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
   const [virtualIndex, setVirtualIndex] = useState(teamLength);
   const [isPaused, setIsPaused] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(true);
-
-  // Active index (0 to teamLength - 1)
-  const activeIndex = teamLength > 0 ? virtualIndex % teamLength : 0;
 
   // Track drag / touch support
   const touchStartXRef = useRef<number | null>(null);
@@ -80,11 +77,6 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
     setVirtualIndex((prev) => prev + 1);
   };
 
-  const handleSelectMember = (index: number) => {
-    const currentBase = Math.floor(virtualIndex / teamLength) * teamLength;
-    setVirtualIndex(currentBase + index);
-  };
-
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsPaused(true);
     touchStartXRef.current = e.touches[0].clientX;
@@ -101,6 +93,16 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
       }
       touchStartXRef.current = null;
     }
+  };
+
+  const getRoleTag = (role: string) => {
+    const cleaned = role.replace(/,/g, '');
+    if (cleaned.toLowerCase().includes('founder')) return 'Leadership';
+    if (cleaned.toLowerCase().includes('technology')) return 'Technology';
+    if (cleaned.toLowerCase().includes('operation')) return 'Operations';
+    if (cleaned.toLowerCase().includes('governance')) return 'Governance';
+    if (cleaned.toLowerCase().includes('growth')) return 'Growth';
+    return cleaned.split(' ')[0];
   };
 
   if (teamLength === 0) return null;
@@ -140,6 +142,24 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
         <div className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-28 bg-gradient-to-r from-light via-light/60 to-transparent dark:from-midnight dark:via-midnight/60 to-transparent z-30" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-28 bg-gradient-to-l from-light via-light/60 to-transparent dark:from-midnight dark:via-midnight/60 to-transparent z-30" />
 
+        {/* Left Side Navigation Arrow */}
+        <button
+          onClick={handlePrev}
+          aria-label="Previous Team Member"
+          className="absolute left-3 sm:left-6 lg:left-10 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white/90 dark:bg-midnight-950/85 backdrop-blur-md border border-purple-200/80 dark:border-white/20 text-light-text dark:text-white shadow-[0_8px_25px_rgba(0,0,0,0.12)] hover:shadow-[0_12px_30px_rgba(124,44,245,0.35)] hover:bg-electric-purple hover:border-electric-purple hover:text-white transition-all duration-300 active:scale-90 flex items-center justify-center cursor-pointer group/btn"
+        >
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-200 group-hover/btn:-translate-x-0.5" />
+        </button>
+
+        {/* Right Side Navigation Arrow */}
+        <button
+          onClick={handleNext}
+          aria-label="Next Team Member"
+          className="absolute right-3 sm:right-6 lg:right-10 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white/90 dark:bg-midnight-950/85 backdrop-blur-md border border-purple-200/80 dark:border-white/20 text-light-text dark:text-white shadow-[0_8px_25px_rgba(0,0,0,0.12)] hover:shadow-[0_12px_30px_rgba(124,44,245,0.35)] hover:bg-electric-purple hover:border-electric-purple hover:text-white transition-all duration-300 active:scale-90 flex items-center justify-center cursor-pointer group/btn"
+        >
+          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-200 group-hover/btn:translate-x-0.5" />
+        </button>
+
         {/* Sliding Horizontal Track */}
         <div 
           className="flex items-center will-change-transform"
@@ -165,7 +185,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                   marginRight: 'var(--gap)',
                   flexShrink: 0,
                 }}
-                className={`relative rounded-3xl overflow-hidden transition-all duration-700 ease-out select-none min-h-[490px] sm:min-h-[520px] lg:min-h-[540px] bg-slate-100 dark:bg-midnight-card ${
+                className={`relative rounded-3xl overflow-hidden transition-all duration-700 ease-out select-none h-[500px] sm:h-[530px] lg:h-[550px] flex flex-col justify-between bg-slate-100 dark:bg-midnight-card ${
                   isActive
                     ? 'scale-100 opacity-100 z-20 shadow-[0_20px_50px_rgba(124,44,245,0.22)] ring-2 ring-purple-500/80 dark:ring-electric-purple/90 border-2 border-purple-400 dark:border-electric-purple'
                     : 'scale-[0.88] sm:scale-[0.91] opacity-45 hover:opacity-85 z-10 hover:scale-[0.93] cursor-pointer shadow-md border border-purple-200/60 dark:border-white/10'
@@ -190,20 +210,20 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
 
                   {/* 
                     Theme-Adaptive Gradient Overlays:
-                    Keeps the entire upper 60%+ of the portrait completely unshaded and 100% visible,
-                    while gently fading only behind the bottom dock to guarantee contrast.
+                    Keeps the upper area of the portrait crisp and visible,
+                    while smoothly shading the bottom region behind the glass dock.
                   */}
                   {/* Light Mode Scrim */}
-                  <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-white/90 via-white/60 via-30% to-transparent to-55%" />
+                  <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-white/95 via-white/50 via-35% to-transparent to-60%" />
 
                   {/* Dark Mode Scrim */}
-                  <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-midnight-950 via-midnight-950/80 via-30% to-transparent to-55%" />
+                  <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-midnight-950 via-midnight-950/75 via-35% to-transparent to-60%" />
                 </div>
 
                 {/* 2. Top Bar: Floating Stream Tag & LinkedIn (Over Background) */}
                 <div className="relative z-10 p-5 sm:p-6 flex items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-purple-200/90 dark:border-white/20 text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow shadow-md">
-                    {member.role.split(' ')[0]}
+                  <span className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-purple-200/90 dark:border-white/20 text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow shadow-md">
+                    {getRoleTag(member.role)}
                   </span>
 
                   {member.linkedin && (
@@ -220,30 +240,30 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                   )}
                 </div>
 
-                {/* 3. Bottom Content Dock: Lies Flush at the Bottom of Outer Container */}
-                <div className="relative z-10 mt-auto w-full">
-                  <div className="rounded-b-3xl p-5 sm:p-6 bg-white/95 dark:bg-black/85 backdrop-blur-xl border-t border-purple-200/80 dark:border-white/15 shadow-2xl transition-all duration-300">
+                {/* 3. Bottom Content Dock: Cleanly Anchored at Bottom of Container */}
+                <div className="relative z-10 p-4 sm:p-5 mt-auto">
+                  <div className="rounded-2xl p-4 sm:p-4.5 bg-white/92 dark:bg-black/80 backdrop-blur-md border border-purple-200/80 dark:border-white/15 shadow-xl transition-all duration-300">
                     
                     {/* Name & Designation Header */}
                     <div>
-                      <h3 className="text-xl sm:text-2xl font-black text-light-text dark:text-white tracking-tight leading-tight group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors truncate">
+                      <h3 className="text-xl sm:text-2xl font-black text-light-text dark:text-white tracking-tight leading-tight transition-colors truncate">
                         {member.name}
                       </h3>
-                      <div className="text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow mt-1">
+                      <div className="text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow mt-0.5">
                         {member.designation}
                       </div>
                     </div>
 
                     {/* Subtle Divider */}
-                    <div className="h-[1px] w-full bg-gradient-to-r from-purple-200 via-purple-300/40 to-transparent dark:from-white/15 dark:via-white/5 dark:to-transparent my-3" />
+                    <div className="h-[1px] w-full bg-gradient-to-r from-purple-200/80 via-purple-300/40 to-transparent dark:from-white/15 dark:via-white/5 dark:to-transparent my-2.5" />
 
                     {/* Primary Responsibility */}
                     <div>
-                      <div className="text-[10px] font-mono uppercase tracking-wider text-light-subtext dark:text-gray-400 font-bold flex items-center gap-1.5 mb-1.5">
-                        <Shield className="w-3.5 h-3.5 text-electric-purple" />
+                      <div className="text-[10px] font-mono uppercase tracking-wider text-light-subtext dark:text-gray-400 font-bold flex items-center gap-1.5 mb-1">
+                        <Shield className="w-3.5 h-3.5 text-electric-purple flex-shrink-0" />
                         <span>Primary Responsibility</span>
                       </div>
-                      <p className="text-xs sm:text-[13px] text-light-text dark:text-gray-200 font-semibold leading-relaxed">
+                      <p className="text-xs sm:text-[13px] text-light-text dark:text-gray-200 font-medium leading-snug">
                         {member.primaryResponsibility}
                       </p>
                     </div>
@@ -253,76 +273,6 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
               </div>
             );
           })}
-        </div>
-      </div>
-
-      {/* 
-        Interactive Carousel Navigation Controls
-        - Left & Right smooth nudge buttons
-        - Sequential numbered pills: 01 Lakshay, 02 Parth, 03 Diya, 04 Ishita, 05 Suryansh
-        - Auto-rotation status badge
-      */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-5 py-4 border-t border-purple-200/50 dark:border-midnight-border/70">
-          
-          {/* Left / Right Navigation Buttons */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handlePrev}
-              aria-label="Previous Executive"
-              className="p-3 rounded-2xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-midnight-border hover:border-electric-purple hover:bg-electric-purple hover:text-white text-light-text dark:text-gray-200 transition-all shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={handleNext}
-              aria-label="Next Executive"
-              className="p-3 rounded-2xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-midnight-border hover:border-electric-purple hover:bg-electric-purple hover:text-white text-light-text dark:text-gray-200 transition-all shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-
-            {/* Play/Pause Toggle Indicator */}
-            <button
-              onClick={() => setIsPaused((prev) => !prev)}
-              aria-label={isPaused ? 'Resume auto-rotation' : 'Pause auto-rotation'}
-              className="px-3 py-2 rounded-xl bg-white/70 dark:bg-midnight-card/70 border border-purple-200/70 dark:border-midnight-border text-xs font-mono font-semibold text-light-subtext dark:text-gray-300 hover:text-electric-purple transition-all flex items-center gap-1.5"
-            >
-              {isPaused ? (
-                <>
-                  <Play className="w-3.5 h-3.5 text-electric-purple" />
-                  <span className="hidden sm:inline">Paused</span>
-                </>
-              ) : (
-                <>
-                  <Pause className="w-3.5 h-3.5 text-emerald-500" />
-                  <span className="hidden sm:inline">Auto-Rotating</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* Executive Direct Selector Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            {teamList.map((member, idx) => {
-              const isSelected = activeIndex === idx;
-              return (
-                <button
-                  key={member.id}
-                  onClick={() => handleSelectMember(idx)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 flex items-center gap-2 ${
-                    isSelected
-                      ? 'bg-electric-purple text-white shadow-md shadow-purple-500/30 scale-105 ring-2 ring-purple-300 dark:ring-electric-purple/50'
-                      : 'bg-white/70 dark:bg-midnight-card/70 border border-purple-200/60 dark:border-midnight-border text-light-subtext dark:text-gray-300 hover:border-electric-purple hover:text-electric-purple'
-                  }`}
-                >
-                  <span className={`h-1.5 w-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-electric-purple/40'}`} />
-                  <span>{member.name.split(' ')[0]}</span>
-                </button>
-              );
-            })}
-          </div>
-
         </div>
       </div>
     </section>

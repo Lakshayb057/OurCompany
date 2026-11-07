@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -9,7 +9,19 @@ type SplashPhase = 'init' | 'logo-enter' | 'text-emerge' | 'hold' | 'text-retrac
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
   const [phase, setPhase] = useState<SplashPhase>('init');
 
+  // Stable ref for onComplete callback so parent re-renders never trigger effect restart
+  const onCompleteRef = useRef(onComplete);
   useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  // Guard to ensure choreography runs strictly once and cannot be reset or duplicated
+  const hasStartedRef = useRef(false);
+
+  useEffect(() => {
+    if (hasStartedRef.current) return;
+    hasStartedRef.current = true;
+
     // Precise choreography of the cinematic 3D sequence (~2.2s total duration)
     const t0 = setTimeout(() => setPhase('logo-enter'), 40);
     const t1 = setTimeout(() => setPhase('text-emerge'), 540);
@@ -18,7 +30,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
     const t4 = setTimeout(() => setPhase('logo-morph'), 1860);
     const t5 = setTimeout(() => {
       setPhase('done');
-      onComplete();
+      onCompleteRef.current?.();
     }, 2250);
 
     return () => {
@@ -29,7 +41,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
       clearTimeout(t4);
       clearTimeout(t5);
     };
-  }, [onComplete]);
+  }, []); // Run strictly once on mount
 
   const codeLetters = ['C', 'o', 'd', 'e'];
   const verseLetters = ['V', 'e', 'r', 's', 'e'];
