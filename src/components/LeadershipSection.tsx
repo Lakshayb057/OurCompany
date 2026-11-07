@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Linkedin, Shield, Check } from 'lucide-react';
+import { Linkedin, Shield } from 'lucide-react';
 import { TeamMember } from '../types';
 
 interface LeadershipSectionProps {
@@ -28,7 +28,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
           {team.map((member) => (
             <div
               key={member.id}
-              className="relative rounded-3xl overflow-hidden group transition-all duration-500 shadow-md hover:shadow-2xl hover:-translate-y-1 border border-purple-200/80 dark:border-white/10 hover:border-electric-purple/80 dark:hover:border-electric-purple/60 flex flex-col justify-between min-h-[480px] sm:min-h-[520px] bg-white dark:bg-midnight-card"
+              className="relative rounded-3xl overflow-hidden group transition-all duration-500 shadow-md hover:shadow-2xl hover:-translate-y-1 border border-purple-200/80 dark:border-white/10 hover:border-electric-purple/80 dark:hover:border-electric-purple/60 flex flex-col justify-between min-h-[430px] sm:min-h-[470px] bg-white dark:bg-midnight-card"
             >
               {/* 1. Full Container Background Image Layer */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -102,17 +102,6 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                   <p className="text-xs text-light-text dark:text-gray-100 font-semibold leading-relaxed">
                     {member.primaryResponsibility}
                   </p>
-                </div>
-
-                {/* Verified Stakeholder Status Bar */}
-                <div className="pt-4 mt-5 border-t border-purple-200/50 dark:border-white/10 flex items-center justify-between text-xs font-mono text-light-subtext dark:text-muted-gray">
-                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
-                    <Check className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>Approved Executive</span>
-                  </span>
-                  <span className="text-[10px] bg-purple-50/90 dark:bg-midnight-950/80 backdrop-blur-sm text-electric-purple dark:text-lavender-light font-bold px-2.5 py-1 rounded-md border border-purple-200 dark:border-midnight-border">
-                    {member.role}
-                  </span>
                 </div>
               </div>
             </div>
