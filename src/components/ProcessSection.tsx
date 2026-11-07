@@ -196,9 +196,9 @@ export const ProcessSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Column: Stacked Cards Deck - Each card arrives strictly ON TOP of the previous ones */}
-            <div className="lg:col-span-7 flex flex-col justify-center h-full min-h-0 pt-4 sm:pt-6">
-              <div className="relative w-full aspect-[16/10] max-h-[46vh] sm:max-h-[52vh] flex items-center justify-center">
+            {/* Right Column: Stacked Cards Deck - Increased height for immersive visual showcase */}
+            <div className="lg:col-span-7 flex flex-col justify-center h-full min-h-0 pt-2 sm:pt-4">
+              <div className="relative w-full h-[430px] sm:h-[510px] lg:h-[570px] max-h-[62vh] sm:max-h-[66vh] flex items-center justify-center">
                 
                 {steps.map((step, idx) => {
                   // Ascending zIndex guarantees every subsequent card lands ON TOP, NEVER from behind!
