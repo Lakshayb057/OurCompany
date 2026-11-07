@@ -255,23 +255,6 @@ export const ProcessSection: React.FC = () => {
                       }}
                       className={`absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border-2 border-purple-200/90 dark:border-electric-purple/60 ${shadowClass} flex flex-col will-change-transform`}
                     >
-                      {/* Physical File Folder Header Tab */}
-                      <div className="flex items-center justify-between px-3.5 sm:px-4 py-1.5 sm:py-2 bg-slate-900/95 dark:bg-midnight-950/95 backdrop-blur-md border-b border-white/10 z-20 flex-shrink-0">
-                        <div className="flex items-center gap-2">
-                          <div className="flex gap-1.5">
-                            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-rose-500/80 shadow-sm" />
-                            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-amber-500/80 shadow-sm" />
-                            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-emerald-500/80 shadow-sm" />
-                          </div>
-                          <span className="text-[10px] sm:text-xs font-mono font-bold tracking-wider text-purple-300 dark:text-lavender-glow ml-2">
-                            STAGE // {step.num}
-                          </span>
-                        </div>
-                        <span className="text-[10px] sm:text-xs font-mono text-slate-300 dark:text-muted-gray font-medium truncate max-w-[200px] sm:max-w-none">
-                          {step.shortTitle}
-                        </span>
-                      </div>
-
                       {/* Image Frame */}
                       <div className="relative flex-1 min-h-0 overflow-hidden">
                         <img
