@@ -128,7 +128,7 @@ export const ProcessSection: React.FC = () => {
             </h2>
           </div>
 
-          {/* Main 2-Column Split: Single Container (Left) + 3D Stacked Files (Right) */}
+          {/* Main 2-Column Split: Single Container (Left) + Stacked Files (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center flex-1 min-h-0 pb-2">
             
             {/* Left Column: ALL 5 STEPS IN A SINGLE CONTAINER (smaller font size) */}
@@ -193,58 +193,53 @@ export const ProcessSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Column: 3D Stacked Cards Deck - "Collects as File over Files" */}
-            <div className="lg:col-span-7 flex flex-col justify-center h-full min-h-0 [perspective:1400px]">
-              <div className="relative w-full aspect-[16/10] max-h-[46vh] sm:max-h-[52vh] flex items-center justify-center [transform-style:preserve-3d]">
+            {/* Right Column: Stacked Cards Deck - Each card arrives strictly ON TOP of the previous ones */}
+            <div className="lg:col-span-7 flex flex-col justify-center h-full min-h-0 pt-4 sm:pt-6">
+              <div className="relative w-full aspect-[16/10] max-h-[46vh] sm:max-h-[52vh] flex items-center justify-center">
                 
                 {steps.map((step, idx) => {
-                  // 3D Card Stack Calculation:
-                  // Cards slide up from bottom to top and stack one over another like physical file folders
-                  let translateY = '0px';
+                  // Ascending zIndex guarantees every subsequent card lands ON TOP, NEVER from behind!
+                  const cardZIndex = (idx + 1) * 10;
+
+                  let translateY = '105%';
                   let scale = 1;
-                  let rotateX = 0;
-                  let opacity = 1;
-                  let zIndex = 10 + idx;
+                  let opacity = 0;
                   let brightness = 1;
-                  let pointerEvents: 'auto' | 'none' = 'none';
+                  let shadowClass = 'shadow-none';
 
                   if (idx === 0) {
-                    // Base file 01
-                    const depth = Math.max(0, scrubValue);
-                    translateY = `${-depth * 9}px`;
-                    scale = 1 - Math.min(depth * 0.024, 0.096);
-                    brightness = 1 - Math.min(depth * 0.07, 0.28);
-                    zIndex = 10;
-                    pointerEvents = activeStep === 0 ? 'auto' : 'none';
+                    // Base file 01 (always visible)
+                    opacity = 1;
+                    const depth = Math.max(0, scrubValue); // 0 to 4
+                    const shiftY = Math.min(depth * 10, 40);
+                    translateY = `${-shiftY}px`;
+                    scale = 1 - Math.min(depth * 0.015, 0.06);
+                    brightness = 1 - Math.min(depth * 0.06, 0.24);
+                    shadowClass = 'shadow-2xl';
                   } else {
                     // Files 02, 03, 04, 05
                     const enterProgress = Math.min(Math.max(scrubValue - (idx - 1), 0), 1);
 
-                    if (enterProgress < 0.001) {
-                      // Waiting below the viewport to slide up
-                      translateY = '120%';
-                      scale = 0.94;
-                      rotateX = 14;
+                    if (enterProgress <= 0) {
+                      // Waiting below the deck to slide up
+                      translateY = '105%';
                       opacity = 0;
-                      zIndex = 10 + idx;
                     } else if (enterProgress < 1) {
-                      // Currently scrolling from bottom to top onto the stack!
-                      translateY = `${(1 - enterProgress) * 115}%`;
-                      scale = 0.94 + enterProgress * 0.06;
-                      rotateX = (1 - enterProgress) * 12;
+                      // Actively sliding UP from the bottom ON TOP of previous cards!
+                      const currentY = (1 - enterProgress) * 105;
+                      translateY = `${currentY}%`;
                       opacity = Math.min(enterProgress * 2.5, 1);
-                      zIndex = 20 + idx;
-                      pointerEvents = 'auto';
+                      scale = 0.98 + enterProgress * 0.02;
+                      shadowClass = 'shadow-[0_-12px_35px_rgba(0,0,0,0.65),0_25px_50px_rgba(0,0,0,0.85)]';
                     } else {
                       // Fully landed on top of previous files!
-                      const depth = Math.max(0, scrubValue - idx);
-                      translateY = `${-depth * 9}px`;
-                      scale = 1 - Math.min(depth * 0.024, 0.096);
-                      rotateX = 0;
                       opacity = 1;
-                      brightness = 1 - Math.min(depth * 0.07, 0.28);
-                      zIndex = 20 + idx;
-                      pointerEvents = activeStep === idx ? 'auto' : 'none';
+                      const depth = Math.max(0, scrubValue - idx);
+                      const shiftY = Math.min(depth * 10, (4 - idx) * 10);
+                      translateY = `${-shiftY}px`;
+                      scale = 1 - Math.min(depth * 0.015, 0.06);
+                      brightness = 1 - Math.min(depth * 0.06, 0.24);
+                      shadowClass = 'shadow-[0_-8px_30px_rgba(0,0,0,0.55),0_20px_45px_rgba(0,0,0,0.75)]';
                     }
                   }
 
@@ -252,17 +247,16 @@ export const ProcessSection: React.FC = () => {
                     <div
                       key={step.num}
                       style={{
-                        transform: `translate3d(0, ${translateY}, 0) scale(${scale}) rotateX(${rotateX}deg)`,
+                        transform: `translate3d(0, ${translateY}, 0) scale(${scale})`,
                         opacity,
-                        zIndex,
+                        zIndex: cardZIndex,
                         filter: `brightness(${brightness})`,
-                        pointerEvents,
-                        transition: 'transform 0.15s ease-out, opacity 0.2s ease-out, filter 0.2s ease-out'
+                        transition: 'transform 0.12s ease-out, opacity 0.15s ease-out, filter 0.15s ease-out'
                       }}
-                      className="absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border-2 border-purple-200/80 dark:border-electric-purple/50 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.65),0_0_2px_1px_rgba(168,85,247,0.3)] flex flex-col will-change-transform"
+                      className={`absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border-2 border-purple-200/90 dark:border-electric-purple/60 ${shadowClass} flex flex-col will-change-transform`}
                     >
                       {/* Physical File Folder Header Tab */}
-                      <div className="flex items-center justify-between px-3.5 sm:px-4 py-1.5 sm:py-2 bg-slate-900/90 dark:bg-midnight-950/90 backdrop-blur-md border-b border-white/10 z-20 flex-shrink-0">
+                      <div className="flex items-center justify-between px-3.5 sm:px-4 py-1.5 sm:py-2 bg-slate-900/95 dark:bg-midnight-950/95 backdrop-blur-md border-b border-white/10 z-20 flex-shrink-0">
                         <div className="flex items-center gap-2">
                           <div className="flex gap-1.5">
                             <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-rose-500/80 shadow-sm" />
