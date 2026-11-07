@@ -1,0 +1,583 @@
+{
+  "inquiries": [
+    {
+      "id": "inq-1793725438123",
+      "fullName": "Test Enterprise Lead",
+      "email": "lead@enterprise.com",
+      "company": "Enterprise Corp",
+      "country": "United States",
+      "projectType": "Web & Distributed Cloud Systems",
+      "budgetRange": "Not decided",
+      "timeline": "Flexible",
+      "preferredContact": "Email",
+      "description": "Requesting cloud architecture consultation for high-throughput WebSocket system.",
+      "status": "New",
+      "createdAt": "2026-11-03T17:03:58.123Z"
+    },
+    {
+      "id": "inq-101",
+      "fullName": "Alexander Vance",
+      "email": "alex@vancetech.io",
+      "company": "Vance Technologies UK",
+      "country": "United Kingdom",
+      "projectType": "AI & Distributed Cloud Platform",
+      "budgetRange": "$25,000 - $50,000",
+      "timeline": "2-3 Months",
+      "preferredContact": "Email",
+      "description": "We are seeking to build a high-concurrency document processing engine with automated OCR extraction and real-time agent dispatcher, similar to your ChatLeads AI architecture.",
+      "status": "Review",
+      "createdAt": "2026-10-28T14:32:00Z"
+    },
+    {
+      "id": "inq-102",
+      "fullName": "Meera Sen",
+      "email": "meera@ecosphere.in",
+      "company": "EcoSphere Agritech",
+      "country": "India",
+      "projectType": "Direct-to-Consumer & ERP",
+      "budgetRange": "₹5 Lakh - ₹15 Lakh",
+      "timeline": "1-2 Months",
+      "preferredContact": "WhatsApp",
+      "description": "Interested in building a multi-vendor direct farm portal with automated order tracking, Razorpay integration, and a centralized superadmin dashboard like SachiKheti.",
+      "status": "New",
+      "createdAt": "2026-11-01T09:15:00Z"
+    }
+  ],
+  "services": [
+    {
+      "id": "srv-01",
+      "slug": "cloud-systems",
+      "title": "Web & Distributed Cloud Systems",
+      "domain": "Enterprise Cloud & Microservices",
+      "icon": "Cloud",
+      "image": "/services/cloud-systems.jpg",
+      "summary": "Architecting resilient, multi-tenant cloud ecosystems with high-availability microservices, ACID transactional integrity, and scalable containerized deployments.",
+      "technologies": [
+        "PERN Stack",
+        "Node.js",
+        "Express.js",
+        "PostgreSQL",
+        "AWS EC2/RDS",
+        "AWS VPC",
+        "Docker",
+        "Socket.io"
+      ],
+      "benefits": [
+        "Sub-100ms API response latencies with optimized database indexing",
+        "Zero-data-loss ACID guarantees with strict connection pooling",
+        "VPC network isolation protecting proprietary database resources",
+        "Horizontal scaling ready for enterprise traffic spikes"
+      ]
+    },
+    {
+      "id": "srv-02",
+      "slug": "ai-agents",
+      "title": "AI, Intelligent Agents & OCR",
+      "domain": "Artificial Intelligence & Automation",
+      "icon": "Bot",
+      "image": "/services/ai-agents.jpg",
+      "summary": "Building cutting-edge cognitive pipelines combining multimodal LLMs, high-speed OCR extraction, and autonomous agent coordination to automate manual workflows.",
+      "technologies": [
+        "Gemini 2.5 Flash",
+        "Groq Llama-4",
+        "FastAPI",
+        "Python",
+        "Computer Vision OCR",
+        "Baileys SDK",
+        "WebSockets"
+      ],
+      "benefits": [
+        "90% reduction in manual data entry and document auditing effort",
+        "Real-time image & PDF document intelligence with sub-second inference",
+        "Automated WhatsApp & multi-channel conversational lead extraction",
+        "Structured multi-tenant data pipelines for thousands of records"
+      ]
+    },
+    {
+      "id": "srv-03",
+      "slug": "crm-automation",
+      "title": "High-Throughput CRMs & Real-Time Engines",
+      "domain": "Workflow Automation & Telemetry",
+      "icon": "Zap",
+      "image": "/services/crm-automation.jpg",
+      "summary": "Developing high-velocity CRM platforms equipped with Redis event messaging, sub-second lead distribution, and automated reminder sequences.",
+      "technologies": [
+        "React.js",
+        "Node.js",
+        "Prisma ORM",
+        "Redis Event Bus",
+        "PostgreSQL JSONB",
+        "Socket.io",
+        "Brevo SMTP"
+      ],
+      "benefits": [
+        "Processed 100,000+ records with 70% faster batch import pipelines",
+        "Ultra-low latency instant lead assignment and live agent dashboards",
+        "Automated appointment dispatch delivering 1,000+ targeted reminders daily",
+        "Role-based privilege tiering across 4 distinct operational roles"
+      ]
+    },
+    {
+      "id": "srv-04",
+      "slug": "institutional-erp",
+      "title": "Institutional ERPs & Verification Portals",
+      "domain": "Education & Digital Credentials",
+      "icon": "ShieldCheck",
+      "image": "/services/institutional-erp.jpg",
+      "summary": "Engineering automated administrative platforms featuring cryptographically secured digital credential verification, student lifecycle tracking, and custom RBAC.",
+      "technologies": [
+        "React.js",
+        "Tailwind CSS",
+        "Express.js",
+        "MongoDB",
+        "JWT Auth",
+        "PDF-Parse Engine",
+        "Axios"
+      ],
+      "benefits": [
+        "Cryptographically secured digital certificates with unique verifiable IDs",
+        "40% reduction in institutional document verification overhead",
+        "Unified administrative workflows supporting 500+ active students",
+        "Verified commercial track record delivering measurable ROI"
+      ]
+    },
+    {
+      "id": "srv-05",
+      "slug": "agri-commerce",
+      "title": "Direct-to-Consumer & Agri-Commerce OS",
+      "domain": "E-Commerce & Operational ERP",
+      "icon": "ShoppingBag",
+      "image": "/services/agri-commerce.jpg",
+      "summary": "Full-stack direct-to-consumer digital commerce platforms with seamless payment processing, omni-channel order routing, and centralized executive ERPs.",
+      "technologies": [
+        "React 18",
+        "Vite",
+        "Node.js",
+        "PostgreSQL",
+        "Prisma",
+        "Razorpay UPI",
+        "WhatsApp Business API",
+        "SVG Dashboards"
+      ],
+      "benefits": [
+        "End-to-end checkout with instant WhatsApp and Razorpay UPI channels",
+        "5-stage order fulfillment funnel with dynamic customer tracking",
+        "Custom SVG telemetry dashboards for revenue split and product velocity",
+        "Standalone JWT Superadmin portal for inventory and banner governance"
+      ]
+    },
+    {
+      "id": "srv-06",
+      "slug": "campus-marketplaces",
+      "title": "Circular Economy & P2P Marketplaces",
+      "domain": "Social Impact & Community Platforms",
+      "icon": "RefreshCw",
+      "image": "/services/campus-marketplaces.jpg",
+      "summary": "Creating trustworthy peer-to-peer sharing and circular exchange ecosystems with identity validation, direct communication, and rental logistics.",
+      "technologies": [
+        "Django",
+        "MongoDB",
+        "Android Kotlin",
+        "REST APIs",
+        "AI Verification",
+        "Web Application"
+      ],
+      "benefits": [
+        "Peer-to-peer buy, sell, exchange, and rental workflows",
+        "Verified student community through institutional domain and ID checks",
+        "Promotes campus affordability, resource reuse, and waste reduction",
+        "Real-time in-app buyer-seller chat and moderation telemetry"
+      ]
+    }
+  ],
+  "products": [
+    {
+      "id": "prod-01",
+      "slug": "universe",
+      "name": "UniVerse",
+      "subtitle": "Campus Dining & Multi-Vendor OS",
+      "badge": "FLAGSHIP STARTUP • 0-TO-1",
+      "status": "Live",
+      "tagline": "Eliminating campus dining wait times with real-time QR ordering, automated kitchen dispatching, and vendor split settlements.",
+      "lead": "Architected & Built as Co-Founder (Engineering, Growth & Finance)",
+      "technologies": [
+        "PERN Stack",
+        "React.js (Vite)",
+        "Node.js",
+        "Express.js",
+        "PostgreSQL",
+        "AWS EC2",
+        "AWS RDS",
+        "AWS VPC",
+        "AWS S3",
+        "Socket.io",
+        "Razorpay",
+        "Groq AI",
+        "Tailwind CSS",
+        "React Native"
+      ],
+      "metrics": [
+        {
+          "label": "Onboarded Vendors",
+          "value": "50+"
+        },
+        {
+          "label": "Order Latency",
+          "value": "Real-Time"
+        },
+        {
+          "label": "Financial Integrity",
+          "value": "100% Idempotent"
+        },
+        {
+          "label": "Cloud Topology",
+          "value": "AWS VPC Isolated"
+        }
+      ],
+      "highlights": [
+        "Socket.io WebSocket channels synchronize student clients, kitchen POS terminals, and Telegram alert bots simultaneously.",
+        "Razorpay payment integration with webhook idempotency keys to eliminate duplicate charge risks, supporting automatic split settlements.",
+        "Role-based portals separating Super-Admins, Vendor Kitchens, and Students with Groq AI-powered order insights.",
+        "Scalable PERN architecture hosted on AWS EC2, AWS RDS PostgreSQL with connection pooling, and AWS S3 object storage."
+      ],
+      "liveUrl": "https://universe-campus.live",
+      "githubUrl": "https://github.com/codeverse114/UniVerse-Platform"
+    },
+    {
+      "id": "prod-02",
+      "slug": "chatleads-ai",
+      "name": "ChatLeads AI",
+      "subtitle": "Fleet WhatsApp CRM & Multimodal OCR",
+      "badge": "AI & AUTOMATION • JUN ’26",
+      "status": "Live",
+      "tagline": "Real-time WhatsApp fleet CRM with Gemini 2.5 Flash OCR and Groq Llama-4 automated lead extraction.",
+      "lead": "Full-Stack AI Architecture & Real-Time Sync",
+      "technologies": [
+        "Next.js",
+        "FastAPI",
+        "TypeScript",
+        "Node.js",
+        "PostgreSQL",
+        "WebSockets",
+        "Gemini 2.5 Flash",
+        "Groq API (Llama-4)",
+        "Pandas",
+        "OpenPyXL"
+      ],
+      "metrics": [
+        {
+          "label": "Concurrent Sessions",
+          "value": "50+"
+        },
+        {
+          "label": "Manual Effort Saved",
+          "value": "90%"
+        },
+        {
+          "label": "Records Processed",
+          "value": "10,000+"
+        },
+        {
+          "label": "Inference Time",
+          "value": "< 1s"
+        }
+      ],
+      "highlights": [
+        "Architected multi-session WhatsApp fleet engine supporting 50+ concurrent instances via Baileys SDK and WebSockets.",
+        "Integrated Gemini 2.5 Flash for multimodal document OCR and Groq Llama-4 for intelligent structured lead parsing from PDFs and photos.",
+        "Engineered multi-tenant PostgreSQL backend with Pandas & OpenPyXL automated reporting modules.",
+        "Secure JWT authentication and live agent monitoring with zero dropped message events."
+      ],
+      "liveUrl": "https://chatleads-ai.vercel.app/",
+      "githubUrl": "https://github.com/lakshayb057/ChatLeads-AI"
+    },
+    {
+      "id": "prod-03",
+      "slug": "abv-skillport",
+      "name": "ABV — SkillPort",
+      "subtitle": "Vocational Institute Platform & Digital Verification",
+      "badge": "EDUCATION & ERP • APR ’26",
+      "status": "Live",
+      "tagline": "Vocational institute management platform automating student workflows with JWT-secured digital certificate verification.",
+      "lead": "MERN Architecture & Cryptographic Verification",
+      "technologies": [
+        "React.js",
+        "Tailwind CSS",
+        "Node.js",
+        "Express.js",
+        "MongoDB",
+        "JWT Auth",
+        "PDF-Parse",
+        "Axios",
+        "Git"
+      ],
+      "metrics": [
+        {
+          "label": "Commercial Revenue",
+          "value": "₹1.1 Lakh"
+        },
+        {
+          "label": "Students Enrolled",
+          "value": "500+"
+        },
+        {
+          "label": "Verification Time Saved",
+          "value": "40%"
+        },
+        {
+          "label": "Security Standard",
+          "value": "JWT Signed"
+        }
+      ],
+      "highlights": [
+        "Developed end-to-end MERN management suite automating admissions, student records, document pipelines, and priority notice broadcasts.",
+        "Implemented JWT-secured digital certificate verification portal assigning unique verifiable IDs, reducing manual verification overhead by 40%.",
+        "Engineered multi-tier RBAC dashboards tailored for administrators, teaching staff, and enrolled students.",
+        "Delivered verified commercial project generating ₹1.1 Lakh revenue with 100% client satisfaction."
+      ],
+      "liveUrl": "https://abvskillcentre.in/",
+      "githubUrl": "https://github.com/lakshayb057/ABV-SkillPort"
+    },
+    {
+      "id": "prod-04",
+      "slug": "nexus-crm",
+      "name": "Nexus CRM",
+      "subtitle": "High-Performance Multi-Tenant Event Engine",
+      "badge": "ENTERPRISE CRM • MAY ’26",
+      "status": "Live",
+      "tagline": "High-performance multi-tenant CRM with Redis event bus, chunked bulk imports, and automated appointment reminders.",
+      "lead": "Distributed Event Engine & High-Capacity Pipelines",
+      "technologies": [
+        "React.js",
+        "Node.js",
+        "Express.js",
+        "PostgreSQL (JSONB)",
+        "Prisma ORM",
+        "Redis",
+        "Socket.io",
+        "Brevo SMTP"
+      ],
+      "metrics": [
+        {
+          "label": "Lead Database",
+          "value": "100,000+"
+        },
+        {
+          "label": "Batch Import Speed",
+          "value": "70% Faster"
+        },
+        {
+          "label": "Automated Reminders",
+          "value": "1,000+/Day"
+        },
+        {
+          "label": "Role Hierarchy",
+          "value": "4 RBAC Tiers"
+        }
+      ],
+      "highlights": [
+        "Engineered multi-tenant CRM with 4 role tiers (SuperAdmin, Admin, TeamLead, Agent) using Prisma ORM and PostgreSQL JSONB.",
+        "Real-time lead assignment and dynamic callback notifications orchestrated via Socket.io and Redis low-latency event bus.",
+        "Chunked 1,000-record CSV/Excel bulk import engine improving database ingestion speed by 70% across 100k+ customer records.",
+        "Automated Brevo SMTP scheduling pipelines dispatching 1,000+ daily appointment reminders without thread blocking."
+      ],
+      "liveUrl": "https://nexuscrm-production.up.railway.app/",
+      "githubUrl": "https://github.com/lakshayb057/NexusCRM"
+    },
+    {
+      "id": "prod-05",
+      "slug": "campxchange",
+      "name": "CampXChange",
+      "subtitle": "Campus Circular Marketplace & Sharing OS",
+      "badge": "STUDENT MARKETPLACE • SOCIAL IMPACT",
+      "status": "Beta",
+      "tagline": "A student-focused marketplace helping college students buy, sell, exchange, and rent pre-owned products within their campus.",
+      "lead": "Cross-Platform Architecture & Circular Economy",
+      "technologies": [
+        "Django",
+        "MongoDB",
+        "Android (Kotlin)",
+        "Web Application",
+        "AI/OCR Verification",
+        "REST APIs"
+      ],
+      "metrics": [
+        {
+          "label": "Campus Model",
+          "value": "Peer-to-Peer"
+        },
+        {
+          "label": "Transaction Modes",
+          "value": "Buy, Sell, Rent, Swap"
+        },
+        {
+          "label": "Verification Method",
+          "value": "ID & Domain Verification"
+        },
+        {
+          "label": "Ecological Goal",
+          "value": "Zero Campus Waste"
+        }
+      ],
+      "highlights": [
+        "Comprehensive campus circular ecosystem: peer-to-peer buy & sell, zero-cost direct exchange, and term-based equipment rentals.",
+        "Student credibility safeguarded through institutional email domain authentication and AI-assisted student ID verification.",
+        "Integrated in-app real-time buyer-seller chat, custom wishlists, and community reporting mechanisms for inappropriate listings.",
+        "Engineered with Django backend, MongoDB document storage, and native Android Kotlin application."
+      ],
+      "liveUrl": "https://campxchange.tech/",
+      "githubUrl": "https://github.com/lakshayb057/CampXChange"
+    },
+    {
+      "id": "prod-06",
+      "slug": "sachikheti",
+      "name": "SachiKheti",
+      "subtitle": "Agri-Commerce Platform & Superadmin ERP",
+      "badge": "AGRI-COMMERCE • DIGITAL TRANSFORMATION",
+      "status": "Live",
+      "tagline": "Direct-to-consumer agri-commerce platform and internal ERP portal for certified farm products with custom SVG analytics.",
+      "lead": "Full-Stack Production System & Visual Telemetry",
+      "technologies": [
+        "React 18",
+        "Vite",
+        "Node.js",
+        "Express.js",
+        "PostgreSQL",
+        "Prisma ORM",
+        "Render",
+        "Hostinger DNS",
+        "Razorpay",
+        "WhatsApp Business API",
+        "SVG Data Visualization"
+      ],
+      "metrics": [
+        {
+          "label": "Farm Catalog",
+          "value": "10+ Certified Lines"
+        },
+        {
+          "label": "Fulfillment Funnel",
+          "value": "5 Dynamic Stages"
+        },
+        {
+          "label": "Checkout Channels",
+          "value": "UPI & WhatsApp"
+        },
+        {
+          "label": "Order Tracking",
+          "value": "Unique SK-2026 IDs"
+        }
+      ],
+      "highlights": [
+        "Trilingual storefront typography (English, Punjabi/Gurmukhi, Hindi) celebrating authentic agricultural heritage.",
+        "Standalone role-based Superadmin Portal (/adminlog) with JWT authentication and full CRUD across products, orders, and promotional ribbons.",
+        "Custom SVG business intelligence dashboards visualizing order fulfillment funnels, sales comparisons, and payment channel share.",
+        "Seamless dual-channel checkout supporting Razorpay UPI transactions and WhatsApp direct click-to-order with pre-filled cart payloads."
+      ],
+      "liveUrl": "https://sachikheti.com",
+      "githubUrl": "https://github.com/codeverse114/SachiKheti"
+    }
+  ],
+  "team": [
+    {
+      "id": "tm-01",
+      "name": "Lakshay",
+      "designation": "Founder & Board Director #1",
+      "role": "Founder & Strategy",
+      "primaryResponsibility": "Vision, leadership, strategy, product ownership, and 0-to-1 engineering.",
+      "bio": "Founded CodeVerse with the conviction that ambitious engineering, disciplined execution, and modern architectures transform complex challenges into scalable digital realities. Spearheads organizational strategy, product incubation, and enterprise client partnerships.",
+      "avatar": "/lakshay.jpeg",
+      "linkedin": "https://linkedin.com/in/lakshay-codeverse"
+    },
+    {
+      "id": "tm-02",
+      "name": "Parth Sharma",
+      "designation": "Co-Founder & CTO",
+      "role": "Technology & Architecture",
+      "primaryResponsibility": "Technology architecture, cloud infrastructure, engineering standards, and technical delivery.",
+      "bio": "Directs CodeVerse's technical roadmap, distributed cloud topologies, and high-concurrency real-time engines. Specializes in scalable backend pipelines, WebSocket event orchestration, and resilient fault-tolerant systems.",
+      "avatar": "/Parth.jpeg",
+      "linkedin": "https://linkedin.com/in/parth-codeverse"
+    },
+    {
+      "id": "tm-03",
+      "name": "Diya Maheshwari",
+      "designation": "Co-Founder & COO",
+      "role": "Operations & Execution",
+      "primaryResponsibility": "Operations, project execution, agile methodologies, and client delivery governance.",
+      "bio": "Drives operational excellence, delivery timelines, and cross-functional project execution across all engineering streams. Ensures strict quality benchmarks and milestone compliance from discovery to cloud deployment.",
+      "avatar": "/Diya.jpg",
+      "linkedin": "https://linkedin.com/in/diya-codeverse"
+    },
+    {
+      "id": "tm-04",
+      "name": "Ishita Malhotra",
+      "designation": "Board Director #2",
+      "role": "Corporate Governance & Oversight",
+      "primaryResponsibility": "Corporate governance, strategic policy decisions, risk management, and organizational oversight.",
+      "bio": "Provides strategic governance, institutional oversight, and risk evaluation across CodeVerse's enterprise client contracts and proprietary technology R&D initiatives.",
+      "avatar": "/ishita.jpeg",
+      "linkedin": "https://linkedin.com/in/ishita-codeverse"
+    },
+    {
+      "id": "tm-05",
+      "name": "Suryansh Thakur",
+      "designation": "Chief Growth Officer",
+      "role": "Growth & Partnerships",
+      "primaryResponsibility": "Business development, international client acquisition, growth marketing, and strategic partnerships.",
+      "bio": "Leads market expansion, international partner relations, and commercial development for CodeVerse's global delivery footprint. Champions business development across enterprise and startup ecosystems.",
+      "avatar": "/suryansh.jpeg",
+      "linkedin": "https://linkedin.com/in/suryansh-codeverse"
+    }
+  ],
+  "internalProjects": [
+    {
+      "id": "prj-01",
+      "name": "UniVerse — Campus Dining OS",
+      "client": "Campus Retail Network",
+      "budget": 450000,
+      "status": "In Production",
+      "allocations": {
+        "projectLead": 30,
+        "engineering": 50,
+        "companyReserve": 20
+      },
+      "leadAmount": 135000,
+      "engineeringAmount": 225000,
+      "companyAmount": 90000,
+      "notes": "Verified 100% allocation model compliant with Section 10.4."
+    },
+    {
+      "id": "prj-02",
+      "name": "ChatLeads AI Fleet Platform",
+      "client": "Logistics & Sales Tech UK",
+      "budget": 350000,
+      "status": "Delivered",
+      "allocations": {
+        "projectLead": 30,
+        "engineering": 50,
+        "companyReserve": 20
+      },
+      "leadAmount": 105000,
+      "engineeringAmount": 175000,
+      "companyAmount": 70000,
+      "notes": "FastAPI + Gemini OCR lead extraction engine."
+    },
+    {
+      "id": "prj-03",
+      "name": "SachiKheti Agri-Commerce & ERP",
+      "client": "Certified Farm Network",
+      "budget": 280000,
+      "status": "In Production",
+      "allocations": {
+        "projectLead": 30,
+        "engineering": 50,
+        "companyReserve": 20
+      },
+      "leadAmount": 84000,
+      "engineeringAmount": 140000,
+      "companyAmount": 56000,
+      "notes": "Razorpay UPI + WhatsApp direct-to-farm platform."
+    }
+  ]
+}

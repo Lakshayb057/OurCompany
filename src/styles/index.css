@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  
+  body {
+    background-color: #FBFBFE;
+    color: #120E24;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .dark body {
+    background-color: #09090B;
+    color: #FFFFFF;
+  }
+}
+
+/* Custom Scrollbar for Light Mode */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F4F0FD;
+}
+::-webkit-scrollbar-thumb {
+  background: #D5C7F7;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #7C2CF5;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #09090B;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #281E40;
+}
+
+/* Gradient text utilities */
+.text-gradient {
+  background: linear-gradient(135deg, #120E24 20%, #7C2CF5 70%, #4B12C9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, #7C2CF5 0%, #6217D9 50%, #B66CFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .text-gradient {
+  background: linear-gradient(135deg, #FFFFFF 20%, #B66CFF 60%, #7C2CF5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glassmorphism card styles for Light Mode */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(124, 44, 245, 0.16);
+  box-shadow: 0 10px 30px -5px rgba(124, 44, 245, 0.06);
+}
+
+.glass-panel:hover {
+  border-color: rgba(124, 44, 245, 0.35);
+}
+
+.glass-card-interactive {
+  background: #FFFFFF;
+  border: 1px solid rgba(124, 44, 245, 0.15);
+  box-shadow: 0 4px 20px -2px rgba(124, 44, 245, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-interactive:hover {
+  transform: translateY(-4px);
+  border-color: rgba(124, 44, 245, 0.45);
+  box-shadow: 0 16px 36px -10px rgba(124, 44, 245, 0.15);
+}
+
+/* Dark mode fallback overrides if toggled */
+.dark .glass-panel {
+  background: rgba(18, 16, 27, 0.75);
+  border-color: rgba(124, 44, 245, 0.18);
+  box-shadow: none;
+}
+.dark .glass-card-interactive {
+  background: rgba(18, 16, 27, 0.85);
+  border-color: rgba(124, 44, 245, 0.2);
+}
+.dark .glass-card-interactive:hover {
+  border-color: rgba(182, 108, 255, 0.5);
+  box-shadow: 0 12px 30px -10px rgba(124, 44, 245, 0.25);
+}
+
+/* Subtle glow pulse */
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.glow-ambient {
+  animation: glowPulse 8s ease-in-out infinite;
+}
+
+/* Hero gentle 3D ambient floating physics */
+@keyframes heroFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.2deg);
+  }
+}
+
+.animate-hero-float {
+  animation: heroFloat 6s ease-in-out infinite;
+}
+
+/* Gradient shimmer sweep */
+@keyframes shimmerSheen {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmerSheen 4s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* ═══════ Splash Screen 3D Cinematic Effects ═══════ */
+/* ═══════════════════════════════════════════════════ */
+
+@keyframes splashGlowPulse {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.1);
+  }
+}
+
+.animate-splash-glow {
+  animation: splashGlowPulse 2.4s ease-in-out infinite;
+}
+

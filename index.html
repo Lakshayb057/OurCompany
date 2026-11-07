@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CodeVerse — Turning Ideas Into Technology</title>
+    <meta name="description" content="CodeVerse transforms ambitious ideas into scalable digital solutions, proprietary products, enterprise cloud systems, and real-time platforms." />
+    <meta name="keywords" content="CodeVerse, Software Engineering, AI Solutions, Cloud Architecture, Startups, Web Development, Full-Stack, Enterprise CRM" />
+    <meta name="author" content="CodeVerse Leadership" />
+    <meta name="theme-color" content="#FBFBFE" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://codeverse.tech/" />
+    <meta property="og:title" content="CodeVerse — Turning Ideas Into Technology" />
+    <meta property="og:description" content="Transforming ideas into scalable digital solutions, proprietary products, and enterprise cloud architectures." />
+    <meta property="og:image" content="/hero-ribbon.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="CodeVerse — Turning Ideas Into Technology" />
+    <meta property="twitter:description" content="Transforming ideas into scalable digital solutions, proprietary products, and enterprise cloud architectures." />
+    <meta property="twitter:image" content="/hero-ribbon.png" />
+
+    <link rel="icon" type="image/png" href="/logo-icon.png" />
+    
+    <!-- Immediate theme session bootstrap (eliminates flash on refresh or hard refresh) -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('codeverse-theme');
+          var theme = saved;
+          if (!theme) {
+            var match = document.cookie.match(/(^|;)\s*codeverse_theme=([^;]+)/);
+            if (match) theme = decodeURIComponent(match[2]);
+          }
+          if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-light text-light-text antialiased selection:bg-electric-purple selection:text-white min-h-screen overflow-x-hidden transition-colors duration-300">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
