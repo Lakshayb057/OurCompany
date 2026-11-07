@@ -24,82 +24,101 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
         </div>
 
         {/* Leadership Profile Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           {team.map((member) => (
             <div
               key={member.id}
-              className="glass-card-interactive rounded-2xl p-7 flex flex-col justify-between group relative overflow-hidden shadow-md hover:shadow-xl transition-all"
+              className="relative rounded-3xl overflow-hidden group transition-all duration-500 shadow-md hover:shadow-2xl hover:-translate-y-1 border border-purple-200/80 dark:border-white/10 hover:border-electric-purple/80 dark:hover:border-electric-purple/60 flex flex-col justify-between min-h-[560px] sm:min-h-[600px] bg-white dark:bg-midnight-card"
             >
-              <div>
-                {/* Portrait & Info Header */}
-                <div className="flex items-start gap-4 mb-5">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-purple-200 dark:border-electric-purple/40 shadow-md group-hover:border-electric-purple group-hover:shadow-[0_0_20px_rgba(124,44,245,0.25)] transition-all duration-300 flex-shrink-0 bg-light-surface dark:bg-midnight-card relative">
-                    {!imgErrors[member.id] && member.avatar ? (
-                      <img
-                        src={member.avatar}
-                        alt={member.name}
-                        className="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-500"
-                        onError={() => setImgErrors(prev => ({ ...prev, [member.id]: true }))}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-lavender-soft via-white to-purple-100 dark:from-electric-purple/30 dark:to-deep-violet flex items-center justify-center font-bold font-mono text-xl text-electric-purple dark:text-lavender-light">
-                        {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                      </div>
-                    )}
+              {/* 1. Full Container Background Image Layer */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                {member.avatar && !imgErrors[member.id] ? (
+                  <img
+                    src={member.avatar}
+                    alt={member.name}
+                    className="w-full h-full object-cover object-top opacity-95 dark:opacity-85 transition-transform duration-700 ease-out group-hover:scale-105"
+                    onError={() => setImgErrors(prev => ({ ...prev, [member.id]: true }))}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-lavender-soft via-white to-purple-100 dark:from-midnight-950 dark:via-midnight-900 dark:to-deep-violet flex items-center justify-center">
+                    <span className="text-8xl font-black font-mono text-electric-purple/20 select-none">
+                      {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    </span>
                   </div>
+                )}
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="text-xl font-bold text-light-text dark:text-white group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors truncate">
-                          {member.name}
-                        </h3>
-                        <div className="text-xs font-mono text-electric-purple dark:text-lavender-glow mt-0.5 font-semibold">
-                          {member.designation}
-                        </div>
-                      </div>
+                {/* 
+                  Theme-Adaptive Gradient Overlays:
+                  Preserves the face clearly visible in the upper region while smoothly deepens over the 
+                  chest/torso to ensure 100% crisp typography in both Light and Dark mode.
+                */}
+                {/* Light Mode Gradient */}
+                <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-white via-white/95 via-50% to-white/10" />
+                <div className="dark:hidden absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-transparent" />
 
-                      {member.linkedin && (
-                        <a
-                          href={member.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 rounded-lg bg-light-surface dark:bg-midnight-card border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple hover:border-electric-purple transition-all shadow-sm flex-shrink-0"
-                          title="LinkedIn Profile"
-                        >
-                          <Linkedin className="w-4 h-4" />
-                        </a>
-                      )}
-                    </div>
+                {/* Dark Mode Gradient */}
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-midnight-950 via-midnight-950/95 via-50% to-midnight-950/20" />
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-b from-midnight-950/40 via-transparent to-transparent" />
+                <div className="hidden dark:block absolute inset-0 bg-purple-950/15 mix-blend-color" />
+              </div>
+
+              {/* 2. Top Bar: Floating Tag & LinkedIn (Over Background) */}
+              <div className="relative z-10 p-6 sm:p-7 flex items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/85 dark:bg-black/60 backdrop-blur-md border border-purple-200/80 dark:border-white/15 text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow shadow-sm">
+                  {member.role.split(' ')[0]}
+                </span>
+
+                {member.linkedin && (
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-xl bg-white/85 dark:bg-black/60 backdrop-blur-md border border-purple-200/80 dark:border-white/15 text-light-subtext dark:text-gray-300 hover:text-white hover:bg-electric-purple hover:border-electric-purple transition-all shadow-sm flex-shrink-0"
+                    title="LinkedIn Profile"
+                  >
+                    <Linkedin className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
+
+              {/* 3. Bottom Content Block: Name, Role, Primary Responsibility, Bio, Status (Over Background) */}
+              <div className="relative z-10 p-6 sm:p-7 pt-0 flex flex-col justify-end">
+                {/* Name & Designation */}
+                <div>
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-light-text dark:text-white tracking-tight drop-shadow-sm group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors">
+                    {member.name}
+                  </h3>
+                  <div className="text-xs sm:text-sm font-mono text-electric-purple dark:text-lavender-glow mt-1 font-bold">
+                    {member.designation}
                   </div>
                 </div>
 
-                {/* Primary Responsibility Badge */}
-                <div className="p-3 rounded-xl bg-light-surface dark:bg-midnight-card/80 border border-purple-100 dark:border-midnight-border/70 mb-5">
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-light-subtext dark:text-muted-gray mb-1 flex items-center gap-1.5 font-bold">
+                {/* Primary Responsibility Frosted Badge */}
+                <div className="p-3.5 rounded-2xl bg-white/85 dark:bg-midnight-900/80 backdrop-blur-md border border-purple-200/70 dark:border-white/10 shadow-sm mt-4">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-electric-purple dark:text-lavender-glow mb-1 flex items-center gap-1.5 font-bold">
                     <Shield className="w-3.5 h-3.5 text-electric-purple" />
                     <span>Primary Responsibility</span>
                   </div>
-                  <p className="text-xs text-light-text dark:text-gray-200 font-semibold leading-relaxed">
+                  <p className="text-xs text-light-text dark:text-gray-100 font-semibold leading-relaxed">
                     {member.primaryResponsibility}
                   </p>
                 </div>
 
                 {/* Approved Bio */}
-                <p className="text-xs sm:text-sm text-light-subtext dark:text-muted-gray leading-relaxed mb-6">
+                <p className="text-xs sm:text-sm text-light-subtext dark:text-gray-300 leading-relaxed mt-4 drop-shadow-sm">
                   {member.bio}
                 </p>
-              </div>
 
-              {/* Verified Stakeholder status */}
-              <div className="pt-4 border-t border-light-border dark:border-midnight-border/60 flex items-center justify-between text-xs font-mono text-light-subtext dark:text-muted-gray">
-                <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>Approved Executive</span>
-                </span>
-                <span className="text-[10px] bg-lavender-soft text-electric-dark font-bold px-2 py-0.5 rounded border border-purple-200 dark:bg-midnight-900 dark:text-muted-gray dark:border-midnight-border">
-                  {member.role.split(' ')[0]}
-                </span>
+                {/* Verified Stakeholder Status Bar */}
+                <div className="pt-4 mt-5 border-t border-purple-200/50 dark:border-white/10 flex items-center justify-between text-xs font-mono text-light-subtext dark:text-muted-gray">
+                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
+                    <Check className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Approved Executive</span>
+                  </span>
+                  <span className="text-[10px] bg-purple-50/90 dark:bg-midnight-950/80 backdrop-blur-sm text-electric-purple dark:text-lavender-light font-bold px-2.5 py-1 rounded-md border border-purple-200 dark:border-midnight-border">
+                    {member.role}
+                  </span>
+                </div>
               </div>
             </div>
           ))}
