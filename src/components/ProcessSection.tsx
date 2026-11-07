@@ -134,66 +134,59 @@ export const ProcessSection: React.FC = () => {
           {/* Main 2-Column Split: Single Container (Left) + Stacked Files (Right) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center flex-1 min-h-0 pb-2">
             
-            {/* Left Column: ALL 5 STEPS IN A SINGLE CONTAINER (smaller font size) */}
-            <div className="lg:col-span-5 flex flex-col justify-center min-w-0">
-              <div className="bg-white/90 dark:bg-midnight-card/90 backdrop-blur-xl border border-purple-200/70 dark:border-midnight-border/80 rounded-2xl sm:rounded-3xl p-2.5 sm:p-3 shadow-xl shadow-purple-500/5 space-y-1.5 transition-all">
-                {steps.map((step, idx) => {
-                  const isActive = activeStep === idx;
+            {/* Left Column: ALL 5 STEPS - Open list with no container and no shadows */}
+            <div className="lg:col-span-5 flex flex-col justify-center min-w-0 space-y-2 sm:space-y-3">
+              {steps.map((step, idx) => {
+                const isActive = activeStep === idx;
 
-                  return (
-                    <button
-                      key={step.num}
-                      type="button"
-                      onClick={() => handleStepClick(idx)}
-                      className={`w-full flex items-center gap-3 sm:gap-3.5 px-3 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-left transition-all duration-300 group ${
+                return (
+                  <button
+                    key={step.num}
+                    type="button"
+                    onClick={() => handleStepClick(idx)}
+                    className={`w-full flex items-center gap-3.5 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-left transition-all duration-300 group ${
+                      isActive
+                        ? 'bg-purple-50/80 dark:bg-white/[0.04] border-l-4 border-electric-purple'
+                        : 'bg-transparent hover:bg-slate-100/50 dark:hover:bg-white/[0.02] border-l-4 border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    {/* Icon - Clean without shadows */}
+                    <div
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
                         isActive
-                          ? 'bg-purple-50/90 dark:bg-midnight-surface border border-electric-purple/60 dark:border-electric-purple/50 shadow-md shadow-purple-500/10'
-                          : 'bg-transparent hover:bg-slate-100/60 dark:hover:bg-midnight-surface/50 border border-transparent opacity-75 hover:opacity-100'
+                          ? 'bg-electric-purple text-white'
+                          : 'bg-purple-100/60 dark:bg-white/5 text-electric-purple dark:text-lavender-glow group-hover:bg-purple-100'
                       }`}
                     >
-                      {/* Compact Icon */}
-                      <div
-                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 shadow-sm ${
-                          isActive
-                            ? 'bg-electric-purple shadow-electric-purple/40 shadow scale-105'
-                            : 'bg-lavender-soft/70 dark:bg-midnight-card border border-purple-200/50 dark:border-midnight-border group-hover:scale-105'
-                        }`}
-                      >
-                        {renderStepIcon(idx, isActive)}
-                      </div>
+                      {renderStepIcon(idx, isActive)}
+                    </div>
 
-                      {/* Smaller Font Size Title */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2">
-                          <span
-                            className={`text-xs sm:text-sm font-semibold truncate transition-colors ${
-                              isActive
-                                ? 'text-electric-purple dark:text-lavender-glow font-bold'
-                                : 'text-slate-700 dark:text-gray-300 group-hover:text-light-text dark:group-hover:text-white'
-                            }`}
-                          >
-                            {step.title}
-                          </span>
-                          <span
-                            className={`text-[10px] sm:text-xs font-mono font-medium flex-shrink-0 px-1.5 py-0.5 rounded ${
-                              isActive
-                                ? 'bg-electric-purple/15 text-electric-purple dark:text-lavender-glow font-bold'
-                                : 'text-slate-400 dark:text-gray-500'
-                            }`}
-                          >
-                            {step.num}
-                          </span>
-                        </div>
+                    {/* Step Title & Number */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-3">
+                        <span
+                          className={`text-sm sm:text-base font-semibold truncate transition-colors ${
+                            isActive
+                              ? 'text-electric-purple dark:text-lavender-glow font-bold'
+                              : 'text-slate-700 dark:text-gray-300 group-hover:text-slate-900 dark:group-hover:text-white'
+                          }`}
+                        >
+                          {step.title}
+                        </span>
+                        <span
+                          className={`text-xs font-mono font-medium flex-shrink-0 px-2 py-0.5 rounded ${
+                            isActive
+                              ? 'bg-electric-purple/10 text-electric-purple dark:text-lavender-glow font-bold'
+                              : 'text-slate-400 dark:text-gray-500'
+                          }`}
+                        >
+                          {step.num}
+                        </span>
                       </div>
-
-                      {/* Active indicator dot */}
-                      {isActive && (
-                        <div className="w-1.5 h-1.5 rounded-full bg-electric-purple animate-pulse flex-shrink-0" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Right Column: Stacked Cards Deck - Increased height for immersive visual showcase */}
