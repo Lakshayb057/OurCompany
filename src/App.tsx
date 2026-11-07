@@ -7,6 +7,7 @@ import { MorphingButton } from './components/MorphingButton';
 import { OurStory } from './components/OurStory';
 import { ServicesSection } from './components/ServicesSection';
 import { PortfolioSection } from './components/PortfolioSection';
+import { ProjectsPage } from './components/ProjectsPage';
 import { CaseStudyModal } from './components/CaseStudyModal';
 import { ProcessSection } from './components/ProcessSection';
 import { GlobalVision } from './components/GlobalVision';
@@ -53,31 +54,78 @@ export const App: React.FC = () => {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<Product | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [inquiryDomain, setInquiryDomain] = useState<string>('AI, Intelligent Agents & OCR');
+  const [currentRoute, setCurrentRoute] = useState<'home' | 'projects'>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      if (path === '/projects' || hash === '#projects') {
+        return 'projects';
+      }
+    }
+    return 'home';
+  });
 
   // Activate calibrated slow, silky-smooth momentum scrolling
   useSmoothScroll(!isAdminOpen && !selectedCaseStudy);
 
-  // URL-based Admin route detection (/admin or #admin)
+  // URL-based Admin & Projects route detection (/admin, /projects, or hashes)
   useEffect(() => {
-    const checkAdminRoute = () => {
-      const isAdmin = window.location.pathname === '/admin' || window.location.hash === '#admin';
+    const handleLocationChange = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      const isAdmin = path === '/admin' || hash === '#admin';
       setIsAdminOpen(isAdmin);
+
+      if (path === '/projects' || hash === '#projects') {
+        setCurrentRoute('projects');
+      } else if (!isAdmin) {
+        setCurrentRoute('home');
+      }
     };
-    checkAdminRoute();
-    window.addEventListener('popstate', checkAdminRoute);
-    window.addEventListener('hashchange', checkAdminRoute);
+
+    handleLocationChange();
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
     return () => {
-      window.removeEventListener('popstate', checkAdminRoute);
-      window.removeEventListener('hashchange', checkAdminRoute);
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
     };
   }, []);
 
   const handleCloseAdmin = () => {
     setIsAdminOpen(false);
     if (window.location.pathname === '/admin') {
-      window.history.pushState(null, '', '/');
+      window.history.pushState(null, '', currentRoute === 'projects' ? '/projects' : '/');
     } else if (window.location.hash === '#admin') {
       window.history.pushState(null, '', window.location.pathname);
+    }
+  };
+
+  const navigateToProjects = () => {
+    setCurrentRoute('projects');
+    window.history.pushState(null, '', '/projects');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToHome = (sectionId?: string) => {
+    setCurrentRoute('home');
+    window.history.pushState(null, '', '/');
+    if (sectionId) {
+      setTimeout(() => {
+        scrollToSection(sectionId);
+      }, 60);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleNav = (target: string) => {
+    if (target === 'projects' || target === 'portfolio') {
+      navigateToProjects();
+    } else if (currentRoute === 'projects') {
+      navigateToHome(target);
+    } else {
+      scrollToSection(target);
     }
   };
 
@@ -160,77 +208,94 @@ export const App: React.FC = () => {
       <div className="min-h-screen bg-light text-light-text dark:bg-midnight dark:text-white flex flex-col selection:bg-electric-purple selection:text-white transition-colors duration-300">
         {/* Fixed Navigation Bar */}
       <Navbar
-        onNavigate={scrollToSection}
+        onNavigate={handleNav}
         isDark={theme === 'dark'}
         onToggleTheme={toggleTheme}
         dockStartBtnRef={navbarBtnDockRef}
         dockExploreBtnRef={navbarExploreBtnDockRef}
+        currentRoute={currentRoute}
+        onLogoClick={() => navigateToHome()}
       />
 
       {/* 3D Morphing Logo (Glides and morphs seamlessly between Hero and Top-Left Header dock) */}
-      <MorphingLogo anchorRef={heroLogoAnchorRef} />
-
-      {/* 3D Morphing Buttons (Start a Project & Explore Projects glide and float seamlessly from Hero to Top-Right Header dock) */}
-      <MorphingButton 
-        heroStartAnchorRef={heroBtnAnchorRef}
-        dockStartAnchorRef={navbarBtnDockRef}
-        heroExploreAnchorRef={heroExploreBtnAnchorRef}
-        dockExploreAnchorRef={navbarExploreBtnDockRef}
-        onStartProject={() => scrollToSection('contact')}
-        onExploreProjects={() => scrollToSection('portfolio')}
+      <MorphingLogo 
+        anchorRef={heroLogoAnchorRef} 
+        isAlwaysDocked={currentRoute === 'projects'}
+        onLogoClick={() => navigateToHome()}
       />
+
+      {/* 3D Morphing Buttons (Start a Project & Explore Projects glide and float seamlessly from Hero to Top-Right Header dock when on Home page) */}
+      {currentRoute === 'home' && (
+        <MorphingButton 
+          heroStartAnchorRef={heroBtnAnchorRef}
+          dockStartAnchorRef={navbarBtnDockRef}
+          heroExploreAnchorRef={heroExploreBtnAnchorRef}
+          dockExploreAnchorRef={navbarExploreBtnDockRef}
+          onStartProject={() => scrollToSection('contact')}
+          onExploreProjects={navigateToProjects}
+        />
+      )}
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {/* Section 01: Hero */}
-        <Hero
-          anchorRef={heroLogoAnchorRef}
-          startBtnAnchorRef={heroBtnAnchorRef}
-          exploreBtnAnchorRef={heroExploreBtnAnchorRef}
-          onStartProject={() => scrollToSection('contact')}
-          onExplorePortfolio={() => scrollToSection('portfolio')}
-        />
+        {currentRoute === 'projects' ? (
+          <ProjectsPage
+            products={products}
+            onOpenCaseStudy={(prod) => setSelectedCaseStudy(prod)}
+            onBackToHome={(sectionId) => navigateToHome(sectionId)}
+            onInquire={(domain) => {
+              setInquiryDomain(domain || 'Architecture inspired by Projects');
+              navigateToHome('contact');
+            }}
+          />
+        ) : (
+          <>
+            {/* Section 01: Hero */}
+            <Hero
+              anchorRef={heroLogoAnchorRef}
+              startBtnAnchorRef={heroBtnAnchorRef}
+              exploreBtnAnchorRef={heroExploreBtnAnchorRef}
+              onStartProject={() => scrollToSection('contact')}
+              onExplorePortfolio={navigateToProjects}
+              onExploreProjects={navigateToProjects}
+            />
 
-        {/* Section 02 & 03: Our Story & Philosophy */}
-        <OurStory />
+            {/* Section 02 & 03: Our Story & Philosophy */}
+            <OurStory />
 
-        {/* Section 04: What We Build / Engineering Capabilities */}
-        <ServicesSection
-          services={services}
-          onSelectService={handleSelectServiceForInquiry}
-        />
+            {/* Section 04: What We Build / Engineering Capabilities */}
+            <ServicesSection
+              services={services}
+              onSelectService={handleSelectServiceForInquiry}
+            />
 
-        {/* Section 06 & Appendix C: Flagship & Selected Portfolio Projects */}
-        <PortfolioSection
-          products={products}
-          onOpenCaseStudy={(prod) => setSelectedCaseStudy(prod)}
-        />
+            {/* Section 05: How We Work (Discovery to Delivery) */}
+            <ProcessSection />
 
-        {/* Section 05: How We Work (Discovery to Delivery) */}
-        <ProcessSection />
+            {/* Section 07: Global Vision */}
+            <GlobalVision
+              onStartProject={() => scrollToSection('contact')}
+            />
 
-        {/* Section 07: Global Vision */}
-        <GlobalVision
-          onStartProject={() => scrollToSection('contact')}
-        />
+            {/* Section 03: Stakeholders & Leadership */}
+            <LeadershipSection
+              team={team}
+            />
 
-        {/* Section 03: Stakeholders & Leadership */}
-        <LeadershipSection
-          team={team}
-        />
+            {/* Section 09 & 10.4: Partnership & 100% Allocation Philosophy */}
+            <PartnershipPhilosophy />
 
-        {/* Section 09 & 10.4: Partnership & 100% Allocation Philosophy */}
-        <PartnershipPhilosophy />
-
-        {/* Section 10: Let's Build Together (Project Inquiry) */}
-        <InquirySection
-          initialProjectType={inquiryDomain}
-        />
+            {/* Section 10: Let's Build Together (Project Inquiry) */}
+            <InquirySection
+              initialProjectType={inquiryDomain}
+            />
+          </>
+        )}
       </main>
 
       {/* Footer */}
       <Footer
-        onNavigate={scrollToSection}
+        onNavigate={handleNav}
       />
 
       {/* Deep-Dive Case Study Modal */}

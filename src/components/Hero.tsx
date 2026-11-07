@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 
 interface HeroProps {
   onStartProject?: () => void;
-  onExplorePortfolio: () => void;
+  onExplorePortfolio?: () => void;
+  onExploreProjects?: () => void;
   anchorRef?: React.RefObject<HTMLDivElement>;
   btnAnchorRef?: React.RefObject<HTMLDivElement>;
   startBtnAnchorRef?: React.RefObject<HTMLDivElement>;
@@ -12,6 +13,7 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({
   onStartProject,
   onExplorePortfolio,
+  onExploreProjects,
   anchorRef,
   btnAnchorRef,
   startBtnAnchorRef,

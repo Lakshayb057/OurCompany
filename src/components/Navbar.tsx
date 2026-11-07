@@ -8,6 +8,8 @@ interface NavbarProps {
   dockBtnRef?: React.RefObject<HTMLDivElement>;
   dockStartBtnRef?: React.RefObject<HTMLDivElement>;
   dockExploreBtnRef?: React.RefObject<HTMLDivElement>;
+  currentRoute?: 'home' | 'projects';
+  onLogoClick?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ 
@@ -16,7 +18,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleTheme,
   dockBtnRef,
   dockStartBtnRef,
-  dockExploreBtnRef
+  dockExploreBtnRef,
+  currentRoute = 'home',
+  onLogoClick
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
@@ -38,12 +42,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   // Dynamic glass opacity that smoothly materializes as user scrolls down and logo docks
-  const glassOpacity = Math.min(1, Math.max(0, (scrollY - 60) / 180));
+  // If on the dedicated projects page, navbar is always in docked glass state
+  const glassOpacity = currentRoute === 'projects' ? 1 : Math.min(1, Math.max(0, (scrollY - 60) / 180));
 
   const navItems = [
     { label: 'Our Story', target: 'story' },
     { label: 'Capabilities', target: 'services' },
-    { label: 'Portfolio', target: 'portfolio' },
+    { label: 'Projects', target: 'projects' },
     { label: 'How We Work', target: 'process' },
     { label: 'Leadership', target: 'leadership' },
     { label: 'Global Vision', target: 'global' },
@@ -78,15 +83,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               : 'bg-white/90 dark:bg-black/80 border border-purple-200 dark:border-white/15 shadow-lg shadow-purple-950/5 dark:shadow-black/50 py-2'
           }`}
         >
-          {navItems.map((item) => (
-            <button
-              key={item.target}
-              onClick={() => handleLinkClick(item.target)}
-              className="px-3.5 py-1.5 text-sm font-medium text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white transition-colors duration-200 rounded-full hover:bg-lavender-soft/70 dark:hover:bg-white/10"
-            >
-              {item.label}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const isActive = currentRoute === 'projects' && item.target === 'projects';
+            return (
+              <button
+                key={item.target}
+                onClick={() => handleLinkClick(item.target)}
+                className={`px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 rounded-full ${
+                  isActive
+                    ? 'bg-electric-purple text-white shadow-sm shadow-purple-500/30'
+                    : 'text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10'
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
 
           {/* Centered Dark/Light Mode Toggle */}
           {onToggleTheme && (
@@ -119,19 +131,31 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         )}
 
-        {/* Dock Target Anchor for "Start a Project" Button */}
-        <div 
-          ref={dockStartBtnRef ?? dockBtnRef}
-          className="h-9 w-[114px] sm:h-10 sm:w-[145px] pointer-events-none opacity-0 flex-shrink-0"
-          aria-hidden="true"
-        />
+        {/* If on dedicated Projects page, render a direct Start a Project button */}
+        {currentRoute === 'projects' ? (
+          <button
+            onClick={() => onNavigate('contact')}
+            className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-gradient-to-r from-electric-purple to-deep-violet text-white text-xs sm:text-sm font-semibold shadow-md shadow-purple-600/30 hover:shadow-purple-600/50 hover:scale-[1.02] transition-all"
+          >
+            Start a Project
+          </button>
+        ) : (
+          <>
+            {/* Dock Target Anchor for "Start a Project" Button */}
+            <div 
+              ref={dockStartBtnRef ?? dockBtnRef}
+              className="h-9 w-[114px] sm:h-10 sm:w-[145px] pointer-events-none opacity-0 flex-shrink-0"
+              aria-hidden="true"
+            />
 
-        {/* Dock Target Anchor for "Explore Projects" Button (just after Start a Project) */}
-        <div 
-          ref={dockExploreBtnRef}
-          className="h-9 w-[114px] sm:h-10 sm:w-[140px] pointer-events-none opacity-0 flex-shrink-0"
-          aria-hidden="true"
-        />
+            {/* Dock Target Anchor for "Explore Projects" Button (just after Start a Project) */}
+            <div 
+              ref={dockExploreBtnRef}
+              className="h-9 w-[114px] sm:h-10 sm:w-[140px] pointer-events-none opacity-0 flex-shrink-0"
+              aria-hidden="true"
+            />
+          </>
+        )}
 
         {/* Mobile Menu Button */}
         <div className="flex lg:hidden">
@@ -148,15 +172,22 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden fixed top-20 left-4 right-4 z-50 bg-white/95 dark:bg-midnight-900/95 border border-purple-200 dark:border-midnight-border rounded-2xl p-5 shadow-2xl backdrop-blur-xl space-y-3">
-          {navItems.map((item) => (
-            <button
-              key={item.target}
-              onClick={() => handleLinkClick(item.target)}
-              className="block w-full text-left py-2.5 px-4 text-sm font-semibold text-light-text dark:text-gray-300 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/60 dark:hover:bg-white/5 rounded-xl transition-colors"
-            >
-              {item.label}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const isActive = currentRoute === 'projects' && item.target === 'projects';
+            return (
+              <button
+                key={item.target}
+                onClick={() => handleLinkClick(item.target)}
+                className={`block w-full text-left py-2.5 px-4 text-sm font-semibold rounded-xl transition-colors ${
+                  isActive
+                    ? 'bg-electric-purple text-white'
+                    : 'text-light-text dark:text-gray-300 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/60 dark:hover:bg-white/5'
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
 
           {onToggleTheme && (
             <div className="pt-2 border-t border-purple-100 dark:border-midnight-border flex items-center justify-between px-2">

@@ -2,9 +2,15 @@ import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react'
 
 interface MorphingLogoProps {
   anchorRef: React.RefObject<HTMLDivElement>;
+  isAlwaysDocked?: boolean;
+  onLogoClick?: () => void;
 }
 
-export const MorphingLogo: React.FC<MorphingLogoProps> = ({ anchorRef }) => {
+export const MorphingLogo: React.FC<MorphingLogoProps> = ({ 
+  anchorRef,
+  isAlwaysDocked = false,
+  onLogoClick
+}) => {
   const [box, setBox] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
   const [scrollY, setScrollY] = useState(0);
   const [hasEntered, setHasEntered] = useState(false);
@@ -71,13 +77,10 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({ anchorRef }) => {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (!box) return null;
+  if (!box && !isAlwaysDocked) return null;
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
@@ -89,23 +92,23 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({ anchorRef }) => {
 
   // Progress from 0 (hero) to 1 (header docked) - calibrated to 340px for smoother, gradual flight
   const maxScroll = 340;
-  const rawP = Math.min(1, Math.max(0, scrollY / maxScroll));
+  const rawP = isAlwaysDocked ? 1 : Math.min(1, Math.max(0, scrollY / maxScroll));
 
   // Smooth sinusoidal S-curve
-  const p = 0.5 - Math.cos(rawP * Math.PI) / 2;
+  const p = isAlwaysDocked ? 1 : (0.5 - Math.cos(rawP * Math.PI) / 2);
 
   // Peak in-flight factor (0 at endpoints, 1 at midpoint)
-  const flight = Math.sin(rawP * Math.PI);
+  const flight = isAlwaysDocked ? 0 : Math.sin(rawP * Math.PI);
 
   // Once the logo arrives and aligns to the top-left, trigger the 3D "CodeVerse" emergence
-  const isDocked = rawP >= 0.94;
+  const isDocked = isAlwaysDocked || rawP >= 0.94;
 
   // Interpolated position and dimensions for the ribbon logo
-  const heroCurrentY = box.y - scrollY;
-  const currentX = box.x * (1 - p) + targetX * p;
-  const currentY = heroCurrentY * (1 - p) + targetY * p;
-  const currentW = box.width * (1 - p) + targetW * p;
-  const currentH = box.height * (1 - p) + targetH * p;
+  const heroCurrentY = box ? box.y - scrollY : targetY;
+  const currentX = (box && !isAlwaysDocked) ? box.x * (1 - p) + targetX * p : targetX;
+  const currentY = (box && !isAlwaysDocked) ? heroCurrentY * (1 - p) + targetY * p : targetY;
+  const currentW = (box && !isAlwaysDocked) ? box.width * (1 - p) + targetW * p : targetW;
+  const currentH = (box && !isAlwaysDocked) ? box.height * (1 - p) + targetH * p : targetH;
 
   // Smooth 3D rotations and perspective elevation during flight
   const rotateY = flight * -22;
@@ -114,7 +117,11 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({ anchorRef }) => {
   const translateZ = flight * 48;
 
   const handleLogoClick = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (onLogoClick) {
+      onLogoClick();
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   // Subtle natural drop-shadow on the 3D transparent ribbon itself during flight
@@ -145,7 +152,7 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({ anchorRef }) => {
         willChange: 'transform, left, top, opacity',
       }}
       className="select-none group focus:outline-none bg-transparent border-0 p-0 shadow-none"
-      title="CodeVerse Home - Scroll to top"
+      title={isAlwaysDocked ? "CodeVerse - Return to Home" : "CodeVerse Home - Scroll to top"}
       aria-label="CodeVerse Home"
       role="button"
       tabIndex={0}
@@ -178,30 +185,29 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({ anchorRef }) => {
       {/* 2. The 3D Animated "CodeVerse" Word (Substantially enlarged font size) */}
       <div
         style={{
-          perspective: '800px',
-          transformStyle: 'preserve-3d',
+          display: 'flex',
+          alignItems: 'center',
+          overflow: 'hidden',
+          width: isDocked ? 'auto' : '0px',
+          opacity: isDocked ? 1 : 0,
+          transform: isDocked 
+            ? 'perspective(600px) translate3d(0, 0, 0) rotateY(0deg) scale(1)' 
+            : 'perspective(600px) translate3d(-32px, 0, -25px) rotateY(32deg) scale(0.85)',
+          transformOrigin: 'left center',
+          transition: 'width 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
+          pointerEvents: isDocked ? 'auto' : 'none',
+          marginLeft: isDocked ? (isMobile ? '4px' : '8px') : '0px',
         }}
-        className={`flex items-center overflow-hidden transition-all ease-out ${isDocked
-          ? 'max-w-[320px] opacity-100 ml-2.5 sm:ml-3.5 pointer-events-auto duration-700 delay-100'
-          : 'max-w-0 opacity-0 ml-0 pointer-events-none duration-300 delay-0'
-          }`}
+        className="font-extrabold tracking-tight select-none"
       >
-        <div
-          className="flex items-center tracking-tight select-none py-1 transition-transform duration-700 ease-out"
+        <span 
           style={{
-            transform: isDocked
-              ? 'perspective(600px) rotateY(0deg) translateZ(0px) scale(1)'
-              : 'perspective(600px) rotateY(-75deg) translateZ(-40px) scale(0.85)',
-            transformOrigin: 'left center',
+            textShadow: '0 2px 14px rgba(124, 44, 245, 0.22)',
           }}
+          className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-light-text via-electric-purple to-deep-violet dark:from-white dark:via-lavender-light dark:to-electric-light bg-clip-text text-transparent tracking-tight whitespace-nowrap"
         >
-          <span className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">
-            Code
-          </span>
-          <span className="text-2xl sm:text-3xl lg:text-[34px] font-black tracking-tight bg-gradient-to-r from-electric-purple via-lavender-glow to-deep-violet bg-clip-text text-transparent leading-none">
-            Verse
-          </span>
-        </div>
+          CodeVerse
+        </span>
       </div>
     </div>
   );
