@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Linkedin, ChevronDown, Users, Shield, Check } from 'lucide-react';
+import { Linkedin, Shield, Check } from 'lucide-react';
 import { TeamMember } from '../types';
 
 interface LeadershipSectionProps {
@@ -7,7 +7,6 @@ interface LeadershipSectionProps {
 }
 
 export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) => {
-  const [showOrgTree, setShowOrgTree] = useState(false);
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
 
   return (
@@ -22,69 +21,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
           <p className="text-light-subtext dark:text-muted-gray text-base leading-relaxed">
             A cohesive multidisciplinary executive team uniting strategic direction, technical architecture, operations, and global growth.
           </p>
-
-          <div className="pt-2">
-            <button
-              onClick={() => setShowOrgTree(!showOrgTree)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-midnight-border hover:border-electric-purple text-xs font-mono text-electric-purple dark:text-lavender-light transition-all shadow-sm font-semibold"
-            >
-              <Users className="w-4 h-4 text-electric-purple" />
-              <span>{showOrgTree ? 'Hide Organizational Matrix' : 'View Organizational Structure Visual'}</span>
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showOrgTree ? 'rotate-180' : ''}`} />
-            </button>
-          </div>
         </div>
-
-        {/* Organizational Hierarchy Visual (Expandable) */}
-        {showOrgTree && (
-          <div className="mb-16 p-8 rounded-2xl glass-panel border border-purple-200 dark:border-electric-purple/30 shadow-lg animate-fadeIn">
-            <div className="text-center mb-6">
-              <span className="text-xs uppercase font-mono tracking-widest text-electric-purple dark:text-lavender-glow font-bold">
-                Corporate Governance & Reporting Topology
-              </span>
-            </div>
-
-            <div className="flex flex-col items-center gap-6">
-              {/* Board Level */}
-              <div className="flex flex-wrap justify-center gap-4">
-                <div className="p-3.5 rounded-xl bg-white dark:bg-midnight-card border border-electric-purple text-center min-w-[200px] shadow-md">
-                  <div className="text-xs font-mono text-electric-purple dark:text-lavender-glow font-bold">Board Director #1 & Founder</div>
-                  <div className="text-sm font-bold text-light-text dark:text-white mt-0.5">Lakshay</div>
-                  <div className="text-[10px] text-light-subtext dark:text-muted-gray">Vision & Ownership</div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white dark:bg-midnight-card border border-purple-300 dark:border-electric-purple/60 text-center min-w-[200px] shadow-sm">
-                  <div className="text-xs font-mono text-electric-purple dark:text-lavender-glow font-bold">Board Director #2</div>
-                  <div className="text-sm font-bold text-light-text dark:text-white mt-0.5">Ishita Malhotra</div>
-                  <div className="text-[10px] text-light-subtext dark:text-muted-gray">Strategic Governance</div>
-                </div>
-              </div>
-
-              {/* Connecting line */}
-              <div className="h-6 w-0.5 bg-gradient-to-b from-electric-purple to-lavender-glow" />
-
-              {/* Executive Level */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl">
-                <div className="p-3.5 rounded-xl bg-white dark:bg-midnight-card border border-light-border dark:border-midnight-border text-center shadow-sm">
-                  <div className="text-xs font-mono text-electric-purple dark:text-electric-light font-bold">Co-Founder & CTO</div>
-                  <div className="text-sm font-bold text-light-text dark:text-white mt-0.5">Parth Sharma</div>
-                  <div className="text-[10px] text-light-subtext dark:text-muted-gray">Technical Delivery</div>
-                </div>
-
-                <div className="p-3.5 rounded-xl bg-white dark:bg-midnight-card border border-light-border dark:border-midnight-border text-center shadow-sm">
-                  <div className="text-xs font-mono text-electric-purple dark:text-electric-light font-bold">Co-Founder & COO</div>
-                  <div className="text-sm font-bold text-light-text dark:text-white mt-0.5">Diya Maheshwari</div>
-                  <div className="text-[10px] text-light-subtext dark:text-muted-gray">Operations & Process</div>
-                </div>
-
-                <div className="p-3.5 rounded-xl bg-white dark:bg-midnight-card border border-light-border dark:border-midnight-border text-center shadow-sm">
-                  <div className="text-xs font-mono text-electric-purple dark:text-electric-light font-bold">Chief Growth Officer</div>
-                  <div className="text-sm font-bold text-light-text dark:text-white mt-0.5">Suryansh Thakur</div>
-                  <div className="text-[10px] text-light-subtext dark:text-muted-gray">Growth & Partnerships</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Leadership Profile Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
