@@ -28,7 +28,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
           {team.map((member) => (
             <div
               key={member.id}
-              className="relative rounded-3xl overflow-hidden group transition-all duration-500 shadow-md hover:shadow-2xl hover:-translate-y-1 border border-purple-200/80 dark:border-white/10 hover:border-electric-purple/80 dark:hover:border-electric-purple/60 flex flex-col justify-between min-h-[560px] sm:min-h-[600px] bg-white dark:bg-midnight-card"
+              className="relative rounded-3xl overflow-hidden group transition-all duration-500 shadow-md hover:shadow-2xl hover:-translate-y-1 border border-purple-200/80 dark:border-white/10 hover:border-electric-purple/80 dark:hover:border-electric-purple/60 flex flex-col justify-between min-h-[480px] sm:min-h-[520px] bg-white dark:bg-midnight-card"
             >
               {/* 1. Full Container Background Image Layer */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -81,7 +81,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                 )}
               </div>
 
-              {/* 3. Bottom Content Block: Name, Role, Primary Responsibility, Bio, Status (Over Background) */}
+              {/* 3. Bottom Content Block: Name, Role, Primary Responsibility, Status (Over Background) */}
               <div className="relative z-10 p-6 sm:p-7 pt-0 flex flex-col justify-end">
                 {/* Name & Designation */}
                 <div>
@@ -103,11 +103,6 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                     {member.primaryResponsibility}
                   </p>
                 </div>
-
-                {/* Approved Bio */}
-                <p className="text-xs sm:text-sm text-light-subtext dark:text-gray-300 leading-relaxed mt-4 drop-shadow-sm">
-                  {member.bio}
-                </p>
 
                 {/* Verified Stakeholder Status Bar */}
                 <div className="pt-4 mt-5 border-t border-purple-200/50 dark:border-white/10 flex items-center justify-between text-xs font-mono text-light-subtext dark:text-muted-gray">

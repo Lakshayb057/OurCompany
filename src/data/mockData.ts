@@ -256,10 +256,10 @@ export const INITIAL_TEAM: TeamMember[] = [
   {
     id: "tm-01",
     name: "Lakshay",
-    designation: "Founder & Board Director #1",
-    role: "Founder & Strategy",
+    designation: "Founder, Strategy & Tech",
+    role: "Founder, Strategy & Tech",
     primaryResponsibility: "Vision, leadership, strategy, product ownership, and 0-to-1 engineering.",
-    bio: "Founded CodeVerse with the conviction that ambitious engineering, disciplined execution, and modern architectures transform complex challenges into scalable digital realities. Spearheads organizational strategy, product incubation, and enterprise client partnerships.",
+    bio: "",
     avatar: "/lakshay.jpeg",
     linkedin: "https://linkedin.com/in/lakshay-codeverse"
   },
@@ -269,7 +269,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     designation: "Co-Founder & CTO",
     role: "Technology & Architecture",
     primaryResponsibility: "Technology architecture, cloud infrastructure, engineering standards, and technical delivery.",
-    bio: "Directs CodeVerse's technical roadmap, distributed cloud topologies, and high-concurrency real-time engines. Specializes in scalable backend pipelines, WebSocket event orchestration, and resilient fault-tolerant systems.",
+    bio: "",
     avatar: "/Parth.jpeg",
     linkedin: "https://linkedin.com/in/parth-codeverse"
   },
@@ -279,7 +279,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     designation: "Co-Founder & COO",
     role: "Operations & Execution",
     primaryResponsibility: "Operations, project execution, agile methodologies, and client delivery governance.",
-    bio: "Drives operational excellence, delivery timelines, and cross-functional project execution across all engineering streams. Ensures strict quality benchmarks and milestone compliance from discovery to cloud deployment.",
+    bio: "",
     avatar: "/Diya.jpg",
     linkedin: "https://linkedin.com/in/diya-codeverse"
   },
@@ -289,7 +289,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     designation: "Board Director #2",
     role: "Corporate Governance & Oversight",
     primaryResponsibility: "Corporate governance, strategic policy decisions, risk management, and organizational oversight.",
-    bio: "Provides strategic governance, institutional oversight, and risk evaluation across CodeVerse's enterprise client contracts and proprietary technology R&D initiatives.",
+    bio: "",
     avatar: "/ishita.jpeg",
     linkedin: "https://linkedin.com/in/ishita-codeverse"
   },
@@ -299,7 +299,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     designation: "Chief Growth Officer",
     role: "Growth & Partnerships",
     primaryResponsibility: "Business development, international client acquisition, growth marketing, and strategic partnerships.",
-    bio: "Leads market expansion, international partner relations, and commercial development for CodeVerse's global delivery footprint. Champions business development across enterprise and startup ecosystems.",
+    bio: "",
     avatar: "/suryansh.jpeg",
     linkedin: "https://linkedin.com/in/suryansh-codeverse"
   }
