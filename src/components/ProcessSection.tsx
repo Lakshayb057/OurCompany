@@ -122,7 +122,7 @@ export const ProcessSection: React.FC = () => {
         <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col h-full justify-between min-h-0">
           
           {/* Section Header - Perfectly aligned with other sections with one-line explanation */}
-          <div className="max-w-3xl mx-auto text-center space-y-2.5 mb-4 sm:mb-7 flex-shrink-0">
+          <div className="max-w-3xl mx-auto text-center space-y-2 mt-4 sm:mt-7 mb-1.5 sm:mb-2.5 flex-shrink-0">
             <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
               Discovery-to-Delivery <span className="text-gradient-purple">Process</span>
             </h2>
