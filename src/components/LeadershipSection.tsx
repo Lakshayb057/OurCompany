@@ -165,7 +165,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                   marginRight: 'var(--gap)',
                   flexShrink: 0,
                 }}
-                className={`relative rounded-3xl overflow-hidden transition-all duration-700 ease-out select-none min-h-[580px] sm:min-h-[640px] lg:min-h-[670px] bg-slate-100 dark:bg-midnight-card ${
+                className={`relative rounded-3xl overflow-hidden transition-all duration-700 ease-out select-none min-h-[490px] sm:min-h-[520px] lg:min-h-[540px] bg-slate-100 dark:bg-midnight-card ${
                   isActive
                     ? 'scale-100 opacity-100 z-20 shadow-[0_20px_50px_rgba(124,44,245,0.22)] ring-2 ring-purple-500/80 dark:ring-electric-purple/90 border-2 border-purple-400 dark:border-electric-purple'
                     : 'scale-[0.88] sm:scale-[0.91] opacity-45 hover:opacity-85 z-10 hover:scale-[0.93] cursor-pointer shadow-md border border-purple-200/60 dark:border-white/10'
@@ -191,17 +191,17 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                   {/* 
                     Theme-Adaptive Gradient Overlays:
                     Keeps the entire upper 60%+ of the portrait completely unshaded and 100% visible,
-                    while gently fading only behind the bottom text to guarantee readability.
+                    while gently fading only behind the bottom dock to guarantee contrast.
                   */}
                   {/* Light Mode Scrim */}
-                  <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-white via-white/85 via-25% to-transparent to-50%" />
+                  <div className="dark:hidden absolute inset-0 bg-gradient-to-t from-white/90 via-white/60 via-30% to-transparent to-55%" />
 
                   {/* Dark Mode Scrim */}
-                  <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-midnight-950 via-midnight-950/90 via-25% to-transparent to-50%" />
+                  <div className="hidden dark:block absolute inset-0 bg-gradient-to-t from-midnight-950 via-midnight-950/80 via-30% to-transparent to-55%" />
                 </div>
 
                 {/* 2. Top Bar: Floating Stream Tag & LinkedIn (Over Background) */}
-                <div className="relative z-10 p-6 sm:p-7 flex items-center justify-between gap-3">
+                <div className="relative z-10 p-5 sm:p-6 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-purple-200/90 dark:border-white/20 text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow shadow-md">
                       {member.role.split(' ')[0]}
@@ -225,27 +225,34 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                   )}
                 </div>
 
-                {/* 3. Bottom Content Block: Name, Designation & Primary Responsibility (Over Background) */}
-                <div className="relative z-10 p-6 sm:p-7 pt-0 flex flex-col justify-end">
-                  {/* Name & Designation with High-Contrast Drop Shadow */}
-                  <div>
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-light-text dark:text-white tracking-tight drop-shadow-[0_2px_10px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors">
-                      {member.name}
-                    </h3>
-                    <div className="text-xs sm:text-sm font-mono text-purple-700 dark:text-lavender-glow mt-1 font-bold drop-shadow-sm">
-                      {member.designation}
+                {/* 3. Bottom Content Dock: Cleanly Organized in Frosted Glass Panel */}
+                <div className="relative z-10 p-4 sm:p-5 flex flex-col justify-end">
+                  <div className="rounded-2xl p-4 sm:p-4.5 bg-white/92 dark:bg-black/80 backdrop-blur-md border border-purple-200/80 dark:border-white/15 shadow-lg group-hover:border-electric-purple/50 transition-all duration-300">
+                    
+                    {/* Name & Designation Header */}
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-black text-light-text dark:text-white tracking-tight leading-tight group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors truncate">
+                        {member.name}
+                      </h3>
+                      <div className="text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow mt-0.5">
+                        {member.designation}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Primary Responsibility Frosted Badge */}
-                  <div className="p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-black/75 backdrop-blur-md border border-purple-200/90 dark:border-white/15 shadow-md mt-4">
-                    <div className="text-[10px] font-mono uppercase tracking-wider text-electric-purple dark:text-lavender-glow mb-1 flex items-center gap-1.5 font-bold">
-                      <Shield className="w-3.5 h-3.5 text-electric-purple" />
-                      <span>Primary Responsibility</span>
+                    {/* Subtle Divider */}
+                    <div className="h-[1px] w-full bg-gradient-to-r from-purple-200/80 via-purple-300/40 to-transparent dark:from-white/15 dark:via-white/5 dark:to-transparent my-2.5" />
+
+                    {/* Primary Responsibility */}
+                    <div>
+                      <div className="text-[10px] font-mono uppercase tracking-wider text-light-subtext dark:text-gray-400 font-bold flex items-center gap-1.5 mb-1">
+                        <Shield className="w-3.5 h-3.5 text-electric-purple" />
+                        <span>Primary Responsibility</span>
+                      </div>
+                      <p className="text-xs sm:text-[13px] text-light-text dark:text-gray-200 font-medium leading-snug">
+                        {member.primaryResponsibility}
+                      </p>
                     </div>
-                    <p className="text-xs sm:text-[13px] text-light-text dark:text-gray-100 font-semibold leading-relaxed">
-                      {member.primaryResponsibility}
-                    </p>
+
                   </div>
                 </div>
               </div>
