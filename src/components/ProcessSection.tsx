@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Layout, Zap, Shield, Rocket, Check, ChevronDown } from 'lucide-react';
+import { Search, Layout, Zap, Shield, Rocket, Check } from 'lucide-react';
 
 export const ProcessSection: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -115,26 +115,11 @@ export const ProcessSection: React.FC = () => {
       <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col justify-center h-full max-h-[92vh]">
           
-          {/* Section Compact Header */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5 sm:mb-8 flex-shrink-0">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-electric-purple/10 dark:bg-electric-purple/20 border border-electric-purple/20 text-electric-purple dark:text-lavender-glow text-xs font-semibold uppercase tracking-wider mb-2">
-                Engineering Lifecycle
-              </div>
-              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-light-text dark:text-white">
-                Discovery-to-Delivery <span className="text-gradient-purple">Process</span>
-              </h2>
-            </div>
-
-            {/* Scrub status pill */}
-            <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-midnight-card/80 backdrop-blur-md border border-light-border dark:border-midnight-border text-xs font-medium text-light-subtext dark:text-muted-gray shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Scroll to scrub stages</span>
-              <span className="text-light-text dark:text-white font-mono font-bold">
-                {activeStep + 1}/5
-              </span>
-              <ChevronDown className="w-3.5 h-3.5 animate-bounce text-electric-purple ml-0.5" />
-            </div>
+          {/* Section Header */}
+          <div className="mb-5 sm:mb-8 flex-shrink-0">
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-light-text dark:text-white">
+              Discovery-to-Delivery <span className="text-gradient-purple">Process</span>
+            </h2>
           </div>
 
           {/* Main 2-Column Split: Unified Single Container (Left) + Visual Showcase (Right) */}
@@ -232,20 +217,6 @@ export const ProcessSection: React.FC = () => {
                       {/* Atmospheric Gradients */}
                       <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/80 via-black/30 to-transparent pointer-events-none" />
                       <div className="absolute inset-x-0 bottom-0 h-40 sm:h-52 bg-gradient-to-t from-black/95 via-black/70 to-transparent pointer-events-none" />
-
-                      {/* Pinned Top Badges */}
-                      <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 flex items-center justify-between pointer-events-none">
-                        <div className="px-3 py-1 rounded-full bg-white/90 dark:bg-midnight-950/85 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-lg flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                          <span className="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white font-mono">
-                            Stage {step.num}/05
-                          </span>
-                        </div>
-
-                        <div className="px-2.5 sm:px-3 py-1 rounded-full bg-electric-purple/90 backdrop-blur-md text-white text-[11px] sm:text-xs font-semibold shadow-md">
-                          {step.shortTitle}
-                        </div>
-                      </div>
 
                       {/* Bottom Overlay Info */}
                       <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 space-y-2 pointer-events-none">
