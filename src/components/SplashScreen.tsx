@@ -15,13 +15,12 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
-  // Guard to ensure choreography runs strictly once and cannot be reset or duplicated
-  const hasStartedRef = useRef(false);
+  const handleFinish = () => {
+    setPhase('done');
+    onCompleteRef.current?.();
+  };
 
   useEffect(() => {
-    if (hasStartedRef.current) return;
-    hasStartedRef.current = true;
-
     // Precise choreography of the cinematic 3D sequence (~2.2s total duration)
     const t0 = setTimeout(() => setPhase('logo-enter'), 40);
     const t1 = setTimeout(() => setPhase('text-emerge'), 540);
@@ -29,8 +28,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
     const t3 = setTimeout(() => setPhase('text-retract'), 1480);
     const t4 = setTimeout(() => setPhase('logo-morph'), 1860);
     const t5 = setTimeout(() => {
-      setPhase('done');
-      onCompleteRef.current?.();
+      handleFinish();
     }, 2250);
 
     return () => {
@@ -41,7 +39,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
       clearTimeout(t4);
       clearTimeout(t5);
     };
-  }, []); // Run strictly once on mount
+  }, []); // Run on mount
 
   const codeLetters = ['C', 'o', 'd', 'e'];
   const verseLetters = ['V', 'e', 'r', 's', 'e'];

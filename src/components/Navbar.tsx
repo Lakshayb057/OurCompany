@@ -83,22 +83,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               : 'bg-white/90 dark:bg-black/80 border border-purple-200 dark:border-white/15 shadow-lg shadow-purple-950/5 dark:shadow-black/50 py-2'
           }`}
         >
-          {navItems.map((item) => {
-            const isActive = currentRoute === 'projects' && item.target === 'projects';
-            return (
-              <button
-                key={item.target}
-                onClick={() => handleLinkClick(item.target)}
-                className={`px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 rounded-full ${
-                  isActive
-                    ? 'bg-electric-purple text-white shadow-sm shadow-purple-500/30'
-                    : 'text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10'
-                }`}
-              >
-                {item.label}
-              </button>
-            );
-          })}
+          {navItems.map((item) => (
+            <button
+              key={item.target}
+              onClick={() => handleLinkClick(item.target)}
+              className="px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 rounded-full text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10"
+            >
+              {item.label}
+            </button>
+          ))}
 
           {/* Centered Dark/Light Mode Toggle */}
           {onToggleTheme && (
@@ -172,22 +165,15 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden fixed top-20 left-4 right-4 z-50 bg-white/95 dark:bg-midnight-900/95 border border-purple-200 dark:border-midnight-border rounded-2xl p-5 shadow-2xl backdrop-blur-xl space-y-3">
-          {navItems.map((item) => {
-            const isActive = currentRoute === 'projects' && item.target === 'projects';
-            return (
-              <button
-                key={item.target}
-                onClick={() => handleLinkClick(item.target)}
-                className={`block w-full text-left py-2.5 px-4 text-sm font-semibold rounded-xl transition-colors ${
-                  isActive
-                    ? 'bg-electric-purple text-white'
-                    : 'text-light-text dark:text-gray-300 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/60 dark:hover:bg-white/5'
-                }`}
-              >
-                {item.label}
-              </button>
-            );
-          })}
+          {navItems.map((item) => (
+            <button
+              key={item.target}
+              onClick={() => handleLinkClick(item.target)}
+              className="block w-full text-left py-2.5 px-4 text-sm font-semibold rounded-xl transition-colors text-light-text dark:text-gray-300 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/60 dark:hover:bg-white/5"
+            >
+              {item.label}
+            </button>
+          ))}
 
           {onToggleTheme && (
             <div className="pt-2 border-t border-purple-100 dark:border-midnight-border flex items-center justify-between px-2">
