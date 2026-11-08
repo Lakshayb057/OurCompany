@@ -61,8 +61,7 @@ export const App: React.FC = () => {
   const [currentRoute, setCurrentRoute] = useState<'home' | 'projects'>(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname;
-      const hash = window.location.hash;
-      if (path === '/projects' || hash === '#projects') {
+      if (path === '/projects') {
         return 'projects';
       }
     }
@@ -80,10 +79,16 @@ export const App: React.FC = () => {
       const isAdmin = path === '/admin' || hash === '#admin';
       setIsAdminOpen(isAdmin);
 
-      if (path === '/projects' || hash === '#projects') {
+      if (path === '/projects') {
         setCurrentRoute('projects');
       } else if (!isAdmin) {
         setCurrentRoute('home');
+        if (hash) {
+          const targetId = hash.replace('#', '');
+          setTimeout(() => {
+            scrollToSection(targetId);
+          }, 80);
+        }
       }
     };
 
@@ -124,9 +129,7 @@ export const App: React.FC = () => {
   };
 
   const handleNav = (target: string) => {
-    if (target === 'projects' || target === 'portfolio') {
-      navigateToProjects();
-    } else if (currentRoute === 'projects') {
+    if (currentRoute === 'projects') {
       navigateToHome(target);
     } else {
       scrollToSection(target);
@@ -236,7 +239,7 @@ export const App: React.FC = () => {
           heroExploreAnchorRef={heroExploreBtnAnchorRef}
           dockExploreAnchorRef={navbarExploreBtnDockRef}
           onStartProject={() => scrollToSection('contact')}
-          onExploreProjects={navigateToProjects}
+          onExploreProjects={() => scrollToSection('projects')}
         />
       )}
 
@@ -260,8 +263,8 @@ export const App: React.FC = () => {
               startBtnAnchorRef={heroBtnAnchorRef}
               exploreBtnAnchorRef={heroExploreBtnAnchorRef}
               onStartProject={() => scrollToSection('contact')}
-              onExplorePortfolio={navigateToProjects}
-              onExploreProjects={navigateToProjects}
+              onExplorePortfolio={() => scrollToSection('projects')}
+              onExploreProjects={() => scrollToSection('projects')}
             />
 
             {/* Section 02 & 03: Our Story & Philosophy */}
@@ -271,6 +274,13 @@ export const App: React.FC = () => {
             <ServicesSection
               services={services}
               onSelectService={handleSelectServiceForInquiry}
+            />
+
+            {/* Section 04.5: Top 6 Flagship Projects (Appendix C) */}
+            <PortfolioSection
+              products={products}
+              onOpenCaseStudy={(prod) => setSelectedCaseStudy(prod)}
+              onViewAllProjects={navigateToProjects}
             />
 
             {/* Section 05: How We Work (Discovery to Delivery) */}
