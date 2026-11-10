@@ -1,5 +1,5 @@
-import React from 'react';
-import { Github, ArrowUpRight, BookOpen, ArrowRight } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Github, ArrowUpRight, BookOpen, ArrowRight, Play, Volume2, VolumeX, Image as ImageIcon } from 'lucide-react';
 import { Product } from '../types';
 
 interface PortfolioSectionProps {
@@ -10,13 +10,13 @@ interface PortfolioSectionProps {
 }
 
 const PROJECT_IMAGES: Record<string, string> = {
-  'prod-01': '/services/cloud-systems.jpg',
+  'prod-01': '/universe-banner.jpg',
   'prod-02': '/services/ai-agents.jpg',
   'prod-03': '/services/institutional-erp.jpg',
   'prod-04': '/services/crm-automation.jpg',
   'prod-05': '/services/campus-marketplaces.jpg',
   'prod-06': '/services/agri-commerce.jpg',
-  'universe': '/services/cloud-systems.jpg',
+  'universe': '/universe-banner.jpg',
   'chatleads-ai': '/services/ai-agents.jpg',
   'abv-skillport': '/services/institutional-erp.jpg',
   'nexus-crm': '/services/crm-automation.jpg',
@@ -32,6 +32,11 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
 }) => {
   // Take top 2 projects to feature prominently
   const displayProducts = products.slice(0, 2);
+
+  // UniVerse Interactive Media state (seamlessly toggle between Video & High-Res Banner)
+  const [universeMediaMode, setUniverseMediaMode] = useState<'video' | 'photo'>('video');
+  const [isVideoMuted, setIsVideoMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
     <section id="projects" className="scroll-mt-12 sm:scroll-mt-16 py-24 relative overflow-hidden bg-light-100/50 dark:bg-midnight-900/40 transition-colors duration-300">
@@ -57,6 +62,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
         {/* Portfolio Cards Grid (2 Featured Flagship Projects) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {displayProducts.map((prod) => {
+            const isUniverse = prod.slug === 'universe' || prod.id === 'prod-01' || prod.name.toLowerCase().includes('universe');
             const imgSrc = PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || '/services/cloud-systems.jpg';
 
             return (
@@ -64,14 +70,86 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                 key={prod.id}
                 className="glass-card-interactive rounded-2xl flex flex-col justify-between overflow-hidden group border border-purple-100 dark:border-midnight-border/80 shadow-md hover:shadow-xl transition-all"
               >
-                {/* Card Header Image Preview */}
-                <div className="relative h-44 sm:h-48 w-full overflow-hidden bg-slate-100 dark:bg-midnight-800">
-                  <img
-                    src={imgSrc}
-                    alt={prod.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                {/* Card Header Media Preview */}
+                <div className="relative h-48 sm:h-56 w-full overflow-hidden bg-slate-900 group/media">
+                  {isUniverse ? (
+                    <>
+                      {/* Media Mode Toggle Pills (Demo Video & Banner) */}
+                      <div className="absolute top-3 right-3 z-30 flex items-center bg-black/70 backdrop-blur-md p-1 rounded-full border border-white/20 shadow-lg">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setUniverseMediaMode('video');
+                          }}
+                          className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                            universeMediaMode === 'video'
+                              ? 'bg-electric-purple text-white shadow-md'
+                              : 'text-white/75 hover:text-white'
+                          }`}
+                        >
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>Video</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setUniverseMediaMode('photo');
+                          }}
+                          className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                            universeMediaMode === 'photo'
+                              ? 'bg-electric-purple text-white shadow-md'
+                              : 'text-white/75 hover:text-white'
+                          }`}
+                        >
+                          <ImageIcon className="w-3 h-3" />
+                          <span>Banner</span>
+                        </button>
+                      </div>
+
+                      {/* Video Player or Photo Banner */}
+                      {universeMediaMode === 'video' ? (
+                        <div className="relative w-full h-full">
+                          <video
+                            ref={videoRef}
+                            src="/universe_video.mp4"
+                            poster="/universe-banner.jpg"
+                            autoPlay
+                            loop
+                            muted={isVideoMuted}
+                            playsInline
+                            className="w-full h-full object-cover"
+                          />
+                          {/* Audio Mute/Unmute Toggle */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsVideoMuted(!isVideoMuted);
+                            }}
+                            className="absolute bottom-3 right-3 z-30 p-2 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md text-white border border-white/20 transition-all shadow-md cursor-pointer"
+                            title={isVideoMuted ? "Unmute Video" : "Mute Video"}
+                          >
+                            {isVideoMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-electric-purple" />}
+                          </button>
+                        </div>
+                      ) : (
+                        <img
+                          src="/universe-banner.jpg"
+                          alt={prod.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <img
+                      src={imgSrc}
+                      alt={prod.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
                 </div>
 
                 <div className="p-6 sm:p-7 space-y-5 flex-1 flex flex-col justify-between">
@@ -85,11 +163,6 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                         {prod.subtitle}
                       </div>
                     </div>
-
-                    {/* Tagline */}
-                    <p className="text-xs sm:text-sm text-light-subtext dark:text-muted-gray leading-relaxed min-h-[40px]">
-                      {prod.tagline}
-                    </p>
 
                     {/* Impact Metrics Row */}
                     <div className="grid grid-cols-2 gap-2 pt-2">
