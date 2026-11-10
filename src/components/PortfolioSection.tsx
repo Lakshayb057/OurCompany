@@ -1,11 +1,12 @@
 import React from 'react';
-import { Github, ArrowUpRight, BookOpen, Layers, ArrowRight } from 'lucide-react';
+import { Github, ArrowUpRight, BookOpen, Layers, ArrowRight, Sparkles } from 'lucide-react';
 import { Product } from '../types';
 
 interface PortfolioSectionProps {
   products: Product[];
   onOpenCaseStudy: (product: Product) => void;
   onViewAllProjects?: () => void;
+  onViewAllServices?: () => void;
 }
 
 const PROJECT_IMAGES: Record<string, string> = {
@@ -26,10 +27,11 @@ const PROJECT_IMAGES: Record<string, string> = {
 export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ 
   products, 
   onOpenCaseStudy,
-  onViewAllProjects 
+  onViewAllProjects,
+  onViewAllServices 
 }) => {
-  // Take top 6 projects to feature prominently
-  const displayProducts = products.slice(0, 6);
+  // Take top 2 projects to feature prominently
+  const displayProducts = products.slice(0, 2);
 
   return (
     <section id="projects" className="scroll-mt-12 sm:scroll-mt-16 py-24 relative overflow-hidden bg-light-100/50 dark:bg-midnight-900/40 transition-colors duration-300">
@@ -52,8 +54,8 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
           </p>
         </div>
 
-        {/* Portfolio Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Portfolio Cards Grid (2 Featured Flagship Projects) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {displayProducts.map((prod) => {
             const imgSrc = PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || '/services/cloud-systems.jpg';
 
@@ -164,19 +166,31 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
           })}
         </div>
 
-        {/* View All Projects CTA */}
-        {onViewAllProjects && (
-          <div className="mt-14 text-center">
-            <button
-              onClick={onViewAllProjects}
-              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-white dark:bg-midnight-card border border-purple-200 dark:border-electric-purple/30 text-sm font-semibold text-electric-purple dark:text-lavender-glow hover:bg-lavender-soft/60 dark:hover:bg-white/10 shadow-sm hover:shadow-md transition-all group"
-            >
-              <Layers className="w-4 h-4 text-electric-purple" />
-              <span>Explore All Projects with Domain Categories & Search</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        )}
+        {/* 2 Action Buttons: Explore All Projects & Explore All Services */}
+        <div className="mt-14 flex flex-wrap items-center justify-center gap-4 sm:gap-5">
+          {/* Button 1: Explore All Projects */}
+          <button
+            onClick={onViewAllProjects}
+            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-electric-purple to-deep-violet text-white text-sm font-semibold shadow-lg shadow-purple-600/30 hover:shadow-purple-600/50 hover:scale-[1.02] active:scale-[0.98] transition-all group cursor-pointer"
+          >
+            <Layers className="w-4.5 h-4.5 text-white" />
+            <span>Explore All Projects</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          {/* Button 2: Explore All Services */}
+          <button
+            onClick={onViewAllServices || (() => {
+              const el = document.getElementById('services');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            })}
+            className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-2xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-white/15 text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-light hover:border-electric-purple hover:bg-lavender-soft/40 dark:hover:bg-white/5 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all group cursor-pointer"
+          >
+            <Sparkles className="w-4.5 h-4.5 text-electric-purple" />
+            <span>Explore All Services</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
 
       </div>
     </section>

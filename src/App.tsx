@@ -276,11 +276,12 @@ export const App: React.FC = () => {
               onSelectService={handleSelectServiceForInquiry}
             />
 
-            {/* Section 04.5: Top 6 Flagship Projects (Appendix C) */}
+            {/* Section 04.5: Top Flagship Projects (Appendix C) */}
             <PortfolioSection
               products={products}
               onOpenCaseStudy={(prod) => setSelectedCaseStudy(prod)}
               onViewAllProjects={navigateToProjects}
+              onViewAllServices={() => scrollToSection('services')}
             />
 
             {/* Section 05: How We Work (Discovery to Delivery) */}
