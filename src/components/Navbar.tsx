@@ -50,8 +50,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'Capabilities', target: 'services' },
     { label: 'Projects', target: 'projects' },
     { label: 'How We Work', target: 'process' },
-    { label: 'Leadership', target: 'leadership' },
     { label: 'Global Vision', target: 'global' },
+    { label: 'Leadership', target: 'leadership' },
   ];
 
   const handleLinkClick = (target: string) => {
