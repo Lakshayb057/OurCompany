@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Github, ArrowUpRight, BookOpen, ArrowRight, Play, Volume2, VolumeX, Image as ImageIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import { Github, ArrowUpRight, BookOpen, ArrowRight, Play, Image as ImageIcon } from 'lucide-react';
 import { Product } from '../types';
 
 interface PortfolioSectionProps {
@@ -33,10 +33,8 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   // Take top 2 projects to feature prominently
   const displayProducts = products.slice(0, 2);
 
-  // UniVerse Interactive Media state (seamlessly toggle between Video & High-Res Banner)
+  // UniVerse Interactive Media state (seamlessly toggle between WebP Video & High-Res Banner)
   const [universeMediaMode, setUniverseMediaMode] = useState<'video' | 'photo'>('video');
-  const [isVideoMuted, setIsVideoMuted] = useState(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
     <section id="projects" className="scroll-mt-12 sm:scroll-mt-16 py-24 relative overflow-hidden bg-light-100/50 dark:bg-midnight-900/40 transition-colors duration-300">
@@ -108,31 +106,15 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                         </button>
                       </div>
 
-                      {/* Video Player or Photo Banner */}
+                      {/* WebP Video Player or Photo Banner */}
                       {universeMediaMode === 'video' ? (
-                        <div className="relative w-full h-full">
-                          <video
-                            ref={videoRef}
-                            src="/universe_video.mp4"
-                            poster="/universe-banner.jpg"
-                            autoPlay
-                            loop
-                            muted={isVideoMuted}
-                            playsInline
+                        <div className="relative w-full h-full bg-slate-900">
+                          <img
+                            src="/universe_video.webp"
+                            alt="UniVerse Platform Demo Video"
                             className="w-full h-full object-cover"
+                            loading="eager"
                           />
-                          {/* Audio Mute/Unmute Toggle */}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setIsVideoMuted(!isVideoMuted);
-                            }}
-                            className="absolute bottom-3 right-3 z-30 p-2 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md text-white border border-white/20 transition-all shadow-md cursor-pointer"
-                            title={isVideoMuted ? "Unmute Video" : "Mute Video"}
-                          >
-                            {isVideoMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-electric-purple" />}
-                          </button>
                         </div>
                       ) : (
                         <img
