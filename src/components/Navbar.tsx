@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Sun, Moon, ChevronDown, Layers, Sparkles, ArrowRight } from 'lucide-react';
+import { Menu, X, Sun, Moon, ChevronDown, ArrowRight } from 'lucide-react';
 
 interface NavbarProps {
   onNavigate: (sectionId: string) => void;
@@ -138,26 +138,21 @@ export const Navbar: React.FC<NavbarProps> = ({
                         : 'opacity-0 translate-y-2.5 scale-95 pointer-events-none'
                     }`}
                   >
-                    <div className="w-72 rounded-2xl bg-white/95 dark:bg-midnight-950/95 backdrop-blur-2xl border border-purple-200/90 dark:border-white/15 p-2 shadow-[0_20px_50px_rgba(124,44,245,0.18)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.85)] ring-1 ring-purple-500/10 dark:ring-white/5 space-y-1">
+                    <div className="w-64 rounded-2xl bg-white/95 dark:bg-midnight-950/95 backdrop-blur-2xl border border-purple-200/90 dark:border-white/15 p-2 shadow-[0_20px_50px_rgba(124,44,245,0.18)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.85)] ring-1 ring-purple-500/10 dark:ring-white/5 space-y-1">
                       {/* Option 1: Explore Projects */}
                       <button
                         onClick={() => {
                           handleLinkClick('projects');
                           setProjectsDropdownOpen(false);
                         }}
-                        className="w-full text-left p-3 rounded-xl hover:bg-purple-50/80 dark:hover:bg-white/10 transition-all flex items-start gap-3 group/opt cursor-pointer"
+                        className="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-purple-50/80 dark:hover:bg-white/10 transition-all flex flex-col group/opt cursor-pointer"
                       >
-                        <div className="w-9 h-9 rounded-xl bg-purple-100 dark:bg-electric-purple/20 text-electric-purple dark:text-lavender-glow flex items-center justify-center flex-shrink-0 group-hover/opt:scale-105 group-hover/opt:bg-electric-purple group-hover/opt:text-white transition-all shadow-sm">
-                          <Layers className="w-4.5 h-4.5" />
+                        <div className="text-sm font-bold text-light-text dark:text-white group-hover/opt:text-electric-purple dark:group-hover/opt:text-lavender-light flex items-center justify-between">
+                          <span>Explore Projects</span>
+                          <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover/opt:opacity-100 group-hover/opt:translate-x-0 transition-all text-electric-purple dark:text-lavender-glow" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-bold text-light-text dark:text-white group-hover/opt:text-electric-purple dark:group-hover/opt:text-lavender-light flex items-center justify-between">
-                            <span>Explore Projects</span>
-                            <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover/opt:opacity-100 group-hover/opt:translate-x-0 transition-all text-electric-purple dark:text-lavender-glow" />
-                          </div>
-                          <div className="text-[11px] text-light-subtext dark:text-muted-gray mt-0.5 leading-snug">
-                            Production platforms & 0-to-1 startups
-                          </div>
+                        <div className="text-[11px] text-light-subtext dark:text-muted-gray mt-0.5 leading-snug">
+                          Production platforms & 0-to-1 startups
                         </div>
                       </button>
 
@@ -167,19 +162,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                           handleLinkClick('services');
                           setProjectsDropdownOpen(false);
                         }}
-                        className="w-full text-left p-3 rounded-xl hover:bg-purple-50/80 dark:hover:bg-white/10 transition-all flex items-start gap-3 group/opt cursor-pointer"
+                        className="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-purple-50/80 dark:hover:bg-white/10 transition-all flex flex-col group/opt cursor-pointer"
                       >
-                        <div className="w-9 h-9 rounded-xl bg-purple-100 dark:bg-electric-purple/20 text-electric-purple dark:text-lavender-glow flex items-center justify-center flex-shrink-0 group-hover/opt:scale-105 group-hover/opt:bg-electric-purple group-hover/opt:text-white transition-all shadow-sm">
-                          <Sparkles className="w-4.5 h-4.5" />
+                        <div className="text-sm font-bold text-light-text dark:text-white group-hover/opt:text-electric-purple dark:group-hover/opt:text-lavender-light flex items-center justify-between">
+                          <span>Explore Services</span>
+                          <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover/opt:opacity-100 group-hover/opt:translate-x-0 transition-all text-electric-purple dark:text-lavender-glow" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-bold text-light-text dark:text-white group-hover/opt:text-electric-purple dark:group-hover/opt:text-lavender-light flex items-center justify-between">
-                            <span>Explore Services</span>
-                            <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-2 group-hover/opt:opacity-100 group-hover/opt:translate-x-0 transition-all text-electric-purple dark:text-lavender-glow" />
-                          </div>
-                          <div className="text-[11px] text-light-subtext dark:text-muted-gray mt-0.5 leading-snug">
-                            Cloud, AI agents, architecture & systems
-                          </div>
+                        <div className="text-[11px] text-light-subtext dark:text-muted-gray mt-0.5 leading-snug">
+                          Cloud, AI agents, architecture & systems
                         </div>
                       </button>
                     </div>
@@ -291,17 +281,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="pl-4 pr-1 py-1 space-y-1 border-l-2 border-purple-200 dark:border-midnight-border ml-4">
                       <button
                         onClick={() => handleLinkClick('projects')}
-                        className="w-full text-left py-2 px-3 text-xs font-semibold rounded-lg flex items-center gap-2 text-light-text dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5"
+                        className="w-full text-left py-2 px-3 text-xs font-semibold rounded-lg flex items-center justify-between text-light-text dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5"
                       >
-                        <Layers className="w-3.5 h-3.5 text-electric-purple" />
                         <span>Explore Projects</span>
+                        <ArrowRight className="w-3.5 h-3.5 text-electric-purple" />
                       </button>
                       <button
                         onClick={() => handleLinkClick('services')}
-                        className="w-full text-left py-2 px-3 text-xs font-semibold rounded-lg flex items-center gap-2 text-light-text dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5"
+                        className="w-full text-left py-2 px-3 text-xs font-semibold rounded-lg flex items-center justify-between text-light-text dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5"
                       >
-                        <Sparkles className="w-3.5 h-3.5 text-electric-purple" />
                         <span>Explore Services</span>
+                        <ArrowRight className="w-3.5 h-3.5 text-electric-purple" />
                       </button>
                     </div>
                   )}
