@@ -34,7 +34,7 @@ export const OurStory: React.FC = () => {
   return (
     <section 
       id="story" 
-      className="py-24 relative overflow-hidden bg-light-100/60 dark:bg-midnight-900/60 border-t border-b border-light-border dark:border-midnight-border/50"
+      className="py-24 relative overflow-hidden w-full max-w-full bg-light-100/60 dark:bg-midnight-900/60 border-t border-b border-light-border dark:border-midnight-border/50"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         

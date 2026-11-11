@@ -91,7 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           backdropFilter: 'blur(24px) saturate(190%)',
           WebkitBackdropFilter: 'blur(24px) saturate(190%)',
         }}
-        className="fixed top-0 left-0 right-0 h-[82px] sm:h-[88px] z-40 bg-white/30 dark:bg-black/75 border-b border-purple-200/40 dark:border-white/10 shadow-[0_10px_30px_-5px_rgba(124,44,245,0.06),inset_0_1px_0_0_rgba(255,255,255,0.7)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.85),inset_0_1px_0_0_rgba(255,255,255,0.12),inset_0_-1px_0_0_rgba(124,44,245,0.25)] pointer-events-none transition-opacity duration-200"
+        className="fixed top-0 left-0 right-0 h-16 sm:h-[72px] lg:h-[88px] z-40 bg-white/30 dark:bg-black/75 border-b border-purple-200/40 dark:border-white/10 shadow-[0_10px_30px_-5px_rgba(124,44,245,0.06),inset_0_1px_0_0_rgba(255,255,255,0.7)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.85),inset_0_1px_0_0_rgba(255,255,255,0.12),inset_0_-1px_0_0_rgba(124,44,245,0.25)] pointer-events-none transition-opacity duration-200"
       >
         {/* Subtle radiant purple bottom accent rule */}
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-electric-purple/40 dark:via-electric-purple/60 to-transparent" />
@@ -207,12 +207,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* 2. TOP-RIGHT CORNER: Action Entities & Dock Target */}
-      <div className="fixed top-4 right-4 sm:top-5 sm:right-8 z-50 flex items-center gap-2 sm:gap-3">
-        {/* Mobile-only theme toggle - perfectly aligned to top-right on Hero */}
+      <div className="fixed top-3 right-4 sm:top-5 sm:right-8 z-50 flex items-center gap-2 sm:gap-3">
+        {/* Mobile-only theme toggle - perfectly aligned to top-right */}
         {onToggleTheme && (
           <button
             onClick={onToggleTheme}
-            className="lg:hidden p-2.5 rounded-full bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white transition-all shadow-md shadow-purple-950/5 backdrop-blur-md cursor-pointer"
+            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white transition-all shadow-sm backdrop-blur-md cursor-pointer flex-shrink-0"
             title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             aria-label="Toggle theme"
           >
@@ -247,14 +247,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         )}
 
         {/* Mobile Menu Button - Hidden on Hero, Smoothly appears once scrolled */}
-        <div className={`flex lg:hidden transition-all duration-300 ${
+        <div className={`flex lg:hidden transition-all duration-300 flex-shrink-0 ${
           currentRoute === 'projects' || scrollY > 60
             ? 'opacity-100 scale-100 pointer-events-auto' 
             : 'opacity-0 scale-90 pointer-events-none'
         }`}>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-2xl bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-text dark:text-white focus:outline-none shadow-md backdrop-blur-md cursor-pointer"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-text dark:text-white focus:outline-none shadow-sm backdrop-blur-md cursor-pointer"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

@@ -38,7 +38,7 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
     const rect = anchorRef.current.getBoundingClientRect();
     if (rect.width > 0 && rect.height > 0) {
       setBox({
-        x: rect.left + window.scrollX,
+        x: rect.left,
         y: rect.top + window.scrollY,
         width: rect.width,
         height: rect.height,
@@ -94,10 +94,10 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
   if (!box && !isAlwaysDocked) return null;
 
   // Prominent, significantly enlarged docked size when aligned to top-left
-  const targetH = isMobile ? 48 : 72;
-  const targetW = isMobile ? 66 : 98;
-  const targetX = isMobile ? 12 : 24;       // left alignment
-  const targetY = isMobile ? 12 : 8;        // vertically centered with floating header pill
+  const targetH = isMobile ? 40 : 72;
+  const targetW = isMobile ? 54 : 98;
+  const targetX = isMobile ? 16 : 24;       // left alignment
+  const targetY = isMobile ? 12 : 8;        // vertically centered with header
 
   // Progress from 0 (hero) to 1 (header docked) - calibrated to 340px for smoother, gradual flight
   const maxScroll = 340;
@@ -110,7 +110,7 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
   const flight = isAlwaysDocked ? 0 : Math.sin(rawP * Math.PI);
 
   // Once the logo arrives and aligns to the top-left, trigger the 3D "CodeVerse" emergence
-  const isDocked = isAlwaysDocked || rawP >= 0.94;
+  const isDocked = isAlwaysDocked || rawP >= 0.88;
 
   // Interpolated position and dimensions for the ribbon logo
   const heroCurrentY = box ? box.y - scrollY : targetY;
@@ -205,7 +205,7 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
           transformOrigin: 'left center',
           transition: 'width 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
           pointerEvents: isDocked ? 'auto' : 'none',
-          marginLeft: isDocked ? (isMobile ? '4px' : '8px') : '0px',
+          marginLeft: isDocked ? (isMobile ? '6px' : '8px') : '0px',
         }}
         className="font-extrabold tracking-tight select-none"
       >
@@ -213,7 +213,7 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
           style={{
             textShadow: '0 2px 14px rgba(124, 44, 245, 0.22)',
           }}
-          className="text-xl sm:text-3xl font-black bg-gradient-to-r from-light-text via-electric-purple to-deep-violet dark:from-white dark:via-lavender-light dark:to-electric-light bg-clip-text text-transparent tracking-tight whitespace-nowrap"
+          className="text-lg sm:text-3xl font-black bg-gradient-to-r from-light-text via-electric-purple to-deep-violet dark:from-white dark:via-lavender-light dark:to-electric-light bg-clip-text text-transparent tracking-tight whitespace-nowrap"
         >
           CodeVerse
         </span>

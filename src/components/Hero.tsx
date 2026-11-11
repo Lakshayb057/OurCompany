@@ -72,7 +72,7 @@ export const Hero: React.FC<HeroProps> = ({
     <section 
       ref={heroSectionRef}
       id="hero" 
-      className="relative min-h-screen pt-16 pb-8 sm:pt-28 sm:pb-10 flex flex-col justify-center overflow-hidden"
+      className="relative min-h-screen pt-16 pb-8 sm:pt-28 sm:pb-10 flex flex-col justify-center overflow-hidden w-full max-w-full"
     >
       {/* Hero-Only Video & Animated WebP Dynamic Background with smooth entrance fade */}
       <div 
