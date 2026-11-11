@@ -260,7 +260,12 @@ app.get('/api/v1/admin/analytics', (req, res) => {
   });
 });
 
-// Serve built frontend assets if dist exists
+// Serve static assets from public/ and built dist/
+const PUBLIC_PATH = path.join(__dirname, '..', 'public');
+if (fs.existsSync(PUBLIC_PATH)) {
+  app.use(express.static(PUBLIC_PATH));
+}
+
 const DIST_PATH = path.join(__dirname, '..', 'dist');
 if (fs.existsSync(DIST_PATH)) {
   app.use(express.static(DIST_PATH));
