@@ -24,7 +24,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-10 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10 relative z-10">
           
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
@@ -47,46 +47,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </div>
           </div>
 
-          {/* Quick Navigation */}
-          <div>
-            <h4 className="text-xs font-mono uppercase tracking-wider text-electric-purple dark:text-lavender-glow mb-4 font-bold">
-              Navigation
-            </h4>
-            <ul className="space-y-2 text-xs text-light-subtext dark:text-muted-gray">
-              <li>
-                <button onClick={() => onNavigate('story')} className="hover:text-electric-purple dark:hover:text-white transition-colors">
-                  Our Story & Mission
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigate('services')} className="hover:text-electric-purple dark:hover:text-white transition-colors">
-                  Capabilities & Domains
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigate('projects')} className="hover:text-electric-purple dark:hover:text-white transition-colors">
-                  Engineering Projects
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigate('process')} className="hover:text-electric-purple dark:hover:text-white transition-colors">
-                  How We Work (5 Stages)
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigate('leadership')} className="hover:text-electric-purple dark:hover:text-white transition-colors">
-                  Leadership & Governance
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigate('global')} className="hover:text-electric-purple dark:hover:text-white transition-colors">
-                  Global Delivery Model
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Engineering Domains */}
+          {/* Core Specialties */}
           <div>
             <h4 className="text-xs font-mono uppercase tracking-wider text-electric-purple dark:text-lavender-glow mb-4 font-bold">
               Core Specialties
@@ -101,20 +62,20 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </ul>
           </div>
 
-          {/* Administration & Governance */}
-          <div>
-            <h4 className="text-xs font-mono uppercase tracking-wider text-electric-purple dark:text-lavender-glow mb-4 font-bold">
-              Governance & Admin
-            </h4>
-            <ul className="space-y-2 text-xs text-light-subtext dark:text-muted-gray mb-4">
-              <li>SRS Version: 1.0 (Nov 2026)</li>
-              <li>Confidential Internal Planning</li>
-              <li>100% Allocation Validation</li>
-            </ul>
+          {/* Direct Technical Discovery CTA */}
+          <div className="space-y-4 flex flex-col justify-between">
+            <div>
+              <h4 className="text-xs font-mono uppercase tracking-wider text-electric-purple dark:text-lavender-glow mb-3 font-bold">
+                Technical Discovery
+              </h4>
+              <p className="text-xs text-light-subtext dark:text-muted-gray leading-relaxed mb-4">
+                Ready to engineer your platform? Connect directly with our founding engineering team.
+              </p>
+            </div>
 
             <button
               onClick={() => onNavigate('contact')}
-              className="px-4 py-2 rounded-xl bg-lavender-soft/80 border border-purple-200 text-electric-dark font-semibold text-xs hover:bg-electric-purple hover:text-white dark:bg-electric-purple/20 dark:border-electric-purple/40 dark:text-lavender-light dark:hover:bg-electric-purple dark:hover:text-white transition-all w-full text-center shadow-sm"
+              className="px-5 py-3 rounded-xl bg-gradient-to-r from-electric-purple to-deep-violet text-white font-semibold text-xs hover:brightness-110 active:scale-[0.98] transition-all w-full text-center shadow-sm cursor-pointer"
             >
               Start Technical Discovery
             </button>
@@ -126,18 +87,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         {/* Bottom copyright bar */}
         <div className="pt-4 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs font-mono text-light-subtext dark:text-muted-gray">
           <div>
-            © {new Date().getFullYear()} CodeVerse. All rights reserved. Turning Ideas Into Technology.
+            © {new Date().getFullYear()} CodeVerse. All rights reserved.
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1 text-light-subtext dark:text-gray-400 font-medium">
-              <span className="dark:hidden">Theme: Light Mode • Electric Purple & Lavender</span>
-              <span className="hidden dark:inline">Theme: Dark Mode • Deep Midnight & Violet Glow</span>
-            </span>
-
+          <div>
             <button
               onClick={scrollToTop}
-              className="p-2 rounded-lg bg-light-surface dark:bg-midnight-card border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white hover:border-electric-purple transition-all shadow-sm"
+              className="p-2 rounded-lg bg-light-surface dark:bg-midnight-card border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white hover:border-electric-purple transition-all shadow-sm cursor-pointer"
               title="Return to top"
             >
               <ArrowUp className="w-4 h-4" />
