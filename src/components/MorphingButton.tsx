@@ -44,6 +44,17 @@ export const MorphingButton: React.FC<MorphingButtonProps> = ({
 
   const [scrollY, setScrollY] = useState(0);
   const [hasEntered, setHasEntered] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -151,7 +162,7 @@ export const MorphingButton: React.FC<MorphingButtonProps> = ({
     };
   }, []);
 
-  if (!startHeroBox || !startDockBox) return null;
+  if (!isDesktop || !startHeroBox || !startDockBox) return null;
 
   // Progress from 0 (hero) to 1 (docked at top right)
   const maxScroll = 340;

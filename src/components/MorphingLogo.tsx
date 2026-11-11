@@ -14,6 +14,17 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
   const [box, setBox] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
   const [scrollY, setScrollY] = useState(0);
   const [hasEntered, setHasEntered] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -82,13 +93,11 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
 
   if (!box && !isAlwaysDocked) return null;
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-
   // Prominent, significantly enlarged docked size when aligned to top-left
-  const targetH = isMobile ? 54 : 72;
-  const targetW = isMobile ? 74 : 98;
+  const targetH = isMobile ? 48 : 72;
+  const targetW = isMobile ? 66 : 98;
   const targetX = isMobile ? 12 : 24;       // left alignment
-  const targetY = isMobile ? 10 : 8;        // vertically centered with floating header pill
+  const targetY = isMobile ? 12 : 8;        // vertically centered with floating header pill
 
   // Progress from 0 (hero) to 1 (header docked) - calibrated to 340px for smoother, gradual flight
   const maxScroll = 340;
@@ -204,7 +213,7 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
           style={{
             textShadow: '0 2px 14px rgba(124, 44, 245, 0.22)',
           }}
-          className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-light-text via-electric-purple to-deep-violet dark:from-white dark:via-lavender-light dark:to-electric-light bg-clip-text text-transparent tracking-tight whitespace-nowrap"
+          className="text-xl sm:text-3xl font-black bg-gradient-to-r from-light-text via-electric-purple to-deep-violet dark:from-white dark:via-lavender-light dark:to-electric-light bg-clip-text text-transparent tracking-tight whitespace-nowrap"
         >
           CodeVerse
         </span>

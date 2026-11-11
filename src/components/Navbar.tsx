@@ -208,11 +208,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* 2. TOP-RIGHT CORNER: Action Entities & Dock Target */}
       <div className="fixed top-4 right-4 sm:top-5 sm:right-8 z-50 flex items-center gap-2 sm:gap-3">
-        {/* Mobile-only theme toggle (on desktop it is in the center navbar) */}
+        {/* Mobile-only theme toggle - perfectly aligned to top-right on Hero */}
         {onToggleTheme && (
           <button
             onClick={onToggleTheme}
-            className="lg:hidden p-2 rounded-2xl bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white transition-all shadow-md shadow-purple-950/5 backdrop-blur-md"
+            className="lg:hidden p-2.5 rounded-full bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white transition-all shadow-md shadow-purple-950/5 backdrop-blur-md cursor-pointer"
             title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             aria-label="Toggle theme"
           >
@@ -229,28 +229,32 @@ export const Navbar: React.FC<NavbarProps> = ({
             Start a Project
           </button>
         ) : (
-          <>
-            {/* Dock Target Anchor for "Start a Project" Button */}
+          <div className="hidden lg:flex items-center gap-3">
+            {/* Dock Target Anchor for "Start a Project" Button (Desktop only) */}
             <div 
               ref={dockStartBtnRef ?? dockBtnRef}
               className="h-9 w-[114px] sm:h-10 sm:w-[145px] pointer-events-none opacity-0 flex-shrink-0"
               aria-hidden="true"
             />
 
-            {/* Dock Target Anchor for "Explore Projects" Button (just after Start a Project) */}
+            {/* Dock Target Anchor for "Explore Projects" Button (Desktop only) */}
             <div 
               ref={dockExploreBtnRef}
               className="h-9 w-[114px] sm:h-10 sm:w-[140px] pointer-events-none opacity-0 flex-shrink-0"
               aria-hidden="true"
             />
-          </>
+          </div>
         )}
 
-        {/* Mobile Menu Button */}
-        <div className="flex lg:hidden">
+        {/* Mobile Menu Button - Hidden on Hero, Smoothly appears once scrolled */}
+        <div className={`flex lg:hidden transition-all duration-300 ${
+          currentRoute === 'projects' || scrollY > 60
+            ? 'opacity-100 scale-100 pointer-events-auto' 
+            : 'opacity-0 scale-90 pointer-events-none'
+        }`}>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-2xl bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-text dark:text-white focus:outline-none shadow-md backdrop-blur-md"
+            className="p-2 rounded-2xl bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-text dark:text-white focus:outline-none shadow-md backdrop-blur-md cursor-pointer"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

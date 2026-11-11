@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ArrowRight } from 'lucide-react';
 
 interface HeroProps {
   onStartProject?: () => void;
@@ -71,7 +72,7 @@ export const Hero: React.FC<HeroProps> = ({
     <section 
       ref={heroSectionRef}
       id="hero" 
-      className="relative min-h-screen pt-28 pb-8 sm:pt-30 sm:pb-10 flex flex-col justify-center overflow-hidden"
+      className="relative min-h-screen pt-16 pb-8 sm:pt-28 sm:pb-10 flex flex-col justify-center overflow-hidden"
     >
       {/* Hero-Only Video & Animated WebP Dynamic Background with smooth entrance fade */}
       <div 
@@ -118,11 +119,11 @@ export const Hero: React.FC<HeroProps> = ({
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#7c2cf50c_1px,transparent_1px),linear-gradient(to_bottom,#7c2cf50c_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#1b172a15_1px,transparent_1px),linear-gradient(to_bottom,#1b172a15_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">
 
-          {/* Left Column: Hero Visual Artwork Container (Anchors the Morphing 3D Logo) */}
-          <div className="lg:col-span-5 relative flex justify-center order-2 lg:order-1">
-            <div className="relative w-full max-w-md lg:max-w-none">
+          {/* Left Column: Hero Visual Artwork Container (Anchors the Morphing 3D Logo) - First on Mobile & Left on Desktop */}
+          <div className="lg:col-span-5 relative flex justify-center order-1 lg:order-1">
+            <div className="relative w-full max-w-[200px] sm:max-w-xs lg:max-w-none">
               {/* Soft circular ambient glow behind ribbon artwork */}
               <div 
                 style={{
@@ -143,8 +144,8 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
           </div>
 
-          {/* Right Column: Story & Typography */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left order-1 lg:order-2">
+          {/* Right Column: Story & Typography - Below Logo on Mobile & Right on Desktop */}
+          <div className="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left order-2 lg:order-2">
             {/* 3D Kinetic Headline with Staggered Word Reveal */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] text-light-text dark:text-white flex flex-col items-center lg:items-start gap-1">
               {/* Line 1: CODEVERSE */}
@@ -202,21 +203,44 @@ export const Hero: React.FC<HeroProps> = ({
               </div>
             </h1>
 
-            {/* Action buttons footprint */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <div
-                ref={startBtnAnchorRef ?? btnAnchorRef}
-                className="w-full sm:w-auto h-[56px] min-w-[178px] rounded-xl pointer-events-none opacity-0"
-                aria-hidden="true"
-              />
-              <div
-                ref={exploreBtnAnchorRef}
-                className="w-full sm:w-auto h-[56px] min-w-[178px] rounded-xl pointer-events-none opacity-0"
-                aria-hidden="true"
-              />
+            {/* Action buttons: Direct in-hero buttons on mobile; Footprints for 3D MorphingButton on desktop */}
+            <div className="pt-2 w-full">
+              {/* Mobile (< lg): In-hero interactive buttons */}
+              <div className="flex lg:hidden flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-sm mx-auto">
+                <button
+                  onClick={onStartProject}
+                  className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-electric-purple via-lavender-glow to-deep-violet text-white font-bold text-base shadow-[0_10px_25px_-5px_rgba(124,44,245,0.4)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all hover:brightness-110 cursor-pointer"
+                  aria-label="Start a Project"
+                >
+                  <span>Start a Project</span>
+                  <ArrowRight className="w-4 h-4 text-white" />
+                </button>
+
+                <button
+                  onClick={onExploreProjects ?? onExplorePortfolio}
+                  className="w-full h-[52px] rounded-2xl bg-white/95 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-text dark:text-white font-bold text-base shadow-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-all hover:border-electric-purple dark:hover:border-electric-purple cursor-pointer"
+                  aria-label="Explore Projects"
+                >
+                  <span>Explore Projects</span>
+                </button>
+              </div>
+
+              {/* Desktop (>= lg): Footprints for 3D MorphingButton */}
+              <div className="hidden lg:flex flex-row items-center justify-start gap-4">
+                <div
+                  ref={startBtnAnchorRef ?? btnAnchorRef}
+                  className="h-[56px] min-w-[178px] rounded-xl pointer-events-none opacity-0"
+                  aria-hidden="true"
+                />
+                <div
+                  ref={exploreBtnAnchorRef}
+                  className="h-[56px] min-w-[178px] rounded-xl pointer-events-none opacity-0"
+                  aria-hidden="true"
+                />
+              </div>
             </div>
 
-            {/* Terminal snippet / Micro-telemetry with Staggered Entrance */}
+            {/* Terminal snippet / Micro-telemetry: 2 in row 1, 1 centered in row 2 on mobile; 3 in row on desktop */}
             <div 
               style={{
                 opacity: isEntered ? 1 : 0,
@@ -224,38 +248,55 @@ export const Hero: React.FC<HeroProps> = ({
                 transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)',
                 transitionDelay: '580ms',
               }}
-              className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 text-xs sm:text-sm font-medium text-light-subtext dark:text-muted-gray/90"
+              className="pt-3 flex flex-col items-center lg:items-start gap-2.5 sm:gap-3 text-xs sm:text-sm font-medium text-light-subtext dark:text-muted-gray/90 w-full"
             >
-              <div 
-                style={{
-                  opacity: isEntered ? 1 : 0,
-                  transform: isEntered ? 'translateY(0)' : 'translateY(12px)',
-                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-                  transitionDelay: '620ms',
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70"
-              >
-                <span className="text-electric-purple font-semibold">&gt;_</span>
-                <span className="text-light-text dark:text-gray-200">PERN / Microservices</span>
+              {/* Row 1 on mobile: The two badges side by side */}
+              <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3 flex-wrap sm:flex-nowrap w-full">
+                <div 
+                  style={{
+                    opacity: isEntered ? 1 : 0,
+                    transform: isEntered ? 'translateY(0)' : 'translateY(12px)',
+                    transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                    transitionDelay: '620ms',
+                  }}
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70 text-[11px] sm:text-xs lg:text-sm whitespace-nowrap shadow-sm"
+                >
+                  <span className="text-electric-purple font-semibold">&gt;_</span>
+                  <span className="text-light-text dark:text-gray-200">PERN / Microservices</span>
+                </div>
+
+                <span className="text-light-border dark:text-midnight-border hidden lg:inline">•</span>
+
+                <div 
+                  style={{
+                    opacity: isEntered ? 1 : 0,
+                    transform: isEntered ? 'translateY(0)' : 'translateY(12px)',
+                    transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                    transitionDelay: '720ms',
+                  }}
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70 text-[11px] sm:text-xs lg:text-sm whitespace-nowrap shadow-sm"
+                >
+                  <span className="text-electric-purple font-semibold">&gt;_</span>
+                  <span className="text-light-text dark:text-gray-200">WebSockets &amp; Real-Time</span>
+                </div>
+
+                {/* On desktop (lg:), the 3rd badge is in the same row */}
+                <span className="text-light-border dark:text-midnight-border hidden lg:inline">•</span>
+                <div 
+                  style={{
+                    opacity: isEntered ? 1 : 0,
+                    transform: isEntered ? 'translateY(0)' : 'translateY(12px)',
+                    transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+                    transitionDelay: '820ms',
+                  }}
+                  className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70 text-sm whitespace-nowrap shadow-sm"
+                >
+                  <span className="text-electric-purple font-semibold">&gt;_</span>
+                  <span className="text-light-text dark:text-gray-200">Gemini 2.5 Flash OCR</span>
+                </div>
               </div>
 
-              <span className="text-light-border dark:text-midnight-border hidden sm:inline">•</span>
-
-              <div 
-                style={{
-                  opacity: isEntered ? 1 : 0,
-                  transform: isEntered ? 'translateY(0)' : 'translateY(12px)',
-                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-                  transitionDelay: '720ms',
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70"
-              >
-                <span className="text-electric-purple font-semibold">&gt;_</span>
-                <span className="text-light-text dark:text-gray-200">WebSockets &amp; Real-Time</span>
-              </div>
-
-              <span className="text-light-border dark:text-midnight-border hidden sm:inline">•</span>
-
+              {/* Row 2 on mobile: 1 badge below, centered to the two above */}
               <div 
                 style={{
                   opacity: isEntered ? 1 : 0,
@@ -263,10 +304,12 @@ export const Hero: React.FC<HeroProps> = ({
                   transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
                   transitionDelay: '820ms',
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70"
+                className="flex lg:hidden items-center justify-center w-full"
               >
-                <span className="text-electric-purple font-semibold">&gt;_</span>
-                <span className="text-light-text dark:text-gray-200">Gemini 2.5 Flash OCR</span>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70 text-[11px] sm:text-xs whitespace-nowrap shadow-sm">
+                  <span className="text-electric-purple font-semibold">&gt;_</span>
+                  <span className="text-light-text dark:text-gray-200">Gemini 2.5 Flash OCR</span>
+                </div>
               </div>
             </div>
           </div>
