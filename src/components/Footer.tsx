@@ -11,11 +11,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   };
 
   return (
-    <footer className="bg-white dark:bg-midnight-900 border-t border-light-border dark:border-midnight-border pt-8 pb-6 sm:pt-16 sm:pb-12 relative overflow-hidden transition-colors">
+    <footer className="bg-white dark:bg-midnight-900 border-t border-light-border dark:border-midnight-border pt-6 pb-4 sm:pt-10 sm:pb-6 relative overflow-hidden transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Top Grid Area with Giant Watermark in Background */}
-        <div className="relative pb-6 sm:pb-12 border-b border-light-border dark:border-midnight-border/70 overflow-hidden">
+        <div className="relative pb-5 sm:pb-7 border-b border-light-border dark:border-midnight-border/70 overflow-hidden">
           
           {/* Giant Brand Typography Watermark (matches EKHUM style) */}
           <div className="absolute inset-x-0 top-0 bottom-6 sm:bottom-8 flex items-center justify-center pointer-events-none select-none z-0">
@@ -85,18 +85,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         {/* Bottom copyright bar */}
-        <div className="pt-4 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs font-mono text-light-subtext dark:text-muted-gray">
-          <div>
+        <div className="pt-3 sm:pt-4 relative flex items-center justify-center text-xs font-mono text-light-subtext dark:text-muted-gray">
+          <div className="text-center font-medium">
             © {new Date().getFullYear()} CodeVerse. All rights reserved.
           </div>
 
-          <div>
+          <div className="absolute right-0">
             <button
               onClick={scrollToTop}
-              className="p-2 rounded-lg bg-light-surface dark:bg-midnight-card border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white hover:border-electric-purple transition-all shadow-sm cursor-pointer"
+              className="p-1.5 sm:p-2 rounded-lg bg-light-surface dark:bg-midnight-card border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white hover:border-electric-purple transition-all shadow-sm cursor-pointer"
               title="Return to top"
             >
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
         </div>
