@@ -14,7 +14,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     <footer className="bg-white dark:bg-midnight-900 border-t border-light-border dark:border-midnight-border pt-16 pb-12 relative overflow-hidden transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-light-border dark:border-midnight-border/70">
+        {/* Top Grid Area with Giant Watermark in Background */}
+        <div className="relative pb-12 border-b border-light-border dark:border-midnight-border/70 overflow-hidden">
+          
+          {/* Giant Brand Typography Watermark (matches EKHUM style) */}
+          <div className="absolute inset-x-0 top-0 bottom-6 sm:bottom-8 flex items-center justify-center pointer-events-none select-none z-0">
+            <span className="text-[15vw] sm:text-[13vw] md:text-[11vw] lg:text-[10vw] xl:text-[9.5rem] font-black tracking-tight sm:tracking-normal lg:tracking-wider uppercase leading-none whitespace-nowrap bg-gradient-to-b from-electric-purple/25 via-lavender-glow/12 to-transparent dark:from-electric-purple/35 dark:via-lavender-light/15 dark:to-transparent bg-clip-text text-transparent select-none opacity-90 transition-all">
+              CodeVerse
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 relative z-10">
           
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
@@ -111,6 +121,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
         </div>
+        </div>
 
         {/* Bottom copyright bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-light-subtext dark:text-muted-gray">
@@ -120,7 +131,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1 text-light-subtext dark:text-gray-400 font-medium">
-              <span>Theme: Light Mode • Electric Purple & Lavender</span>
+              <span className="dark:hidden">Theme: Light Mode • Electric Purple & Lavender</span>
+              <span className="hidden dark:inline">Theme: Dark Mode • Deep Midnight & Violet Glow</span>
             </span>
 
             <button
