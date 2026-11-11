@@ -310,20 +310,31 @@ export const OurStory: React.FC = () => {
             {/* Container where the 4 Cards sit directly OVER the Continuous Background Railway Track */}
             <div className="relative py-8 sm:py-10">
               
-              {/* Continuous Railway Track running from left edge to right edge in the background behind the cards */}
+              {/* Desktop Horizontal Railway Track (Large screens) */}
               <div
-                className="absolute inset-x-0 -mx-8 sm:-mx-10 w-[calc(100%+4rem)] sm:w-[calc(100%+5rem)] top-1/2 -translate-y-1/2 z-0 pointer-events-none"
+                className="hidden lg:block absolute inset-x-0 -mx-8 sm:-mx-10 w-[calc(100%+4rem)] sm:w-[calc(100%+5rem)] top-1/2 -translate-y-1/2 z-0 pointer-events-none"
                 style={{
                   transform: isProcessInView ? 'translateY(-50%)' : 'translateY(-30%)',
                   opacity: isProcessInView ? 1 : 0,
                   transition: 'opacity 0.65s ease-out 100ms, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) 100ms',
                 }}
               >
-                <RailwayTrack isBuilt={isProcessInView} />
+                <RailwayTrack isBuilt={isProcessInView} orientation="horizontal" />
+              </div>
+
+              {/* Mobile Vertical Railway Track (Small screens) */}
+              <div
+                className="block lg:hidden absolute inset-y-0 left-1/2 -translate-x-1/2 w-48 sm:w-56 h-[calc(100%+2rem)] -my-4 z-0 pointer-events-none"
+                style={{
+                  opacity: isProcessInView ? 1 : 0,
+                  transition: 'opacity 0.65s ease-out 100ms',
+                }}
+              >
+                <RailwayTrack isBuilt={isProcessInView} orientation="vertical" />
               </div>
 
               {/* 4 Process Cards: Compact & Harmoniously Aligned with Generous Gaps on the Railway Track Curve */}
-              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 xl:gap-14 max-w-5xl mx-auto items-center px-4">
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 xl:gap-14 max-w-5xl mx-auto items-center px-4">
                 
                 {/* Card 1: Understand */}
                 <div 
