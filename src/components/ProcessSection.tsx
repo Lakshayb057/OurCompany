@@ -117,35 +117,74 @@ export const ProcessSection: React.FC = () => {
     });
   };
 
+  // Touch swipe support on mobile cards deck
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const deltaX = touchStartXRef.current - e.changedTouches[0].clientX;
+    const deltaY = touchStartYRef.current - e.changedTouches[0].clientY;
+
+    if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY) * 0.7) {
+      if (deltaX > 0) {
+        // Swiped left -> next step
+        if (activeStep < steps.length - 1) {
+          handleStepClick(activeStep + 1);
+        } else {
+          // Completed all 5 steps -> move immediately to Engineered Locally. Deployed Globally.
+          const globalEl = document.getElementById('global');
+          globalEl?.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        // Swiped right -> previous step
+        if (activeStep > 0) {
+          handleStepClick(activeStep - 1);
+        }
+      }
+    }
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
+
   // Continuous scrub factor from 0.0 to 4.0
-  const scrubValue = progress * (steps.length - 1);
+  // On mobile, normalized buffer ensures Step 01 is rock-solid on entry and Step 05 is stable before exit
+  const mobileNormalized = Math.min(Math.max((progress - 0.03) / 0.94, 0), 1);
+  const scrubValue = isMobile
+    ? mobileNormalized * (steps.length - 1)
+    : progress * (steps.length - 1);
 
   return (
     <section
       ref={sectionRef}
       id="process"
-      className="relative h-[380vh] bg-light-100/70 dark:bg-midnight-900/70 border-t border-b border-light-border dark:border-midnight-border/50"
+      className="relative h-[220vh] sm:h-[260vh] lg:h-[380vh] bg-light-100/70 dark:bg-midnight-900/70 border-t border-b border-light-border dark:border-midnight-border/50"
     >
       {/* Ambient background glows */}
       <div className="absolute top-1/4 left-10 w-[500px] h-[500px] bg-electric-purple/5 dark:bg-electric-purple/10 blur-[130px] rounded-full pointer-events-none" />
       <div className="absolute bottom-1/4 right-10 w-[450px] h-[450px] bg-lavender-glow/5 dark:bg-deep-violet/15 blur-[120px] rounded-full pointer-events-none" />
 
       {/* Pinned Sticky Viewport Container - Top padded to ALWAYS clear the navbar completely */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-start pt-16 sm:pt-20 pb-4 sm:pb-6 overflow-hidden px-4 sm:px-6 lg:px-8">
+      <div className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-14 sm:pt-20 pb-2 sm:pb-6 overflow-hidden px-3 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col h-full justify-between min-h-0">
           
           {/* Section Header - Perfectly aligned with other sections with one-line explanation */}
-          <div className="max-w-3xl mx-auto text-center space-y-2 mt-4 sm:mt-7 mb-1.5 sm:mb-2.5 flex-shrink-0">
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
+          <div className="max-w-3xl mx-auto text-center space-y-1 sm:space-y-2 mt-2 sm:mt-6 mb-1 sm:mb-2.5 flex-shrink-0">
+            <h2 className="text-2xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
               Discovery-to-Delivery <span className="text-gradient-purple">Process</span>
             </h2>
-            <p className="text-light-subtext dark:text-muted-gray text-sm sm:text-base leading-relaxed">
+            <p className="text-light-subtext dark:text-muted-gray text-xs sm:text-base leading-relaxed">
               A milestone-driven engineering lifecycle executed from architectural design to zero-downtime global deployment.
             </p>
           </div>
 
           {/* Mobile Stage Quick Jumpers (Visible only on small screens) */}
-          <div className="flex lg:hidden items-center justify-center gap-1.5 sm:gap-2 mb-2 flex-shrink-0">
+          <div className="flex lg:hidden items-center justify-center gap-1.5 sm:gap-2 mb-1.5 flex-shrink-0">
             {steps.map((s, i) => {
               const isCurrent = activeStep === i;
               return (
@@ -167,7 +206,7 @@ export const ProcessSection: React.FC = () => {
           </div>
 
           {/* Main Layout: Desktop 2-Column Split (Left list + Right deck) | Mobile: Full-width Horizontal Deck */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-10 items-center flex-1 min-h-0 pb-2">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-10 items-center flex-1 min-h-0 pb-1 sm:pb-2">
             
             {/* Left Column: ALL 5 STEPS - Visible on Desktop only */}
             <div className="hidden lg:flex lg:col-span-5 flex-col justify-center min-w-0 space-y-2 sm:space-y-3">
@@ -225,8 +264,12 @@ export const ProcessSection: React.FC = () => {
             </div>
 
             {/* Right Column / Mobile Full Width: Images Deck */}
-            <div className="w-full lg:col-span-7 flex flex-col justify-center h-full min-h-0 pt-1 sm:pt-4">
-              <div className="relative w-full h-[410px] sm:h-[500px] lg:h-[570px] max-h-[64vh] sm:max-h-[68vh] flex items-center justify-center overflow-hidden">
+            <div className="w-full lg:col-span-7 flex flex-col justify-center h-full min-h-0 pt-0 sm:pt-4">
+              <div 
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                className="relative w-full h-[400px] sm:h-[480px] lg:h-[570px] max-h-[58vh] sm:max-h-[66vh] flex items-center justify-center overflow-hidden touch-pan-y"
+              >
                 
                 {steps.map((step, idx) => {
                   let transform = '';

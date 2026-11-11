@@ -212,7 +212,7 @@ export const App: React.FC = () => {
         <SplashScreen onComplete={handleSplashComplete} />
       )}
 
-      <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-light text-light-text dark:bg-midnight dark:text-white flex flex-col selection:bg-electric-purple selection:text-white transition-colors duration-300">
+      <div className="min-h-screen w-full max-w-full overflow-x-clip bg-light text-light-text dark:bg-midnight dark:text-white flex flex-col selection:bg-electric-purple selection:text-white transition-colors duration-300">
         {/* Fixed Navigation Bar */}
       <Navbar
         onNavigate={handleNav}

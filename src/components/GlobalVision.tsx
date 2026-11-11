@@ -3,7 +3,7 @@ import { Clock, Shield, Laptop, Globe } from 'lucide-react';
 
 export const GlobalVision: React.FC<{ onStartProject: () => void }> = ({ onStartProject }) => {
   return (
-    <section id="global" className="py-20 sm:py-24 relative overflow-hidden">
+    <section id="global" className="pt-3 sm:pt-20 pb-16 sm:pb-24 relative overflow-hidden">
       {/* Ambient background glows */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-electric-purple/10 dark:bg-electric-purple/15 rounded-full blur-[140px] pointer-events-none" />
 

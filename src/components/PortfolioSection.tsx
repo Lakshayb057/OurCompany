@@ -39,7 +39,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   const [universeMediaMode, setUniverseMediaMode] = useState<'video' | 'photo'>('video');
 
   return (
-    <section id="projects" className="scroll-mt-12 sm:scroll-mt-16 py-24 relative overflow-hidden bg-light-100/50 dark:bg-midnight-900/40 transition-colors duration-300">
+    <section id="projects" className="scroll-mt-12 sm:scroll-mt-16 pt-16 pb-12 sm:py-24 relative overflow-hidden bg-light-100/50 dark:bg-midnight-900/40 transition-colors duration-300">
       {/* Anchor for legacy or alternate links targeting #portfolio */}
       <div id="portfolio" className="absolute -top-24 left-0 w-1 h-1 pointer-events-none" />
 
