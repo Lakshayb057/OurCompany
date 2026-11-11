@@ -4,7 +4,20 @@ import { Search, Layout, Zap, Shield, Rocket, Check } from 'lucide-react';
 export const ProcessSection: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    return typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
+  });
   const sectionRef = useRef<HTMLElement>(null);
+
+  // Track responsive screen size for mobile horizontal glide
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const steps = [
     {
@@ -131,11 +144,33 @@ export const ProcessSection: React.FC = () => {
             </p>
           </div>
 
-          {/* Main 2-Column Split: Single Container (Left) + Stacked Files (Right) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center flex-1 min-h-0 pb-2">
+          {/* Mobile Stage Quick Jumpers (Visible only on small screens) */}
+          <div className="flex lg:hidden items-center justify-center gap-1.5 sm:gap-2 mb-2 flex-shrink-0">
+            {steps.map((s, i) => {
+              const isCurrent = activeStep === i;
+              return (
+                <button
+                  key={s.num}
+                  type="button"
+                  onClick={() => handleStepClick(i)}
+                  className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-mono font-bold transition-all duration-300 ${
+                    isCurrent
+                      ? 'bg-electric-purple text-white shadow-md shadow-electric-purple/40 scale-105'
+                      : 'bg-white/70 dark:bg-white/10 text-slate-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/20'
+                  }`}
+                >
+                  <span>{s.num}</span>
+                  {isCurrent && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Main Layout: Desktop 2-Column Split (Left list + Right deck) | Mobile: Full-width Horizontal Deck */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-10 items-center flex-1 min-h-0 pb-2">
             
-            {/* Left Column: ALL 5 STEPS - Open list with no container and no shadows */}
-            <div className="lg:col-span-5 flex flex-col justify-center min-w-0 space-y-2 sm:space-y-3">
+            {/* Left Column: ALL 5 STEPS - Visible on Desktop only */}
+            <div className="hidden lg:flex lg:col-span-5 flex-col justify-center min-w-0 space-y-2 sm:space-y-3">
               {steps.map((step, idx) => {
                 const isActive = activeStep === idx;
 
@@ -150,7 +185,7 @@ export const ProcessSection: React.FC = () => {
                         : 'bg-transparent hover:bg-slate-100/50 dark:hover:bg-white/[0.02] border-l-4 border-transparent opacity-60 hover:opacity-100'
                     }`}
                   >
-                    {/* Icon - Clean without shadows */}
+                    {/* Icon */}
                     <div
                       className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
                         isActive
@@ -189,65 +224,84 @@ export const ProcessSection: React.FC = () => {
               })}
             </div>
 
-            {/* Right Column: Stacked Cards Deck - Increased height for immersive visual showcase */}
-            <div className="lg:col-span-7 flex flex-col justify-center h-full min-h-0 pt-2 sm:pt-4">
-              <div className="relative w-full h-[430px] sm:h-[510px] lg:h-[570px] max-h-[62vh] sm:max-h-[66vh] flex items-center justify-center">
+            {/* Right Column / Mobile Full Width: Images Deck */}
+            <div className="w-full lg:col-span-7 flex flex-col justify-center h-full min-h-0 pt-1 sm:pt-4">
+              <div className="relative w-full h-[410px] sm:h-[500px] lg:h-[570px] max-h-[64vh] sm:max-h-[68vh] flex items-center justify-center overflow-hidden">
                 
                 {steps.map((step, idx) => {
-                  // Ascending zIndex guarantees every subsequent card lands ON TOP, NEVER from behind!
-                  const cardZIndex = (idx + 1) * 10;
-
-                  let translateY = '105%';
-                  let scale = 1;
+                  let transform = '';
                   let opacity = 0;
+                  let scale = 1;
                   let brightness = 1;
-                  let shadowClass = 'shadow-none';
+                  let shadowClass = 'shadow-2xl';
+                  let cardZIndex = (idx + 1) * 10;
+                  let isClickable = true;
 
-                  if (idx === 0) {
-                    // Base file 01 (always visible)
-                    opacity = 1;
-                    const depth = Math.max(0, scrubValue); // 0 to 4
-                    const shiftY = Math.min(depth * 10, 40);
-                    translateY = `${-shiftY}px`;
-                    scale = 1 - Math.min(depth * 0.015, 0.06);
-                    brightness = 1 - Math.min(depth * 0.06, 0.24);
-                    shadowClass = 'shadow-2xl';
+                  if (isMobile) {
+                    // Mobile: Moving from right to left as user scrolls down (scrubValue goes 0 -> 4)
+                    const offset = idx - scrubValue;
+                    const absOffset = Math.abs(offset);
+
+                    // Offset = 0 is centered, > 0 is to the right, < 0 is to the left
+                    const translateX = offset * 104;
+                    scale = Math.max(0.88, 1 - absOffset * 0.08);
+                    opacity = absOffset > 1.3 ? 0 : Math.max(0, 1 - absOffset * 0.4);
+                    brightness = Math.max(0.75, 1 - absOffset * 0.2);
+                    transform = `translate3d(${translateX}%, 0, 0) scale(${scale})`;
+                    cardZIndex = 25 - Math.round(absOffset * 4);
+                    isClickable = absOffset < 0.6;
+                    shadowClass = absOffset < 0.5
+                      ? 'shadow-[0_16px_40px_rgba(0,0,0,0.65)]'
+                      : 'shadow-lg';
                   } else {
-                    // Files 02, 03, 04, 05
-                    const enterProgress = Math.min(Math.max(scrubValue - (idx - 1), 0), 1);
+                    // Desktop: Vertical stacking files deck
+                    cardZIndex = (idx + 1) * 10;
+                    let translateY = '105%';
 
-                    if (enterProgress <= 0) {
-                      // Waiting below the deck to slide up
-                      translateY = '105%';
-                      opacity = 0;
-                    } else if (enterProgress < 1) {
-                      // Actively sliding UP from the bottom ON TOP of previous cards!
-                      const currentY = (1 - enterProgress) * 105;
-                      translateY = `${currentY}%`;
-                      opacity = Math.min(enterProgress * 2.5, 1);
-                      scale = 0.98 + enterProgress * 0.02;
-                      shadowClass = 'shadow-[0_-12px_35px_rgba(0,0,0,0.65),0_25px_50px_rgba(0,0,0,0.85)]';
-                    } else {
-                      // Fully landed on top of previous files!
+                    if (idx === 0) {
                       opacity = 1;
-                      const depth = Math.max(0, scrubValue - idx);
-                      const shiftY = Math.min(depth * 10, (4 - idx) * 10);
+                      const depth = Math.max(0, scrubValue);
+                      const shiftY = Math.min(depth * 10, 40);
                       translateY = `${-shiftY}px`;
                       scale = 1 - Math.min(depth * 0.015, 0.06);
                       brightness = 1 - Math.min(depth * 0.06, 0.24);
-                      shadowClass = 'shadow-[0_-8px_30px_rgba(0,0,0,0.55),0_20px_45px_rgba(0,0,0,0.75)]';
+                      shadowClass = 'shadow-2xl';
+                    } else {
+                      const enterProgress = Math.min(Math.max(scrubValue - (idx - 1), 0), 1);
+                      if (enterProgress <= 0) {
+                        translateY = '105%';
+                        opacity = 0;
+                      } else if (enterProgress < 1) {
+                        const currentY = (1 - enterProgress) * 105;
+                        translateY = `${currentY}%`;
+                        opacity = Math.min(enterProgress * 2.5, 1);
+                        scale = 0.98 + enterProgress * 0.02;
+                        shadowClass = 'shadow-[0_-12px_35px_rgba(0,0,0,0.65),0_25px_50px_rgba(0,0,0,0.85)]';
+                      } else {
+                        opacity = 1;
+                        const depth = Math.max(0, scrubValue - idx);
+                        const shiftY = Math.min(depth * 10, (4 - idx) * 10);
+                        translateY = `${-shiftY}px`;
+                        scale = 1 - Math.min(depth * 0.015, 0.06);
+                        brightness = 1 - Math.min(depth * 0.06, 0.24);
+                        shadowClass = 'shadow-[0_-8px_30px_rgba(0,0,0,0.55),0_20px_45px_rgba(0,0,0,0.75)]';
+                      }
                     }
+                    transform = `translate3d(0, ${translateY}, 0) scale(${scale})`;
                   }
 
                   return (
                     <div
                       key={step.num}
                       style={{
-                        transform: `translate3d(0, ${translateY}, 0) scale(${scale})`,
+                        transform,
                         opacity,
                         zIndex: cardZIndex,
                         filter: `brightness(${brightness})`,
-                        transition: 'transform 0.12s ease-out, opacity 0.15s ease-out, filter 0.15s ease-out'
+                        pointerEvents: isClickable ? 'auto' : 'none',
+                        transition: isMobile
+                          ? 'transform 0.08s ease-out, opacity 0.1s ease-out'
+                          : 'transform 0.12s ease-out, opacity 0.15s ease-out, filter 0.15s ease-out'
                       }}
                       className={`absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border-2 border-purple-200/90 dark:border-electric-purple/60 ${shadowClass} flex flex-col will-change-transform`}
                     >
@@ -260,13 +314,34 @@ export const ProcessSection: React.FC = () => {
                         />
 
                         {/* Dark Atmospheric Gradients for Text Contrast */}
-                        <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/70 to-transparent pointer-events-none" />
-                        <div className="absolute inset-x-0 bottom-0 h-36 sm:h-44 bg-gradient-to-t from-black/95 via-black/70 to-transparent pointer-events-none" />
+                        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none" />
+                        <div className="absolute inset-x-0 bottom-0 h-40 sm:h-48 bg-gradient-to-t from-black/95 via-black/75 to-transparent pointer-events-none" />
 
-                        {/* Bottom Overlay Info with Deliverables */}
-                        <div className="absolute bottom-2.5 sm:bottom-4 left-3 sm:left-5 right-3 sm:right-5 space-y-1.5 sm:space-y-2 pointer-events-none">
-                          <div className="text-white text-sm sm:text-lg lg:text-xl font-extrabold tracking-tight drop-shadow-md">
-                            {step.title}
+                        {/* Top Stage Header Overlay - Content aligned directly over the image */}
+                        <div className="absolute top-3 sm:top-4 left-3 sm:left-5 right-3 sm:right-5 flex items-center justify-between pointer-events-none z-10">
+                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 dark:bg-black/75 backdrop-blur-md border border-white/20 shadow-md">
+                            <div className="w-5 h-5 rounded-md bg-electric-purple flex items-center justify-center flex-shrink-0 text-white">
+                              {renderStepIcon(idx, true)}
+                            </div>
+                            <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider text-purple-200 uppercase">
+                              Stage {step.num} of 05
+                            </span>
+                          </div>
+
+                          <div className="w-8 h-8 rounded-full bg-electric-purple text-white font-mono font-black text-xs sm:text-sm flex items-center justify-center shadow-lg border border-white/25">
+                            {step.num}
+                          </div>
+                        </div>
+
+                        {/* Bottom Overlay Info with Title & Deliverables - Content aligned over image */}
+                        <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-5 right-3 sm:right-5 space-y-1.5 sm:space-y-2 pointer-events-none z-10">
+                          <div className="flex items-baseline justify-between gap-2">
+                            <div className="text-white text-base sm:text-lg lg:text-xl font-extrabold tracking-tight drop-shadow-md">
+                              {step.title}
+                            </div>
+                            <span className="text-sm sm:text-lg font-mono font-black text-lavender-glow drop-shadow flex-shrink-0">
+                              {step.num}
+                            </span>
                           </div>
 
                           {/* Deliverables tags on image */}
@@ -274,10 +349,10 @@ export const ProcessSection: React.FC = () => {
                             {step.deliverables.map((item, dIdx) => (
                               <div
                                 key={dIdx}
-                                className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[11px] font-medium text-white px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg bg-black/60 backdrop-blur-md border border-white/15"
+                                className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[11px] font-medium text-white px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg bg-black/65 backdrop-blur-md border border-white/15"
                               >
                                 <Check className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-emerald-400 flex-shrink-0" />
-                                <span className="truncate max-w-[160px] sm:max-w-none">{item}</span>
+                                <span className="truncate max-w-[170px] sm:max-w-none">{item}</span>
                               </div>
                             ))}
                           </div>
