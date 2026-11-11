@@ -340,17 +340,8 @@ export const ProcessSection: React.FC = () => {
                         <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/85 via-black/45 to-transparent pointer-events-none rounded-t-[inherit]" />
                         <div className="absolute inset-x-0 bottom-0 h-44 sm:h-52 bg-gradient-to-t from-black/95 via-black/80 to-transparent pointer-events-none rounded-b-[inherit]" />
 
-                        {/* Top Stage Header Overlay - Content aligned directly over the image */}
-                        <div className="absolute top-3.5 sm:top-5 left-3.5 sm:left-5 right-3.5 sm:right-5 flex items-center justify-between pointer-events-none z-10">
-                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/65 dark:bg-black/80 backdrop-blur-md border border-white/20 shadow-md">
-                            <div className="w-5 h-5 rounded-md bg-electric-purple flex items-center justify-center flex-shrink-0 text-white">
-                              {renderStepIcon(idx, true)}
-                            </div>
-                            <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider text-purple-200 uppercase">
-                              Stage {step.num} of 05
-                            </span>
-                          </div>
-
+                        {/* Top Stage Header Overlay - Sleek Stage Number in Corner */}
+                        <div className="absolute top-3.5 sm:top-5 right-3.5 sm:right-5 pointer-events-none z-10">
                           <div className="w-8 h-8 rounded-full bg-electric-purple text-white font-mono font-black text-xs sm:text-sm flex items-center justify-center shadow-lg border border-white/25">
                             {step.num}
                           </div>
