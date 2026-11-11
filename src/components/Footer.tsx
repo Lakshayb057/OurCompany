@@ -17,11 +17,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         {/* Top Grid Area with Giant Watermark in Background */}
         <div className="relative pb-5 sm:pb-7 border-b border-light-border dark:border-midnight-border/70 overflow-hidden">
           
-          {/* Giant Brand Typography Watermark (matches EKHUM style) */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
-            <span className="text-[16vw] sm:text-[14vw] md:text-[12vw] lg:text-[11vw] xl:text-[10rem] font-black tracking-tight sm:tracking-normal lg:tracking-wider uppercase leading-none whitespace-nowrap bg-gradient-to-b from-electric-purple/20 via-lavender-glow/10 to-transparent dark:from-electric-purple/30 dark:via-lavender-light/12 dark:to-transparent bg-clip-text text-transparent select-none opacity-90 transition-all">
-              CodeVerse
-            </span>
+          {/* Giant Brand Logo & Typography Watermark in Footer Background */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden px-4">
+            <div className="flex items-center justify-center gap-3 sm:gap-6 lg:gap-8 opacity-20 dark:opacity-30">
+              <img
+                src="/hero-ribbon.png"
+                alt="CodeVerse Watermark Logo"
+                className="w-12 h-12 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-36 lg:h-36 xl:w-44 xl:h-44 object-contain flex-shrink-0 drop-shadow-[0_0_24px_rgba(124,44,245,0.45)]"
+              />
+              <span className="text-[12vw] sm:text-[11vw] md:text-[9.5vw] lg:text-[8.5vw] xl:text-[8rem] font-black tracking-tight sm:tracking-normal lg:tracking-wider uppercase leading-none whitespace-nowrap bg-gradient-to-b from-electric-purple/90 via-lavender-glow/60 to-transparent dark:from-electric-purple dark:via-lavender-light/60 dark:to-transparent bg-clip-text text-transparent select-none">
+                CodeVerse
+              </span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10 relative z-10">
