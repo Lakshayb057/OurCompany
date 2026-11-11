@@ -58,7 +58,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   }, [products, selectedCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen pt-28 sm:pt-32 pb-24 bg-light-100/60 dark:bg-midnight-900/60 relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-screen pt-20 sm:pt-32 pb-10 sm:pb-24 bg-light-100/60 dark:bg-midnight-900/60 relative overflow-hidden transition-colors duration-300">
       {/* Background ambient lighting glows */}
       <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-electric-purple/5 dark:bg-electric-purple/10 blur-[140px] rounded-full pointer-events-none" />
       <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-lavender-glow/5 dark:bg-deep-violet/15 blur-[140px] rounded-full pointer-events-none" />
@@ -66,7 +66,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Navigation Breadcrumb & Back to Home */}
-        <div className="flex items-center justify-between gap-4 mb-8">
+        <div className="flex items-center justify-between gap-4 mb-4 sm:mb-8">
           <button
             onClick={() => onBackToHome()}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 dark:bg-midnight-card/80 border border-purple-200/70 dark:border-midnight-border text-xs sm:text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-glow shadow-sm hover:shadow transition-all group"
@@ -83,7 +83,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
         </div>
 
         {/* Page Header */}
-        <div className="max-w-3xl space-y-4 mb-12">
+        <div className="max-w-3xl space-y-3 sm:space-y-4 mb-6 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-electric-purple/10 dark:bg-electric-purple/20 border border-electric-purple/25 text-electric-purple dark:text-lavender-glow text-xs font-semibold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Systems & Startup Archive</span>
@@ -99,7 +99,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
         </div>
 
         {/* Search & Category Filter Controls */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 pb-6 border-b border-light-border dark:border-midnight-border/60">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 sm:mb-10 sm:pb-6 border-b border-light-border dark:border-midnight-border/60">
           
           {/* Category Tabs */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">

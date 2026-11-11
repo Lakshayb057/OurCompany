@@ -72,7 +72,7 @@ export const Hero: React.FC<HeroProps> = ({
     <section 
       ref={heroSectionRef}
       id="hero" 
-      className="relative min-h-screen pt-16 pb-8 sm:pt-28 sm:pb-10 flex flex-col justify-center overflow-hidden w-full max-w-full"
+      className="relative pt-16 pb-6 sm:min-h-screen sm:pt-28 sm:pb-10 flex flex-col justify-center overflow-hidden w-full max-w-full"
     >
       {/* Hero-Only Video & Animated WebP Dynamic Background with smooth entrance fade */}
       <div 
@@ -316,7 +316,7 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
 
         {/* Bottom Metrics Bar with Staggered Entrance and Reduced Margin */}
-        <div className="mt-6 sm:mt-8 pt-4 sm:pt-5 border-t border-light-border dark:border-midnight-border/60 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 items-stretch">
+        <div className="mt-4 sm:mt-8 pt-3 sm:pt-5 border-t border-light-border dark:border-midnight-border/60 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4 items-stretch">
           {metricsData.map((metric, index) => (
             <div 
               key={metric.label}

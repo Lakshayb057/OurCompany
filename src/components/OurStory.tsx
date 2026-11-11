@@ -34,7 +34,7 @@ export const OurStory: React.FC = () => {
   return (
     <section 
       id="story" 
-      className="py-24 relative overflow-hidden w-full max-w-full bg-light-100/60 dark:bg-midnight-900/60 border-t border-b border-light-border dark:border-midnight-border/50"
+      className="py-8 sm:py-16 md:py-24 relative overflow-hidden w-full max-w-full bg-light-100/60 dark:bg-midnight-900/60 border-t border-b border-light-border dark:border-midnight-border/50"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -65,7 +65,7 @@ export const OurStory: React.FC = () => {
         </div>
 
         {/* Unified Glass Container */}
-        <div className="mt-16 glass-panel rounded-2xl border border-light-border dark:border-midnight-border overflow-hidden shadow-lg">
+        <div className="mt-6 sm:mt-16 glass-panel rounded-2xl border border-light-border dark:border-midnight-border overflow-hidden shadow-lg">
           
           {/* 2. TOP HALF (Mission, Philosophy & Vision): Triggers when this row scrolls into view */}
           <div 
@@ -74,7 +74,7 @@ export const OurStory: React.FC = () => {
           >
             
             {/* Mission Card */}
-            <div className="p-8 sm:p-10 relative overflow-hidden group">
+            <div className="p-5 sm:p-8 md:p-10 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-36 h-36 bg-electric-purple/5 dark:bg-electric-purple/10 rounded-full blur-2xl group-hover:bg-electric-purple/15 transition-all pointer-events-none" />
               
               <div className="flex items-center gap-4 mb-5">
@@ -142,7 +142,7 @@ export const OurStory: React.FC = () => {
             </div>
 
             {/* Philosophy Card */}
-            <div className="p-8 sm:p-10 relative overflow-hidden group">
+            <div className="p-5 sm:p-8 md:p-10 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-36 h-36 bg-electric-purple/5 dark:bg-electric-purple/10 rounded-full blur-2xl group-hover:bg-electric-purple/15 transition-all pointer-events-none" />
               
               <div className="flex items-center gap-4 mb-5">
@@ -210,7 +210,7 @@ export const OurStory: React.FC = () => {
             </div>
 
             {/* Vision Card */}
-            <div className="p-8 sm:p-10 relative overflow-hidden group">
+            <div className="p-5 sm:p-8 md:p-10 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-36 h-36 bg-electric-purple/5 dark:bg-electric-purple/10 rounded-full blur-2xl group-hover:bg-electric-purple/15 transition-all pointer-events-none" />
               
               <div className="flex items-center gap-4 mb-5">
@@ -285,11 +285,11 @@ export const OurStory: React.FC = () => {
           {/* 3. BOTTOM HALF (The Process CodeVerse Follows): Triggers when user scrolls down to this block */}
           <div 
             ref={processRef}
-            className="p-8 sm:p-10 bg-lavender-soft/30 dark:bg-black/25 relative overflow-hidden"
+            className="p-5 sm:p-8 md:p-10 bg-lavender-soft/30 dark:bg-black/25 relative overflow-hidden"
           >
             {/* Process Header */}
             <div 
-              className="max-w-2xl mb-8"
+              className="max-w-2xl mb-4 sm:mb-8"
               style={{
                 transform: isProcessInView ? 'translateY(0)' : 'translateY(24px)',
                 opacity: isProcessInView ? 1 : 0,

@@ -108,11 +108,11 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
   if (teamLength === 0) return null;
 
   return (
-    <section id="leadership" className="py-24 relative overflow-hidden">
+    <section id="leadership" className="py-8 sm:py-16 md:py-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center space-y-4 mb-14">
+        <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-6 sm:mb-14">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
             Leadership & <span className="text-gradient-purple">Governance</span>
           </h2>

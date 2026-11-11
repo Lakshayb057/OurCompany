@@ -70,13 +70,13 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
     <section 
       ref={sectionRef}
       id="services" 
-      className="py-24 relative overflow-hidden"
+      className="py-8 sm:py-16 md:py-24 relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header with 3D Reveal */}
         <div 
-          className="max-w-3xl mx-auto text-center space-y-4 mb-16"
+          className="max-w-3xl mx-auto text-center space-y-4 mb-6 sm:mb-16"
           style={{
             opacity: isInView ? 1 : 0,
             transform: isInView 
@@ -188,7 +188,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
 
         {/* Explore All Services Action */}
         {onViewAllServices && (
-          <div className="mt-14 flex justify-center">
+          <div className="mt-6 sm:mt-14 flex justify-center">
             <button
               onClick={onViewAllServices}
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-white/15 text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-light hover:border-electric-purple hover:bg-lavender-soft/40 dark:hover:bg-white/5 hover:scale-[1.02] active:scale-[0.98] transition-all group cursor-pointer shadow-none hover:shadow-none"

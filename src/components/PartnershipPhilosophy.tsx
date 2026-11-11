@@ -56,7 +56,7 @@ const ModelCard: React.FC<{
         transform: isInView ? 'translateY(0)' : 'translateY(24px)',
         transition: `opacity 0.6s ease-out ${index * 120}ms, transform 0.6s ease-out ${index * 120}ms`,
       }}
-      className="relative rounded-3xl overflow-hidden bg-white/95 dark:bg-midnight-card/90 border border-purple-200/80 dark:border-midnight-border/80 p-8 sm:p-9 flex flex-col justify-between shadow-none select-none min-h-[300px] sm:min-h-[320px]"
+      className="relative rounded-3xl overflow-hidden bg-white/95 dark:bg-midnight-card/90 border border-purple-200/80 dark:border-midnight-border/80 p-5 sm:p-8 md:p-9 flex flex-col justify-between shadow-none select-none min-h-[240px] sm:min-h-[320px]"
     >
       {/* Subtle Depth Watermark Number */}
       <div className="absolute -top-4 -right-2 text-8xl sm:text-9xl font-black font-mono text-purple-900/5 dark:text-white/5 pointer-events-none select-none">
@@ -114,7 +114,7 @@ export const PartnershipPhilosophy: React.FC = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-24 relative overflow-hidden bg-light-100/50 dark:bg-midnight-900/40 transition-colors duration-300">
+    <section ref={sectionRef} className="py-8 sm:py-16 md:py-24 relative overflow-hidden bg-light-100/50 dark:bg-midnight-900/40 transition-colors duration-300">
       {/* Ambient background glows */}
       <div className="absolute top-1/4 left-0 w-[450px] h-[450px] bg-electric-purple/5 dark:bg-electric-purple/10 blur-[130px] rounded-full pointer-events-none" />
       <div className="absolute bottom-10 right-0 w-[450px] h-[450px] bg-lavender-glow/5 dark:bg-deep-violet/15 blur-[120px] rounded-full pointer-events-none" />
@@ -122,7 +122,7 @@ export const PartnershipPhilosophy: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Center-Aligned Section Header matching all other flagship sections */}
-        <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
+        <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-6 sm:mb-16">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
             Aligned Incentives, <span className="text-gradient-purple">Zero Waste</span>
           </h2>

@@ -39,7 +39,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   const [universeMediaMode, setUniverseMediaMode] = useState<'video' | 'photo'>('video');
 
   return (
-    <section id="projects" className="scroll-mt-12 sm:scroll-mt-16 pt-16 pb-12 sm:py-24 relative overflow-hidden bg-light-100/50 dark:bg-midnight-900/40 transition-colors duration-300">
+    <section id="projects" className="scroll-mt-12 sm:scroll-mt-16 pt-8 pb-8 sm:py-16 md:py-24 relative overflow-hidden bg-light-100/50 dark:bg-midnight-900/40 transition-colors duration-300">
       {/* Anchor for legacy or alternate links targeting #portfolio */}
       <div id="portfolio" className="absolute -top-24 left-0 w-1 h-1 pointer-events-none" />
 
@@ -50,7 +50,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
+        <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-6 sm:mb-16">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
             Top Flagship <span className="text-gradient-purple">Services</span>
           </h2>
@@ -158,7 +158,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
         </div>
 
         {/* 2 Action Buttons: Explore All Projects & Explore All Services */}
-        <div className="mt-14 flex flex-wrap items-center justify-center gap-4 sm:gap-5">
+        <div className="mt-6 sm:mt-14 flex flex-wrap items-center justify-center gap-3 sm:gap-5">
           {/* Button 1: Explore All Projects */}
           <button
             onClick={onViewAllProjects}

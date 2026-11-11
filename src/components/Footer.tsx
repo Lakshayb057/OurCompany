@@ -11,11 +11,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   };
 
   return (
-    <footer className="bg-white dark:bg-midnight-900 border-t border-light-border dark:border-midnight-border pt-16 pb-12 relative overflow-hidden transition-colors">
+    <footer className="bg-white dark:bg-midnight-900 border-t border-light-border dark:border-midnight-border pt-8 pb-6 sm:pt-16 sm:pb-12 relative overflow-hidden transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Top Grid Area with Giant Watermark in Background */}
-        <div className="relative pb-12 border-b border-light-border dark:border-midnight-border/70 overflow-hidden">
+        <div className="relative pb-6 sm:pb-12 border-b border-light-border dark:border-midnight-border/70 overflow-hidden">
           
           {/* Giant Brand Typography Watermark (matches EKHUM style) */}
           <div className="absolute inset-x-0 top-0 bottom-6 sm:bottom-8 flex items-center justify-center pointer-events-none select-none z-0">
@@ -24,7 +24,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-10 relative z-10">
           
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
@@ -124,7 +124,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         {/* Bottom copyright bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-light-subtext dark:text-muted-gray">
+        <div className="pt-4 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs font-mono text-light-subtext dark:text-muted-gray">
           <div>
             © {new Date().getFullYear()} CodeVerse. All rights reserved. Turning Ideas Into Technology.
           </div>

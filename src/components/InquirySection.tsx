@@ -106,10 +106,10 @@ export const InquirySection: React.FC<InquirySectionProps> = ({ initialProjectTy
   };
 
   return (
-    <section id="contact" className="py-24 relative overflow-hidden bg-light-100/60 dark:bg-midnight-900/60 border-t border-light-border dark:border-midnight-border/60">
+    <section id="contact" className="py-8 sm:py-16 md:py-24 relative overflow-hidden bg-light-100/60 dark:bg-midnight-900/60 border-t border-light-border dark:border-midnight-border/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-12">
           
           {/* Left Column: Context & Assurances */}
           <div className="lg:col-span-5 space-y-6">
@@ -161,7 +161,7 @@ export const InquirySection: React.FC<InquirySectionProps> = ({ initialProjectTy
 
           {/* Right Column: Structured Inquiry Form */}
           <div className="lg:col-span-7">
-            <div className="glass-panel p-6 sm:p-10 rounded-2xl border border-purple-200 dark:border-electric-purple/30 shadow-2xl">
+            <div className="glass-panel p-4 sm:p-8 md:p-10 rounded-2xl border border-purple-200 dark:border-electric-purple/30 shadow-2xl">
               
               {success ? (
                 <div className="py-12 text-center space-y-4 animate-fadeIn">
