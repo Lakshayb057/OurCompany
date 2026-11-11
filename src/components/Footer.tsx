@@ -18,8 +18,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="relative pb-5 sm:pb-7 border-b border-light-border dark:border-midnight-border/70 overflow-hidden">
           
           {/* Giant Brand Typography Watermark (matches EKHUM style) */}
-          <div className="absolute inset-x-0 top-0 bottom-6 sm:bottom-8 flex items-center justify-center pointer-events-none select-none z-0">
-            <span className="text-[15vw] sm:text-[13vw] md:text-[11vw] lg:text-[10vw] xl:text-[9.5rem] font-black tracking-tight sm:tracking-normal lg:tracking-wider uppercase leading-none whitespace-nowrap bg-gradient-to-b from-electric-purple/25 via-lavender-glow/12 to-transparent dark:from-electric-purple/35 dark:via-lavender-light/15 dark:to-transparent bg-clip-text text-transparent select-none opacity-90 transition-all">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
+            <span className="text-[16vw] sm:text-[14vw] md:text-[12vw] lg:text-[11vw] xl:text-[10rem] font-black tracking-tight sm:tracking-normal lg:tracking-wider uppercase leading-none whitespace-nowrap bg-gradient-to-b from-electric-purple/20 via-lavender-glow/10 to-transparent dark:from-electric-purple/30 dark:via-lavender-light/12 dark:to-transparent bg-clip-text text-transparent select-none opacity-90 transition-all">
               CodeVerse
             </span>
           </div>
@@ -27,16 +27,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10 relative z-10">
           
           {/* Brand Info */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="h-11 w-11 rounded-xl bg-light-surface dark:bg-midnight-card border border-purple-200 dark:border-electric-purple/30 flex items-center justify-center shadow-sm p-1.5">
-                <img
-                  src="/logo-icon.png"
-                  alt="CodeVerse"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
+          <div className="lg:col-span-2 space-y-3">
+            <h4 className="text-xs font-mono uppercase tracking-wider text-electric-purple dark:text-lavender-glow mb-4 font-bold">
+              About CodeVerse
+            </h4>
 
             <p className="text-xs sm:text-sm text-light-subtext dark:text-muted-gray leading-relaxed max-w-sm">
               CodeVerse is an engineering startup building scalable full-stack web applications, real-time engines, AI automation systems, and proprietary digital products.
