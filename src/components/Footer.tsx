@@ -19,13 +19,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           
           {/* Giant Brand Logo & Typography Watermark in Footer Background */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden px-4">
-            <div className="flex items-center justify-center gap-3 sm:gap-6 lg:gap-8 opacity-20 dark:opacity-30">
+            <div className="flex items-center justify-center gap-3 sm:gap-6 lg:gap-8 opacity-55 dark:opacity-65 transition-opacity duration-300">
               <img
                 src="/hero-ribbon.png"
                 alt="CodeVerse Watermark Logo"
-                className="w-12 h-12 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-36 lg:h-36 xl:w-44 xl:h-44 object-contain flex-shrink-0 drop-shadow-[0_0_24px_rgba(124,44,245,0.45)]"
+                className="w-14 h-14 sm:w-22 sm:h-22 md:w-30 md:h-30 lg:w-40 lg:h-40 xl:w-48 xl:h-48 object-contain flex-shrink-0 drop-shadow-[0_0_35px_rgba(124,44,245,0.65)]"
               />
-              <span className="text-[12vw] sm:text-[11vw] md:text-[9.5vw] lg:text-[8.5vw] xl:text-[8rem] font-black tracking-tight sm:tracking-normal lg:tracking-wider uppercase leading-none whitespace-nowrap bg-gradient-to-b from-electric-purple/90 via-lavender-glow/60 to-transparent dark:from-electric-purple dark:via-lavender-light/60 dark:to-transparent bg-clip-text text-transparent select-none">
+              <span className="text-[13vw] sm:text-[12vw] md:text-[10vw] lg:text-[9vw] xl:text-[8.5rem] font-black tracking-tight sm:tracking-normal lg:tracking-wider uppercase leading-none whitespace-nowrap bg-gradient-to-b from-purple-700 via-electric-purple to-purple-400/50 dark:from-white dark:via-lavender-glow dark:to-electric-purple/60 bg-clip-text text-transparent drop-shadow-[0_2px_16px_rgba(124,44,245,0.3)] dark:drop-shadow-[0_4px_30px_rgba(124,44,245,0.6)] select-none">
                 CodeVerse
               </span>
             </div>
