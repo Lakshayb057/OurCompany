@@ -183,27 +183,6 @@ export const ProcessSection: React.FC = () => {
             </p>
           </div>
 
-          {/* Mobile Stage Quick Jumpers (Visible only on small screens) */}
-          <div className="flex lg:hidden items-center justify-center gap-1.5 sm:gap-2 mb-1.5 flex-shrink-0">
-            {steps.map((s, i) => {
-              const isCurrent = activeStep === i;
-              return (
-                <button
-                  key={s.num}
-                  type="button"
-                  onClick={() => handleStepClick(i)}
-                  className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-mono font-bold transition-all duration-300 ${
-                    isCurrent
-                      ? 'bg-electric-purple text-white shadow-md shadow-electric-purple/40 scale-105'
-                      : 'bg-white/70 dark:bg-white/10 text-slate-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/20'
-                  }`}
-                >
-                  <span>{s.num}</span>
-                  {isCurrent && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
-                </button>
-              );
-            })}
-          </div>
 
           {/* Main Layout: Desktop 2-Column Split (Left list + Right deck) | Mobile: Full-width Horizontal Deck */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-10 items-center flex-1 min-h-0 pb-1 sm:pb-2">
