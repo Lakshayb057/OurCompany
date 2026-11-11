@@ -169,23 +169,23 @@ export const ProcessSection: React.FC = () => {
       <div className="absolute top-1/4 left-10 w-[500px] h-[500px] bg-electric-purple/5 dark:bg-electric-purple/10 blur-[130px] rounded-full pointer-events-none" />
       <div className="absolute bottom-1/4 right-10 w-[450px] h-[450px] bg-lavender-glow/5 dark:bg-deep-violet/15 blur-[120px] rounded-full pointer-events-none" />
 
-      {/* Pinned Sticky Viewport Container - Top padded to ALWAYS clear the navbar completely */}
-      <div className="sticky top-0 h-[100dvh] w-full flex flex-col justify-start pt-12 sm:pt-20 pb-1 sm:pb-6 overflow-hidden px-3 sm:px-6 lg:px-8">
+      {/* Pinned Sticky Viewport Container - Top padded to ALWAYS clear the navbar completely on all screens */}
+      <div className="sticky top-0 h-[100dvh] w-full flex flex-col justify-between pt-[76px] sm:pt-[84px] lg:pt-[96px] pb-2 sm:pb-6 overflow-hidden px-3.5 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col h-full justify-between min-h-0">
           
-          {/* Section Header - Perfectly aligned with other sections with one-line explanation */}
-          <div className="max-w-3xl mx-auto text-center space-y-1 sm:space-y-2 mt-1 sm:mt-6 mb-1 sm:mb-2.5 flex-shrink-0">
-            <h2 className="text-2xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
+          {/* Section Header - Clears fixed navbar with calibrated spacing */}
+          <div className="max-w-3xl mx-auto text-center space-y-1 sm:space-y-2 mt-0 sm:mt-1 mb-1 sm:mb-3 flex-shrink-0">
+            <h2 className="text-xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-light-text dark:text-white leading-tight">
               Discovery-to-Delivery <span className="text-gradient-purple">Process</span>
             </h2>
-            <p className="text-light-subtext dark:text-muted-gray text-xs sm:text-base leading-relaxed">
+            <p className="text-light-subtext dark:text-muted-gray text-xs sm:text-sm lg:text-base leading-snug sm:leading-relaxed max-w-xl mx-auto">
               A milestone-driven engineering lifecycle executed from architectural design to zero-downtime global deployment.
             </p>
           </div>
 
 
           {/* Main Layout: Desktop 2-Column Split (Left list + Right deck) | Mobile: Full-width Horizontal Deck */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-10 items-center flex-1 min-h-0 pb-1 sm:pb-2">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-10 items-center flex-1 min-h-0 pb-1 sm:pb-2 w-full">
             
             {/* Left Column: ALL 5 STEPS - Visible on Desktop only */}
             <div className="hidden lg:flex lg:col-span-5 flex-col justify-center min-w-0 space-y-2 sm:space-y-3">
@@ -242,12 +242,12 @@ export const ProcessSection: React.FC = () => {
               })}
             </div>
 
-            {/* Right Column / Mobile Full Width: Images Deck */}
-            <div className="w-full lg:col-span-7 flex flex-col justify-center h-full min-h-0 pt-0 sm:pt-4">
+            {/* Right Column / Mobile Full Width: Images Deck - Fills available vertical height with zero excess gaps */}
+            <div className="w-full lg:col-span-7 flex flex-col justify-center items-center flex-1 h-full min-h-0 py-1 sm:py-2">
               <div 
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
-                className="relative w-full h-[400px] sm:h-[480px] lg:h-[570px] max-h-[58vh] sm:max-h-[66vh] flex items-center justify-center overflow-hidden touch-pan-y"
+                className="relative w-full h-full max-h-[calc(100dvh-170px)] sm:max-h-[68vh] lg:h-[570px] max-w-sm sm:max-w-md lg:max-w-none mx-auto flex items-center justify-center overflow-hidden touch-pan-y"
               >
                 
                 {steps.map((step, idx) => {
