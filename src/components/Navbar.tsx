@@ -208,18 +208,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* 2. TOP-RIGHT CORNER: Action Entities & Dock Target */}
       <div className="fixed top-3 right-4 sm:top-5 sm:right-8 z-50 flex items-center gap-2 sm:gap-3">
-        {/* Mobile-only theme toggle - perfectly aligned to top-right */}
-        {onToggleTheme && (
-          <button
-            onClick={onToggleTheme}
-            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white transition-all shadow-sm backdrop-blur-md cursor-pointer flex-shrink-0"
-            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            aria-label="Toggle theme"
-          >
-            {isDark ? <Sun className="w-4 h-4 text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.4)]" /> : <Moon className="w-4 h-4 text-electric-purple" />}
-          </button>
-        )}
-
         {/* If on dedicated Projects page, render a direct Start a Project button */}
         {currentRoute === 'projects' ? (
           <button
@@ -246,20 +234,28 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         )}
 
-        {/* Mobile Menu Button - Hidden on Hero, Smoothly appears once scrolled */}
-        <div className={`flex lg:hidden transition-all duration-300 flex-shrink-0 ${
-          currentRoute === 'projects' || scrollY > 60
-            ? 'opacity-100 scale-100 pointer-events-auto' 
-            : 'opacity-0 scale-90 pointer-events-none'
-        }`}>
+        {/* Mobile Menu Button (Three Bar) - Appears once scrolled or on projects page */}
+        {(currentRoute === 'projects' || scrollY > 60) && (
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-text dark:text-white focus:outline-none shadow-sm backdrop-blur-md cursor-pointer"
+            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-text dark:text-white focus:outline-none shadow-sm backdrop-blur-md cursor-pointer flex-shrink-0 transition-all duration-200"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-        </div>
+        )}
+
+        {/* Mobile-only theme toggle - Positioned on the right corner AFTER the three bar */}
+        {onToggleTheme && (
+          <button
+            onClick={onToggleTheme}
+            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white transition-all shadow-sm backdrop-blur-md cursor-pointer flex-shrink-0"
+            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            aria-label="Toggle theme"
+          >
+            {isDark ? <Sun className="w-4 h-4 text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.4)]" /> : <Moon className="w-4 h-4 text-electric-purple" />}
+          </button>
+        )}
       </div>
 
       {/* Mobile Drawer Menu */}
