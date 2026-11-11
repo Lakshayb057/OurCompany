@@ -287,10 +287,10 @@ export const ProcessSection: React.FC = () => {
 
                     // Offset = 0 is centered, > 0 is to the right, < 0 is to the left
                     const translateX = offset * 104;
-                    scale = Math.max(0.88, 1 - absOffset * 0.08);
-                    opacity = absOffset > 1.3 ? 0 : Math.max(0, 1 - absOffset * 0.4);
-                    brightness = Math.max(0.75, 1 - absOffset * 0.2);
-                    transform = `translate3d(${translateX}%, 0, 0) scale(${scale})`;
+                    scale = 1; // Perfectly flush scale so corners never pull away or misalign
+                    opacity = absOffset > 1.2 ? 0 : Math.max(0, 1 - absOffset * 0.4);
+                    brightness = Math.max(0.85, 1 - absOffset * 0.15);
+                    transform = `translate3d(${translateX}%, 0, 0)`;
                     cardZIndex = 25 - Math.round(absOffset * 4);
                     isClickable = absOffset < 0.6;
                     shadowClass = absOffset < 0.5
@@ -342,27 +342,28 @@ export const ProcessSection: React.FC = () => {
                         zIndex: cardZIndex,
                         filter: `brightness(${brightness})`,
                         pointerEvents: isClickable ? 'auto' : 'none',
+                        WebkitMaskImage: '-webkit-radial-gradient(white, black)',
                         transition: isMobile
                           ? 'transform 0.08s ease-out, opacity 0.1s ease-out'
                           : 'transform 0.12s ease-out, opacity 0.15s ease-out, filter 0.15s ease-out'
                       }}
-                      className={`absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border-2 border-purple-200/90 dark:border-electric-purple/60 ${shadowClass} flex flex-col will-change-transform`}
+                      className={`absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border-2 border-purple-200/90 dark:border-electric-purple/60 ${shadowClass} will-change-transform isolate`}
                     >
-                      {/* Image Frame */}
-                      <div className="relative flex-1 min-h-0 overflow-hidden">
+                      {/* Image Frame with Full Bleed to all 4 rounded corners */}
+                      <div className="relative w-full h-full overflow-hidden rounded-[inherit]">
                         <img
                           src={step.image}
                           alt={step.title}
-                          className="w-full h-full object-cover object-center"
+                          className="w-full h-full object-cover object-center rounded-[inherit]"
                         />
 
                         {/* Dark Atmospheric Gradients for Text Contrast */}
-                        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none" />
-                        <div className="absolute inset-x-0 bottom-0 h-40 sm:h-48 bg-gradient-to-t from-black/95 via-black/75 to-transparent pointer-events-none" />
+                        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/85 via-black/45 to-transparent pointer-events-none rounded-t-[inherit]" />
+                        <div className="absolute inset-x-0 bottom-0 h-44 sm:h-52 bg-gradient-to-t from-black/95 via-black/80 to-transparent pointer-events-none rounded-b-[inherit]" />
 
                         {/* Top Stage Header Overlay - Content aligned directly over the image */}
-                        <div className="absolute top-3 sm:top-4 left-3 sm:left-5 right-3 sm:right-5 flex items-center justify-between pointer-events-none z-10">
-                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 dark:bg-black/75 backdrop-blur-md border border-white/20 shadow-md">
+                        <div className="absolute top-3.5 sm:top-5 left-3.5 sm:left-5 right-3.5 sm:right-5 flex items-center justify-between pointer-events-none z-10">
+                          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/65 dark:bg-black/80 backdrop-blur-md border border-white/20 shadow-md">
                             <div className="w-5 h-5 rounded-md bg-electric-purple flex items-center justify-center flex-shrink-0 text-white">
                               {renderStepIcon(idx, true)}
                             </div>
@@ -377,14 +378,9 @@ export const ProcessSection: React.FC = () => {
                         </div>
 
                         {/* Bottom Overlay Info with Title & Deliverables - Content aligned over image */}
-                        <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-5 right-3 sm:right-5 space-y-1.5 sm:space-y-2 pointer-events-none z-10">
-                          <div className="flex items-baseline justify-between gap-2">
-                            <div className="text-white text-base sm:text-lg lg:text-xl font-extrabold tracking-tight drop-shadow-md">
-                              {step.title}
-                            </div>
-                            <span className="text-sm sm:text-lg font-mono font-black text-lavender-glow drop-shadow flex-shrink-0">
-                              {step.num}
-                            </span>
+                        <div className="absolute bottom-3.5 sm:bottom-5 left-3.5 sm:left-5 right-3.5 sm:right-5 space-y-2 pointer-events-none z-10">
+                          <div className="text-white text-base sm:text-xl font-extrabold tracking-tight drop-shadow-md">
+                            {step.title}
                           </div>
 
                           {/* Deliverables tags on image */}
@@ -392,7 +388,7 @@ export const ProcessSection: React.FC = () => {
                             {step.deliverables.map((item, dIdx) => (
                               <div
                                 key={dIdx}
-                                className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[11px] font-medium text-white px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg bg-black/65 backdrop-blur-md border border-white/15"
+                                className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[11px] font-medium text-white px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg bg-black/70 backdrop-blur-md border border-white/15"
                               >
                                 <Check className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-emerald-400 flex-shrink-0" />
                                 <span className="truncate max-w-[170px] sm:max-w-none">{item}</span>
@@ -401,9 +397,6 @@ export const ProcessSection: React.FC = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Bottom Edge Accent Line */}
-                      <div className="h-1 w-full bg-gradient-to-r from-electric-purple via-lavender-glow to-deep-violet flex-shrink-0" />
                     </div>
                   );
                 })}
