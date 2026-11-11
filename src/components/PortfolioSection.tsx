@@ -57,8 +57,8 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
           </p>
         </div>
 
-        {/* Portfolio Cards Grid (2 Featured Flagship Projects with Full-Bleed Media & Overlaid Content) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        {/* Portfolio Cards Grid (Wider Showcase for UniVerse with Properly Aligned Widescreen Video) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto items-stretch">
           {displayProducts.map((prod) => {
             const isUniverse = prod.slug === 'universe' || prod.id === 'prod-01' || prod.name.toLowerCase().includes('universe');
             const imgSrc = PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || '/services/cloud-systems.jpg';
@@ -67,30 +67,34 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               <div
                 key={prod.id}
                 onClick={() => onOpenCaseStudy(prod)}
-                className="group relative rounded-3xl overflow-hidden flex flex-col justify-between min-h-[440px] sm:min-h-[480px] lg:min-h-[500px] border border-black/10 dark:border-white/10 hover:border-electric-purple/60 dark:hover:border-electric-purple/60 transition-all duration-500 cursor-pointer shadow-none hover:shadow-none"
+                className={`group relative rounded-3xl overflow-hidden flex flex-col justify-between border border-black/10 dark:border-white/10 hover:border-electric-purple/60 dark:hover:border-electric-purple/60 transition-all duration-500 cursor-pointer shadow-none hover:shadow-none ${
+                  isUniverse
+                    ? 'lg:col-span-8 min-h-[460px] sm:min-h-[500px] lg:min-h-[520px]'
+                    : 'lg:col-span-4 min-h-[460px] sm:min-h-[500px] lg:min-h-[520px]'
+                }`}
               >
                 {/* 1. Full-Bleed Background Media covering the ENTIRE div (100% Crisp, Zero Overlay Wash) */}
-                <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-black">
+                <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-black flex items-center justify-center">
                   {isUniverse ? (
                     universeMediaMode === 'video' ? (
                       <img
                         src="/universe_video.webp"
                         alt="UniVerse Platform Demo Video"
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        className="w-full h-full object-cover object-top sm:object-[center_8%] transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                         loading="eager"
                       />
                     ) : (
                       <img
                         src="/universe-banner.jpg"
                         alt={prod.name}
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                       />
                     )
                   ) : (
                     <img
                       src={imgSrc}
                       alt={prod.name}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                     />
                   )}
                 </div>
