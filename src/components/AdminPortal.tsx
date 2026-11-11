@@ -191,9 +191,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   };
 
   const handleExportCSV = () => {
-    const headers = ['ID,Full Name,Email,Company,Country,Project Type,Budget,Timeline,Status,Created At'];
+    const headers = ['ID,Full Name,Contact,Email,Company,Country,Project Type,Budget,Timeline,Status,Created At'];
     const rows = inquiries.map(i => 
-      `"${i.id}","${i.fullName}","${i.email}","${i.company || ''}","${i.country}","${i.projectType}","${i.budgetRange || ''}","${i.timeline || ''}","${i.status}","${i.createdAt}"`
+      `"${i.id}","${i.fullName}","${i.contact || ''}","${i.email}","${i.company || ''}","${i.country || ''}","${i.projectType}","${i.budgetRange || ''}","${i.timeline || ''}","${i.status}","${i.createdAt}"`
     );
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers, ...rows].join('\n');
     const encodedUri = encodeURI(csvContent);
@@ -569,7 +569,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                                 <td className="p-3.5">
                                   <div className="font-semibold text-light-text dark:text-white">{inq.fullName}</div>
                                   <div className="text-[11px] text-light-subtext dark:text-muted-gray font-mono">{inq.email}</div>
-                                  <div className="text-[10px] text-electric-purple dark:text-lavender-glow font-medium">{inq.company || inq.country}</div>
+                                  <div className="text-[10px] text-electric-purple dark:text-lavender-glow font-medium">{inq.contact ? `Contact: ${inq.contact}` : (inq.company || inq.country)}</div>
                                 </td>
                                 <td className="p-3.5">
                                   <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-lavender-soft text-electric-dark dark:bg-electric-purple/15 dark:text-lavender-light border border-purple-200 dark:border-electric-purple/30 font-semibold">

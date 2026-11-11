@@ -1,9 +1,10 @@
 export interface Inquiry {
   id: string;
   fullName: string;
+  contact?: string;
   email: string;
   company?: string;
-  country: string;
+  country?: string;
   projectType: string;
   budgetRange?: string;
   timeline?: string;

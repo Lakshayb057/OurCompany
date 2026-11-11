@@ -96,7 +96,7 @@ app.get('/api/v1/team', (req, res) => {
 
 // Public API: Submit Inquiry (FR-09, FR-10, FR-11)
 app.post('/api/v1/inquiries', (req, res) => {
-  const { fullName, email, company, country, projectType, budgetRange, timeline, preferredContact, description } = req.body;
+  const { fullName, contact, phone, email, company, country, projectType, budgetRange, timeline, preferredContact, description } = req.body;
 
   // Validation
   if (!fullName || !fullName.trim()) {
@@ -104,12 +104,6 @@ app.post('/api/v1/inquiries', (req, res) => {
   }
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
     return res.status(400).json({ success: false, message: 'A valid business email is required.' });
-  }
-  if (!country || !country.trim()) {
-    return res.status(400).json({ success: false, message: 'Country is required.' });
-  }
-  if (!projectType) {
-    return res.status(400).json({ success: false, message: 'Project type is required.' });
   }
   if (!description || description.trim().length < 10) {
     return res.status(400).json({ success: false, message: 'Please provide at least 10 characters describing your project requirements.' });
@@ -119,13 +113,14 @@ app.post('/api/v1/inquiries', (req, res) => {
   const newInquiry = {
     id: `inq-${Date.now()}`,
     fullName: fullName.trim(),
+    contact: (contact || phone || '').trim(),
     email: email.trim().toLowerCase(),
     company: company ? company.trim() : '',
-    country: country.trim(),
-    projectType,
+    country: (country || 'Global / Remote').trim(),
+    projectType: projectType || 'Full-Stack & Cloud Engineering',
     budgetRange: budgetRange || 'Not decided',
     timeline: timeline || 'Flexible',
-    preferredContact: preferredContact || 'Email',
+    preferredContact: preferredContact || 'Phone / Email',
     description: description.trim(),
     status: 'New',
     createdAt: new Date().toISOString()
