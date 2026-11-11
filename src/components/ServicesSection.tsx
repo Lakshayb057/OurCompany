@@ -32,6 +32,21 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
   const [isInView, setIsInView] = useState(false);
   const hasExitedRef = useRef(false);
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // IntersectionObserver to orchestrate smooth entrance every time the section enters viewport
   useEffect(() => {
     const el = sectionRef.current;
@@ -74,10 +89,10 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Section Header with 3D Reveal */}
+        {/* Section Header with 3D Reveal (Desktop only) */}
         <div 
           className="max-w-3xl mx-auto text-center space-y-4 mb-6 sm:mb-16"
-          style={{
+          style={isMobile ? undefined : {
             opacity: isInView ? 1 : 0,
             transform: isInView 
               ? 'perspective(1000px) translateY(0) scale(1) rotateX(0deg)' 
@@ -91,7 +106,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
           </h2>
           <p 
             className="text-light-subtext dark:text-muted-gray text-base leading-relaxed"
-            style={{
+            style={isMobile ? undefined : {
               opacity: isInView ? 1 : 0,
               transform: isInView ? 'translateY(0)' : 'translateY(16px)',
               transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1) 120ms, transform 0.75s cubic-bezier(0.16, 1, 0.3, 1) 120ms',
@@ -111,7 +126,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
             return (
               <div
                 key={service.id}
-                style={{
+                style={isMobile ? undefined : {
                   opacity: isInView ? 1 : 0,
                   transform: isInView 
                     ? 'perspective(1000px) translateY(0) scale(1) rotateX(0deg) translateZ(0px)' 
@@ -138,10 +153,10 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                   {/* Bottom smooth fade to card body */}
                   <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-midnight-card dark:via-midnight-card/85 dark:to-transparent pointer-events-none transition-colors duration-300" />
 
-                  {/* Top Floating Glass Domain Pill with Micro-Stagger */}
+                  {/* Top Floating Glass Domain Pill */}
                   <div 
                     className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none"
-                    style={{
+                    style={isMobile ? undefined : {
                       opacity: isInView ? 1 : 0,
                       transform: isInView ? 'translateY(0)' : 'translateY(-12px)',
                       transition: `opacity 0.6s ease-out ${staggerDelay + 160}ms, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay + 160}ms`,
@@ -159,7 +174,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                 {/* Clean Bottom Meta & Action */}
                 <div 
                   className="relative z-10 p-6 pt-2 space-y-4"
-                  style={{
+                  style={isMobile ? undefined : {
                     opacity: isInView ? 1 : 0,
                     transform: isInView ? 'translateY(0)' : 'translateY(14px)',
                     transition: `opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay + 100}ms, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay + 100}ms`,
