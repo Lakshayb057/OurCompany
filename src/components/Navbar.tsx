@@ -310,18 +310,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             );
           })}
 
-          {onToggleTheme && (
-            <div className="pt-2 border-t border-purple-100 dark:border-midnight-border flex items-center justify-between px-2">
-              <span className="text-xs font-medium text-light-subtext dark:text-muted-gray">Theme Appearance</span>
-              <button
-                onClick={onToggleTheme}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-light-surface dark:bg-midnight-card border border-purple-200 dark:border-midnight-border text-xs font-semibold text-light-text dark:text-white"
-              >
-                {isDark ? <Sun className="w-3.5 h-3.5 text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.4)]" /> : <Moon className="w-3.5 h-3.5 text-electric-purple" />}
-                <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
-              </button>
-            </div>
-          )}
+
         </div>
       )}
     </>
