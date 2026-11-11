@@ -155,7 +155,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
             {filteredProducts.map((prod) => (
               <div
                 key={prod.id}
-                className="glass-card-interactive rounded-2xl flex flex-col justify-between overflow-hidden group border border-purple-100 dark:border-midnight-border/80 shadow-md hover:shadow-2xl transition-all duration-300 bg-white/80 dark:bg-midnight-card/80"
+                className="glass-card-interactive rounded-2xl flex flex-col justify-between overflow-hidden group border border-purple-100 dark:border-midnight-border/80 shadow-none hover:shadow-none transition-all duration-300 bg-white/80 dark:bg-midnight-card/80"
               >
                 <div className="p-7 space-y-5">
                   {/* Badge & Status Row */}

@@ -67,7 +67,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               <div
                 key={prod.id}
                 onClick={() => onOpenCaseStudy(prod)}
-                className="group relative rounded-3xl overflow-hidden flex flex-col justify-between min-h-[480px] sm:min-h-[520px] lg:min-h-[540px] border border-purple-200/80 dark:border-midnight-border/80 shadow-xl shadow-purple-500/5 dark:shadow-2xl dark:shadow-black/70 hover:shadow-2xl hover:shadow-purple-500/20 dark:hover:shadow-purple-900/40 hover:border-electric-purple/70 dark:hover:border-electric-purple/70 transition-all duration-500 cursor-pointer"
+                className="group relative rounded-3xl overflow-hidden flex flex-col justify-between min-h-[480px] sm:min-h-[520px] lg:min-h-[540px] border border-purple-200/80 dark:border-midnight-border/80 hover:border-electric-purple/70 dark:hover:border-electric-purple/70 transition-all duration-500 cursor-pointer shadow-none hover:shadow-none"
               >
                 {/* 1. Full-Bleed Background Media covering the ENTIRE div */}
                 <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-slate-950">
@@ -102,13 +102,13 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
 
                 {/* 3. Card Top Row: Category Badge & Mode/Action Controls */}
                 <div className="relative z-20 p-5 sm:p-6 flex items-center justify-between gap-3">
-                  <div className="px-3 py-1 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase bg-black/60 backdrop-blur-md text-lavender-light border border-white/20 shadow-md">
+                  <div className="px-3 py-1 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase bg-black/60 backdrop-blur-md text-lavender-light border border-white/20">
                     {prod.badge || 'FLAGSHIP'}
                   </div>
 
                   <div className="flex items-center gap-2">
                     {isUniverse ? (
-                      <div className="flex items-center bg-black/70 backdrop-blur-md p-1 rounded-full border border-white/20 shadow-lg">
+                      <div className="flex items-center bg-black/70 backdrop-blur-md p-1 rounded-full border border-white/20">
                         <button
                           type="button"
                           onClick={(e) => {
@@ -117,7 +117,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                           }}
                           className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                             universeMediaMode === 'video'
-                              ? 'bg-electric-purple text-white shadow-md'
+                              ? 'bg-electric-purple text-white'
                               : 'text-white/75 hover:text-white'
                           }`}
                         >
@@ -132,7 +132,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                           }}
                           className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                             universeMediaMode === 'photo'
-                              ? 'bg-electric-purple text-white shadow-md'
+                              ? 'bg-electric-purple text-white'
                               : 'text-white/75 hover:text-white'
                           }`}
                         >
@@ -146,7 +146,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="px-3.5 py-1.5 rounded-full bg-electric-purple hover:bg-electric-light text-white text-xs font-semibold backdrop-blur-md border border-white/25 shadow-lg shadow-purple-600/30 flex items-center gap-1.5 transition-all hover:scale-105"
+                        className="px-3.5 py-1.5 rounded-full bg-electric-purple hover:bg-electric-light text-white text-xs font-semibold backdrop-blur-md border border-white/25 flex items-center gap-1.5 transition-all hover:scale-105"
                         title="Open Full Screen / Live Site"
                       >
                         <Play className="w-3 h-3 fill-current" />
@@ -159,7 +159,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                 {/* 4. Card Bottom: Overlaid Title, Description, Metrics & Actions */}
                 <div className="relative z-20 p-6 sm:p-8 space-y-4">
                   <div>
-                    <h3 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight drop-shadow-md group-hover:text-lavender-light transition-colors">
+                    <h3 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight group-hover:text-lavender-light transition-colors">
                       {prod.name}
                     </h3>
                     <div className="text-xs font-mono text-lavender-light/90 font-semibold tracking-wide mt-1">
@@ -168,7 +168,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                   </div>
 
                   {/* Overlaid Description / Tagline */}
-                  <p className="text-sm sm:text-base text-gray-200 font-normal leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-xl drop-shadow-sm">
+                  <p className="text-sm sm:text-base text-gray-200 font-normal leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-xl">
                     {prod.tagline || prod.lead}
                   </p>
 
@@ -177,7 +177,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                     {prod.metrics.slice(0, 2).map((m, idx) => (
                       <div
                         key={idx}
-                        className="px-3.5 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 shadow-sm"
+                        className="px-3.5 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/15"
                       >
                         <div className="text-base font-bold font-mono text-white">
                           {m.value}
@@ -214,7 +214,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                           e.stopPropagation();
                           onOpenCaseStudy(prod);
                         }}
-                        className="px-3.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-md text-xs font-semibold text-white border border-white/25 flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                        className="px-3.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-md text-xs font-semibold text-white border border-white/25 flex items-center gap-1.5 transition-all cursor-pointer"
                       >
                         <BookOpen className="w-3.5 h-3.5 text-lavender-light" />
                         <span>Case Study</span>
@@ -226,7 +226,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white transition-all shadow-sm"
+                          className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white transition-all"
                           title="View Source Code on GitHub"
                         >
                           <Github className="w-4 h-4" />
@@ -239,7 +239,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="px-3.5 py-1.5 rounded-xl bg-electric-purple hover:bg-electric-light text-white text-xs font-semibold flex items-center gap-1 transition-all shadow-md shadow-purple-600/30"
+                          className="px-3.5 py-1.5 rounded-xl bg-electric-purple hover:bg-electric-light text-white text-xs font-semibold flex items-center gap-1 transition-all"
                           title="Open Live Deployment"
                         >
                           <span>Live</span>
@@ -260,7 +260,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
           {/* Button 1: Explore All Projects */}
           <button
             onClick={onViewAllProjects}
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-electric-purple to-deep-violet text-white text-sm font-semibold shadow-lg shadow-purple-600/30 hover:shadow-purple-600/50 hover:scale-[1.02] active:scale-[0.98] transition-all group cursor-pointer"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-electric-purple to-deep-violet text-white text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all group cursor-pointer shadow-none hover:shadow-none"
           >
             <span>Explore All Projects</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -272,7 +272,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               const el = document.getElementById('services');
               el?.scrollIntoView({ behavior: 'smooth' });
             })}
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-white/15 text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-light hover:border-electric-purple hover:bg-lavender-soft/40 dark:hover:bg-white/5 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all group cursor-pointer"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-white/15 text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-light hover:border-electric-purple hover:bg-lavender-soft/40 dark:hover:bg-white/5 hover:scale-[1.02] active:scale-[0.98] transition-all group cursor-pointer shadow-none hover:shadow-none"
           >
             <span>Explore All Services</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

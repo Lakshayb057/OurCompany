@@ -187,8 +187,8 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                 }}
                 className={`relative rounded-3xl overflow-hidden transition-all duration-700 ease-out select-none h-[500px] sm:h-[530px] lg:h-[550px] flex flex-col justify-between bg-slate-100 dark:bg-midnight-card ${
                   isActive
-                    ? 'scale-100 opacity-100 z-20 shadow-[0_20px_50px_rgba(124,44,245,0.22)] ring-2 ring-purple-500/80 dark:ring-electric-purple/90 border-2 border-purple-400 dark:border-electric-purple'
-                    : 'scale-[0.88] sm:scale-[0.91] opacity-45 hover:opacity-85 z-10 hover:scale-[0.93] cursor-pointer shadow-md border border-purple-200/60 dark:border-white/10'
+                    ? 'scale-100 opacity-100 z-20 shadow-none ring-2 ring-purple-500/80 dark:ring-electric-purple/90 border-2 border-purple-400 dark:border-electric-purple'
+                    : 'scale-[0.88] sm:scale-[0.91] opacity-45 hover:opacity-85 z-10 hover:scale-[0.93] cursor-pointer shadow-none border border-purple-200/60 dark:border-white/10'
                 }`}
               >
                 {/* 1. Full Container Background Image Layer - 100% Visible & Crisp */}
@@ -242,7 +242,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
 
                 {/* 3. Bottom Content Dock: Cleanly Anchored at Bottom of Container */}
                 <div className="relative z-10 p-4 sm:p-5 mt-auto">
-                  <div className="rounded-2xl p-4 sm:p-4.5 bg-white/92 dark:bg-black/80 backdrop-blur-md border border-purple-200/80 dark:border-white/15 shadow-xl transition-all duration-300">
+                  <div className="rounded-2xl p-4 sm:p-4.5 bg-white/92 dark:bg-black/80 backdrop-blur-md border border-purple-200/80 dark:border-white/15 shadow-none transition-all duration-300">
                     
                     {/* Name & Designation Header */}
                     <div>

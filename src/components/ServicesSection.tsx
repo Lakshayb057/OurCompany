@@ -115,7 +115,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services, onSe
                   transition: `opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms, filter 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms`,
                   transformOrigin: 'bottom center',
                 }}
-                className="group relative rounded-3xl overflow-hidden bg-white/90 dark:bg-midnight-card/90 border border-purple-100/90 dark:border-electric-purple/20 hover:border-electric-purple/50 dark:hover:border-electric-purple/60 transition-all duration-500 shadow-md hover:shadow-2xl hover:shadow-purple-500/15 flex flex-col justify-between"
+                className="group relative rounded-3xl overflow-hidden bg-white/90 dark:bg-midnight-card/90 border border-purple-100/90 dark:border-electric-purple/20 hover:border-electric-purple/50 dark:hover:border-electric-purple/60 transition-all duration-500 shadow-none hover:shadow-none flex flex-col justify-between"
               >
                 {/* 4K Portrait Explanatory Imagery Container */}
                 <div className="relative aspect-[4/5] w-full overflow-hidden bg-slate-900">
