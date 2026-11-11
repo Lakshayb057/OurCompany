@@ -104,75 +104,47 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                 {/* 2. Minimal Crisp Bottom Fade ONLY behind text - completely removes inner blue/dark shadow effect */}
                 <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none z-10" />
 
-                {/* 3. Card Top Row: Service Flag (Left) & Controls (Right) */}
+                {/* 3. Card Top Row: Service Flag (Left) & UniVerse Media Toggle (Right) */}
                 <div className="relative z-20 p-5 sm:p-6 flex items-center justify-between gap-3">
                   <div className="px-3.5 py-1.5 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase bg-black/60 backdrop-blur-md text-lavender-light border border-white/20 flex items-center gap-1.5 shadow-none">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     <span>{isUniverse ? 'FLAGSHIP SERVICE' : 'ENTERPRISE SERVICE'}</span>
                   </div>
 
-                  <div className="flex items-center gap-2.5">
-                    {isUniverse && (
-                      <div className="flex items-center bg-black/60 backdrop-blur-md p-1 rounded-full border border-white/20">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setUniverseMediaMode('video');
-                          }}
-                          className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                            universeMediaMode === 'video'
-                              ? 'bg-electric-purple text-white'
-                              : 'text-white/75 hover:text-white'
-                          }`}
-                        >
-                          <Play className="w-3 h-3 fill-current" />
-                          <span>Video</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setUniverseMediaMode('photo');
-                          }}
-                          className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                            universeMediaMode === 'photo'
-                              ? 'bg-electric-purple text-white'
-                              : 'text-white/75 hover:text-white'
-                          }`}
-                        >
-                          <ImageIcon className="w-3 h-3" />
-                          <span>Banner</span>
-                        </button>
-                      </div>
-                    )}
-
-                    {prod.liveUrl ? (
-                      <a
-                        href={prod.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="px-4 py-1.5 rounded-full bg-red-600/90 hover:bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105 shadow-none"
-                        title="Open Full Screen"
-                      >
-                        <Play className="w-3 h-3 fill-current" />
-                        <span>Open Full Screen</span>
-                      </a>
-                    ) : (
+                  {isUniverse && (
+                    <div className="flex items-center bg-black/60 backdrop-blur-md p-1 rounded-full border border-white/20">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          onOpenCaseStudy(prod);
+                          setUniverseMediaMode('video');
                         }}
-                        className="px-4 py-1.5 rounded-full bg-red-600/90 hover:bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105 shadow-none cursor-pointer"
+                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                          universeMediaMode === 'video'
+                            ? 'bg-electric-purple text-white'
+                            : 'text-white/75 hover:text-white'
+                        }`}
                       >
                         <Play className="w-3 h-3 fill-current" />
-                        <span>Open Full Screen</span>
+                        <span>Video</span>
                       </button>
-                    )}
-                  </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setUniverseMediaMode('photo');
+                        }}
+                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                          universeMediaMode === 'photo'
+                            ? 'bg-electric-purple text-white'
+                            : 'text-white/75 hover:text-white'
+                        }`}
+                      >
+                        <ImageIcon className="w-3 h-3" />
+                        <span>Banner</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* 4. Card Bottom: Clean Overlaid Title & Tagline matching reference screenshot */}
