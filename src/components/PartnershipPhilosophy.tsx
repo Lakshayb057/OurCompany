@@ -33,41 +33,11 @@ const ALLOCATION_TIERS: AllocationTier[] = [
   }
 ];
 
-const Model3DCard: React.FC<{
+const ModelCard: React.FC<{
   tier: AllocationTier;
   index: number;
   isInView: boolean;
 }> = ({ tier, index, isInView }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
-  const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotX = ((y - centerY) / centerY) * -12;
-    const rotY = ((x - centerX) / centerX) * 12;
-
-    setRotateX(rotX);
-    setRotateY(rotY);
-    setGlare({ x: (x / rect.width) * 100, y: (y / rect.height) * 100, opacity: 1 });
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setRotateX(0);
-    setRotateY(0);
-    setIsHovered(false);
-    setGlare((prev) => ({ ...prev, opacity: 0 }));
-  };
-
   const getIcon = () => {
     switch (tier.icon) {
       case 'code':
@@ -79,63 +49,29 @@ const Model3DCard: React.FC<{
     }
   };
 
-  const staggerDelay = index * 160;
-
   return (
     <div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       style={{
         opacity: isInView ? 1 : 0,
-        transform: isInView
-          ? isHovered
-            ? `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`
-            : 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)'
-          : 'perspective(1000px) rotateX(16deg) rotateY(0deg) translateY(50px) scale(0.92)',
-        transition: isHovered
-          ? 'transform 0.12s ease-out'
-          : `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)`,
-        transformStyle: 'preserve-3d',
+        transform: isInView ? 'translateY(0)' : 'translateY(24px)',
+        transition: `opacity 0.6s ease-out ${index * 120}ms, transform 0.6s ease-out ${index * 120}ms`,
       }}
-      className="group relative rounded-3xl overflow-hidden bg-white/95 dark:bg-midnight-card/90 border border-purple-200/80 dark:border-midnight-border/80 hover:border-electric-purple/80 dark:hover:border-electric-purple/80 p-8 sm:p-9 flex flex-col justify-between shadow-none hover:shadow-none select-none cursor-pointer transition-colors duration-300 min-h-[320px] sm:min-h-[340px]"
+      className="relative rounded-3xl overflow-hidden bg-white/95 dark:bg-midnight-card/90 border border-purple-200/80 dark:border-midnight-border/80 p-8 sm:p-9 flex flex-col justify-between shadow-none select-none min-h-[300px] sm:min-h-[320px]"
     >
-      {/* Top Neon Accent Bar on Hover */}
-      <div 
-        className={`absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r ${tier.accentColor} opacity-70 group-hover:opacity-100 group-hover:h-2.5 transition-all duration-300 z-20`} 
-      />
-
-      {/* Ambient Internal Color Bloom on Hover */}
-      <div 
-        className={`absolute inset-0 bg-gradient-to-br ${tier.accentColor} opacity-0 group-hover:opacity-[0.06] dark:group-hover:opacity-[0.14] transition-opacity duration-500 pointer-events-none z-0`}
-      />
-
-      {/* 3D Dynamic Holographic Mouse Glare Beam */}
-      <div
-        className="pointer-events-none absolute inset-0 transition-opacity duration-300 z-0"
-        style={{
-          opacity: glare.opacity,
-          background: `radial-gradient(450px circle at ${glare.x}% ${glare.y}%, rgba(124, 44, 245, 0.18), transparent 65%)`,
-        }}
-      />
-
-      {/* Subtle 3D Depth Watermark Number */}
-      <div 
-        style={{ transform: 'translateZ(15px)' }}
-        className="absolute -top-4 -right-2 text-8xl sm:text-9xl font-black font-mono text-purple-900/5 dark:text-white/5 pointer-events-none select-none group-hover:scale-105 transition-transform duration-500"
-      >
+      {/* Subtle Depth Watermark Number */}
+      <div className="absolute -top-4 -right-2 text-8xl sm:text-9xl font-black font-mono text-purple-900/5 dark:text-white/5 pointer-events-none select-none">
         {tier.percentage}
       </div>
 
-      <div className="relative z-10 space-y-6" style={{ transform: 'translateZ(30px)' }}>
+      <div className="relative z-10 space-y-6">
         {/* Top Icon & Percentage Header */}
         <div className="flex items-center justify-between">
-          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tier.accentColor} flex items-center justify-center shadow-none group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300`}>
+          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tier.accentColor} flex items-center justify-center shadow-none`}>
             {getIcon()}
           </div>
           
           <div className="text-right">
-            <span className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-light-text dark:text-white group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-all duration-300 group-hover:scale-105 inline-block">
+            <span className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-light-text dark:text-white">
               {tier.percentage}
             </span>
             <div className="text-[10px] font-mono uppercase tracking-wider text-light-subtext dark:text-muted-gray font-bold">
@@ -146,7 +82,7 @@ const Model3DCard: React.FC<{
 
         {/* Title & Description */}
         <div>
-          <h3 className="text-xl sm:text-2xl font-extrabold text-light-text dark:text-white tracking-tight leading-snug group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors">
+          <h3 className="text-xl sm:text-2xl font-extrabold text-light-text dark:text-white tracking-tight leading-snug">
             {tier.title}
           </h3>
           <p className="text-light-subtext dark:text-gray-300 text-sm leading-relaxed mt-3 font-normal">
@@ -195,10 +131,10 @@ export const PartnershipPhilosophy: React.FC = () => {
           </p>
         </div>
 
-        {/* 3D Revenue Model Cards Grid */}
+        {/* Revenue Model Cards Grid (Completely Flat, Clean & Stable - Zero Hover Tilt/Warp) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto items-stretch">
           {ALLOCATION_TIERS.map((tier, idx) => (
-            <Model3DCard
+            <ModelCard
               key={idx}
               tier={tier}
               index={idx}
