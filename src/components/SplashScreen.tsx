@@ -8,6 +8,18 @@ type SplashPhase = 'init' | 'logo-enter' | 'text-emerge' | 'hold' | 'text-retrac
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
   const [phase, setPhase] = useState<SplashPhase>('init');
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    return typeof window !== 'undefined' ? window.innerWidth < 640 : false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Stable ref for onComplete callback so parent re-renders never trigger effect restart
   const onCompleteRef = useRef(onComplete);
@@ -67,14 +79,18 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
         };
       case 'text-emerge':
         return {
-          transform: 'perspective(1200px) scale(1) translateX(-18px) rotateY(-8deg) rotateX(3deg) translateZ(20px)',
+          transform: isMobile
+            ? 'perspective(1200px) scale(1) translateX(-4px) rotateY(-5deg) rotateX(2deg) translateZ(10px)'
+            : 'perspective(1200px) scale(1) translateX(-18px) rotateY(-8deg) rotateX(3deg) translateZ(20px)',
           opacity: 1,
           filter: 'blur(0px)',
           transition: 'transform 0.54s cubic-bezier(0.16, 1, 0.3, 1)',
         };
       case 'hold':
         return {
-          transform: 'perspective(1200px) scale(1.02) translateX(-18px) rotateY(-5deg) rotateX(2deg) translateZ(25px)',
+          transform: isMobile
+            ? 'perspective(1200px) scale(1.02) translateX(-4px) rotateY(-3deg) rotateX(1deg) translateZ(15px)'
+            : 'perspective(1200px) scale(1.02) translateX(-18px) rotateY(-5deg) rotateX(2deg) translateZ(25px)',
           opacity: 1,
           filter: 'blur(0px)',
           transition: 'transform 0.4s ease-in-out',
@@ -166,15 +182,15 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
         <div
           className="overflow-hidden transition-all duration-500 ease-out flex items-center"
           style={{
-            maxWidth: isTextVisible ? '380px' : '0px',
+            maxWidth: isTextVisible ? (isMobile ? '280px' : '380px') : '0px',
             opacity: isTextVisible ? 1 : 0,
-            marginLeft: isTextVisible ? '12px' : '0px',
+            marginLeft: isTextVisible ? (isMobile ? '-4px' : '12px') : '0px',
             transformStyle: 'preserve-3d',
             perspective: '900px',
             transformOrigin: 'left center',
           }}
         >
-          <div className="flex items-center tracking-tight select-none py-2 whitespace-nowrap pl-1">
+          <div className="flex items-center tracking-tight select-none py-2 whitespace-nowrap pl-0 sm:pl-1">
             {/* Word: Code */}
             <div className="flex items-center">
               {codeLetters.map((char, index) => {
