@@ -57,7 +57,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
           </p>
         </div>
 
-        {/* Portfolio Cards Grid (2 Featured Flagship Projects) */}
+        {/* Portfolio Cards Grid (2 Featured Flagship Projects with Full-Bleed Media & Overlaid Content) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {displayProducts.map((prod) => {
             const isUniverse = prod.slug === 'universe' || prod.id === 'prod-01' || prod.name.toLowerCase().includes('universe');
@@ -66,14 +66,49 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
             return (
               <div
                 key={prod.id}
-                className="glass-card-interactive rounded-2xl flex flex-col justify-between overflow-hidden group border border-purple-100 dark:border-midnight-border/80 shadow-md hover:shadow-xl transition-all"
+                onClick={() => onOpenCaseStudy(prod)}
+                className="group relative rounded-3xl overflow-hidden flex flex-col justify-between min-h-[480px] sm:min-h-[520px] lg:min-h-[540px] border border-purple-200/80 dark:border-midnight-border/80 shadow-xl shadow-purple-500/5 dark:shadow-2xl dark:shadow-black/70 hover:shadow-2xl hover:shadow-purple-500/20 dark:hover:shadow-purple-900/40 hover:border-electric-purple/70 dark:hover:border-electric-purple/70 transition-all duration-500 cursor-pointer"
               >
-                {/* Card Header Media Preview */}
-                <div className="relative h-48 sm:h-56 w-full overflow-hidden bg-slate-900 group/media">
+                {/* 1. Full-Bleed Background Media covering the ENTIRE div */}
+                <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-slate-950">
                   {isUniverse ? (
-                    <>
-                      {/* Media Mode Toggle Pills (Demo Video & Banner) */}
-                      <div className="absolute top-3 right-3 z-30 flex items-center bg-black/70 backdrop-blur-md p-1 rounded-full border border-white/20 shadow-lg">
+                    universeMediaMode === 'video' ? (
+                      <img
+                        src="/universe_video.webp"
+                        alt="UniVerse Platform Demo Video"
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        loading="eager"
+                      />
+                    ) : (
+                      <img
+                        src="/universe-banner.jpg"
+                        alt={prod.name}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      />
+                    )
+                  ) : (
+                    <img
+                      src={imgSrc}
+                      alt={prod.name}
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                  )}
+                </div>
+
+                {/* 2. Ambient Scrim & Vignette Gradients for Crystal Clear Text Contrast */}
+                <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/85 via-black/40 to-transparent pointer-events-none z-10" />
+                <div className="absolute inset-x-0 bottom-0 h-4/5 bg-gradient-to-t from-black/95 via-black/80 via-40% to-transparent pointer-events-none z-10" />
+                <div className="absolute inset-0 bg-electric-purple/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-10" />
+
+                {/* 3. Card Top Row: Category Badge & Mode/Action Controls */}
+                <div className="relative z-20 p-5 sm:p-6 flex items-center justify-between gap-3">
+                  <div className="px-3 py-1 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase bg-black/60 backdrop-blur-md text-lavender-light border border-white/20 shadow-md">
+                    {prod.badge || 'FLAGSHIP'}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {isUniverse ? (
+                      <div className="flex items-center bg-black/70 backdrop-blur-md p-1 rounded-full border border-white/20 shadow-lg">
                         <button
                           type="button"
                           onClick={(e) => {
@@ -105,107 +140,106 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                           <span>Banner</span>
                         </button>
                       </div>
-
-                      {/* WebP Video Player or Photo Banner */}
-                      {universeMediaMode === 'video' ? (
-                        <div className="relative w-full h-full bg-slate-900">
-                          <img
-                            src="/universe_video.webp"
-                            alt="UniVerse Platform Demo Video"
-                            className="w-full h-full object-cover"
-                            loading="eager"
-                          />
-                        </div>
-                      ) : (
-                        <img
-                          src="/universe-banner.jpg"
-                          alt={prod.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                        />
-                      )}
-                    </>
-                  ) : (
-                    <img
-                      src={imgSrc}
-                      alt={prod.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
+                    ) : prod.liveUrl ? (
+                      <a
+                        href={prod.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="px-3.5 py-1.5 rounded-full bg-electric-purple hover:bg-electric-light text-white text-xs font-semibold backdrop-blur-md border border-white/25 shadow-lg shadow-purple-600/30 flex items-center gap-1.5 transition-all hover:scale-105"
+                        title="Open Full Screen / Live Site"
+                      >
+                        <Play className="w-3 h-3 fill-current" />
+                        <span>Live Preview</span>
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
 
-                <div className="p-6 sm:p-7 space-y-5 flex-1 flex flex-col justify-between">
-                  <div className="space-y-4">
-                    {/* Title & Subtitle */}
-                    <div>
-                      <h3 className="text-2xl font-bold text-light-text dark:text-white group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors">
-                        {prod.name}
-                      </h3>
-                      <div className="text-xs font-mono text-electric-purple/80 dark:text-lavender-muted mt-0.5 font-semibold">
-                        {prod.subtitle}
-                      </div>
+                {/* 4. Card Bottom: Overlaid Title, Description, Metrics & Actions */}
+                <div className="relative z-20 p-6 sm:p-8 space-y-4">
+                  <div>
+                    <h3 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight drop-shadow-md group-hover:text-lavender-light transition-colors">
+                      {prod.name}
+                    </h3>
+                    <div className="text-xs font-mono text-lavender-light/90 font-semibold tracking-wide mt-1">
+                      {prod.subtitle}
                     </div>
+                  </div>
 
-                    {/* Impact Metrics Row */}
-                    <div className="grid grid-cols-2 gap-2 pt-2">
-                      {prod.metrics.slice(0, 2).map((m, idx) => (
-                        <div key={idx} className="p-2.5 rounded-lg bg-light-surface dark:bg-midnight-card/90 border border-purple-100 dark:border-midnight-border/60">
-                          <div className="text-base font-bold font-mono text-light-text dark:text-white">
-                            {m.value}
-                          </div>
-                          <div className="text-[10px] text-light-subtext dark:text-muted-gray truncate font-medium">
-                            {m.label}
-                          </div>
+                  {/* Overlaid Description / Tagline */}
+                  <p className="text-sm sm:text-base text-gray-200 font-normal leading-relaxed line-clamp-2 sm:line-clamp-3 max-w-xl drop-shadow-sm">
+                    {prod.tagline || prod.lead}
+                  </p>
+
+                  {/* Frosted Impact Metrics */}
+                  <div className="grid grid-cols-2 gap-2 max-w-md pt-1">
+                    {prod.metrics.slice(0, 2).map((m, idx) => (
+                      <div
+                        key={idx}
+                        className="px-3.5 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 shadow-sm"
+                      >
+                        <div className="text-base font-bold font-mono text-white">
+                          {m.value}
                         </div>
-                      ))}
-                    </div>
+                        <div className="text-[11px] text-white/75 truncate font-medium">
+                          {m.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
 
-                    {/* Tech Badges */}
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {prod.technologies.slice(0, 4).map((tech, idx) => (
+                  {/* Overlaid Footer Actions & Tech Badges */}
+                  <div className="pt-3 border-t border-white/15 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap gap-1.5">
+                      {prod.technologies.slice(0, 3).map((tech, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 rounded text-[10px] font-mono bg-light-100 dark:bg-midnight-card text-light-subtext dark:text-gray-400 border border-light-border dark:border-midnight-border"
+                          className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-white/10 text-white/85 border border-white/15 backdrop-blur-sm"
                         >
                           {tech}
                         </span>
                       ))}
-                      {prod.technologies.length > 4 && (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-lavender-soft text-electric-purple font-semibold border border-purple-200 dark:bg-midnight-card dark:text-lavender-muted dark:border-midnight-border">
-                          +{prod.technologies.length - 4}
+                      {prod.technologies.length > 3 && (
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-electric-purple/40 text-lavender-light font-semibold border border-purple-400/30">
+                          +{prod.technologies.length - 3}
                         </span>
                       )}
                     </div>
-                  </div>
-
-                  {/* Card Footer Actions */}
-                  <div className="pt-4 border-t border-purple-100 dark:border-midnight-border/70 flex items-center justify-between gap-3">
-                    <button
-                      onClick={() => onOpenCaseStudy(prod)}
-                      className="px-3.5 py-2 rounded-xl bg-white dark:bg-midnight-surface hover:bg-lavender-soft text-xs font-semibold text-electric-purple dark:text-lavender-light border border-purple-200 dark:border-electric-purple/30 flex items-center gap-1.5 transition-all shadow-sm group/btn"
-                    >
-                      <BookOpen className="w-3.5 h-3.5 text-electric-purple" />
-                      <span>Case Study</span>
-                    </button>
 
                     <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenCaseStudy(prod);
+                        }}
+                        className="px-3.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-md text-xs font-semibold text-white border border-white/25 flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                      >
+                        <BookOpen className="w-3.5 h-3.5 text-lavender-light" />
+                        <span>Case Study</span>
+                      </button>
+
                       {prod.githubUrl && (
                         <a
                           href={prod.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-2 rounded-lg bg-white dark:bg-midnight-card border border-light-border dark:border-midnight-border text-light-subtext dark:text-gray-400 hover:text-electric-purple dark:hover:text-white transition-colors shadow-sm"
+                          onClick={(e) => e.stopPropagation()}
+                          className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white transition-all shadow-sm"
                           title="View Source Code on GitHub"
                         >
                           <Github className="w-4 h-4" />
                         </a>
                       )}
+
                       {prod.liveUrl && (
                         <a
                           href={prod.liveUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-2 rounded-xl bg-electric-purple hover:bg-electric-dark text-white text-xs font-medium flex items-center gap-1 transition-all shadow-md shadow-purple-600/20"
+                          onClick={(e) => e.stopPropagation()}
+                          className="px-3.5 py-1.5 rounded-xl bg-electric-purple hover:bg-electric-light text-white text-xs font-semibold flex items-center gap-1 transition-all shadow-md shadow-purple-600/30"
                           title="Open Live Deployment"
                         >
                           <span>Live</span>
