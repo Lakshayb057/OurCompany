@@ -1,43 +1,35 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Shield, Code, Compass, Server, Check } from 'lucide-react';
+import { Code, Compass, Server } from 'lucide-react';
 
 interface AllocationTier {
   percentage: string;
-  fraction: number;
   title: string;
   description: string;
   icon: 'code' | 'compass' | 'server';
   accentColor: string;
-  deliverables: string[];
 }
 
 const ALLOCATION_TIERS: AllocationTier[] = [
   {
     percentage: '50%',
-    fraction: 50,
     title: 'Direct Engineering & Core Delivery',
     description: "The lion's share of resources is dedicated directly to senior full-stack development, code reviews, database architecture, and performance hardening.",
     icon: 'code',
-    accentColor: 'from-electric-purple to-deep-violet',
-    deliverables: ['Senior Full-Stack Code', 'Database Architecture', 'Performance Hardening', 'Strict Code Audits']
+    accentColor: 'from-electric-purple to-deep-violet'
   },
   {
     percentage: '30%',
-    fraction: 30,
     title: 'Project Leadership & Client Success',
     description: 'Continuous technical direction, milestone governance, daily alignment, and end-to-end project management.',
     icon: 'compass',
-    accentColor: 'from-lavender-glow to-electric-purple',
-    deliverables: ['Technical Direction', 'Milestone Governance', 'Daily Standups & Sync', 'End-to-End Alignment']
+    accentColor: 'from-lavender-glow to-electric-purple'
   },
   {
     percentage: '20%',
-    fraction: 20,
     title: 'Infrastructure, Tools & R&D Reserves',
     description: 'High-availability cloud compute, automated testing suites, deployment tooling, and guaranteed reserve support.',
     icon: 'server',
-    accentColor: 'from-deep-violet to-purple-800',
-    deliverables: ['AWS Cloud Compute', 'Automated CI/CD Suites', 'Deployment Tooling', 'Guaranteed Reserves']
+    accentColor: 'from-deep-violet to-purple-800'
   }
 ];
 
@@ -106,7 +98,7 @@ const Model3DCard: React.FC<{
           : `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)`,
         transformStyle: 'preserve-3d',
       }}
-      className="group relative rounded-3xl overflow-hidden bg-white/95 dark:bg-midnight-card/90 border border-purple-200/80 dark:border-midnight-border/80 hover:border-electric-purple/80 dark:hover:border-electric-purple/80 p-8 flex flex-col justify-between shadow-none hover:shadow-none select-none cursor-pointer transition-colors duration-300"
+      className="group relative rounded-3xl overflow-hidden bg-white/95 dark:bg-midnight-card/90 border border-purple-200/80 dark:border-midnight-border/80 hover:border-electric-purple/80 dark:hover:border-electric-purple/80 p-8 sm:p-9 flex flex-col justify-between shadow-none hover:shadow-none select-none cursor-pointer transition-colors duration-300 min-h-[320px] sm:min-h-[340px]"
     >
       {/* Top Neon Accent Bar on Hover */}
       <div 
@@ -157,37 +149,9 @@ const Model3DCard: React.FC<{
           <h3 className="text-xl sm:text-2xl font-extrabold text-light-text dark:text-white tracking-tight leading-snug group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors">
             {tier.title}
           </h3>
-          <p className="text-light-subtext dark:text-gray-300 text-sm leading-relaxed mt-2.5 font-normal">
+          <p className="text-light-subtext dark:text-gray-300 text-sm leading-relaxed mt-3 font-normal">
             {tier.description}
           </p>
-        </div>
-      </div>
-
-      {/* Bottom Allocation Bar & Focus Deliverables */}
-      <div className="relative z-10 pt-6 space-y-5" style={{ transform: 'translateZ(25px)' }}>
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-[11px] font-mono text-light-subtext dark:text-muted-gray font-semibold">
-            <span>Milestone Allocation</span>
-            <span>{tier.percentage} of Scope</span>
-          </div>
-          <div className="w-full h-2 group-hover:h-3 rounded-full bg-purple-100 dark:bg-midnight-surface overflow-hidden transition-all duration-300">
-            <div
-              className={`h-full rounded-full bg-gradient-to-r ${tier.accentColor} transition-all duration-1000 ease-out group-hover:brightness-125`}
-              style={{ width: `${tier.fraction}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="pt-2 border-t border-purple-100 dark:border-midnight-border/70 flex flex-wrap gap-1.5">
-          {tier.deliverables.map((item, idx) => (
-            <span
-              key={idx}
-              className="px-2.5 py-1 rounded-lg text-[11px] font-mono bg-light-surface dark:bg-midnight-surface/80 text-light-text dark:text-gray-300 border border-purple-100 dark:border-midnight-border group-hover:border-electric-purple/40 dark:group-hover:border-electric-purple/40 flex items-center gap-1 shadow-none transition-all duration-300 hover:scale-105"
-            >
-              <Check className="w-3 h-3 text-emerald-500 flex-shrink-0" />
-              <span>{item}</span>
-            </span>
-          ))}
         </div>
       </div>
     </div>
@@ -241,12 +205,6 @@ export const PartnershipPhilosophy: React.FC = () => {
               isInView={isInView}
             />
           ))}
-        </div>
-
-        {/* Bottom Trust Guarantee Seal */}
-        <div className="mt-14 max-w-xl mx-auto flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-white dark:bg-midnight-card border border-purple-200/80 dark:border-midnight-border/80 text-xs font-mono text-light-subtext dark:text-muted-gray shadow-none text-center">
-          <Shield className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-          <span>Strict 100% total milestone allocation verified and transparently reported on every build.</span>
         </div>
 
       </div>
