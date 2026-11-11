@@ -30,8 +30,10 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   onViewAllProjects,
   onViewAllServices 
 }) => {
-  // Take top 2 projects to feature prominently
-  const displayProducts = products.slice(0, 2);
+  // Featured Flagship Services: UniVerse & Nexus CRM
+  const universeProduct = products.find(p => p.slug === 'universe' || p.id === 'prod-01') || products[0];
+  const nexusProduct = products.find(p => p.slug === 'nexus-crm' || p.id === 'prod-04') || products.find(p => p.name.toLowerCase().includes('nexus')) || products[1];
+  const displayProducts = [universeProduct, nexusProduct].filter(Boolean);
 
   // UniVerse Interactive Media state (seamlessly toggle between WebP Video & High-Res Banner)
   const [universeMediaMode, setUniverseMediaMode] = useState<'video' | 'photo'>('video');
@@ -50,10 +52,10 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
-            Top Flagship <span className="text-gradient-purple">Projects</span>
+            Top Flagship <span className="text-gradient-purple">Services</span>
           </h2>
           <p className="text-light-subtext dark:text-muted-gray text-base sm:text-lg leading-relaxed">
-            Real-world systems, production platforms, and 0-to-1 startups built and shipped with verified impact, high availability, and measurable business outcomes.
+            Real-world enterprise systems, production platforms, and scalable architectures engineered and shipped with verified impact and high availability.
           </p>
         </div>
 
@@ -61,7 +63,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto items-stretch">
           {displayProducts.map((prod) => {
             const isUniverse = prod.slug === 'universe' || prod.id === 'prod-01' || prod.name.toLowerCase().includes('universe');
-            const imgSrc = PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || '/services/cloud-systems.jpg';
+            const imgSrc = PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || '/services/crm-automation.jpg';
 
             return (
               <div
@@ -102,68 +104,75 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                 {/* 2. Minimal Crisp Bottom Fade ONLY behind text - completely removes inner blue/dark shadow effect */}
                 <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none z-10" />
 
-                {/* 3. Card Top Row: Controls (Video/Banner Toggle & Open Full Screen) */}
-                <div className="relative z-20 p-5 sm:p-6 flex items-center justify-end gap-2.5">
-                  {isUniverse && (
-                    <div className="flex items-center bg-black/60 backdrop-blur-md p-1 rounded-full border border-white/20">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setUniverseMediaMode('video');
-                        }}
-                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                          universeMediaMode === 'video'
-                            ? 'bg-electric-purple text-white'
-                            : 'text-white/75 hover:text-white'
-                        }`}
+                {/* 3. Card Top Row: Service Flag (Left) & Controls (Right) */}
+                <div className="relative z-20 p-5 sm:p-6 flex items-center justify-between gap-3">
+                  <div className="px-3.5 py-1.5 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase bg-black/60 backdrop-blur-md text-lavender-light border border-white/20 flex items-center gap-1.5 shadow-none">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>{isUniverse ? 'FLAGSHIP SERVICE' : 'ENTERPRISE SERVICE'}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    {isUniverse && (
+                      <div className="flex items-center bg-black/60 backdrop-blur-md p-1 rounded-full border border-white/20">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setUniverseMediaMode('video');
+                          }}
+                          className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                            universeMediaMode === 'video'
+                              ? 'bg-electric-purple text-white'
+                              : 'text-white/75 hover:text-white'
+                          }`}
+                        >
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>Video</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setUniverseMediaMode('photo');
+                          }}
+                          className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                            universeMediaMode === 'photo'
+                              ? 'bg-electric-purple text-white'
+                              : 'text-white/75 hover:text-white'
+                          }`}
+                        >
+                          <ImageIcon className="w-3 h-3" />
+                          <span>Banner</span>
+                        </button>
+                      </div>
+                    )}
+
+                    {prod.liveUrl ? (
+                      <a
+                        href={prod.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="px-4 py-1.5 rounded-full bg-red-600/90 hover:bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105 shadow-none"
+                        title="Open Full Screen"
                       >
                         <Play className="w-3 h-3 fill-current" />
-                        <span>Video</span>
-                      </button>
+                        <span>Open Full Screen</span>
+                      </a>
+                    ) : (
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setUniverseMediaMode('photo');
+                          onOpenCaseStudy(prod);
                         }}
-                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                          universeMediaMode === 'photo'
-                            ? 'bg-electric-purple text-white'
-                            : 'text-white/75 hover:text-white'
-                        }`}
+                        className="px-4 py-1.5 rounded-full bg-red-600/90 hover:bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105 shadow-none cursor-pointer"
                       >
-                        <ImageIcon className="w-3 h-3" />
-                        <span>Banner</span>
+                        <Play className="w-3 h-3 fill-current" />
+                        <span>Open Full Screen</span>
                       </button>
-                    </div>
-                  )}
-
-                  {prod.liveUrl ? (
-                    <a
-                      href={prod.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="px-4 py-1.5 rounded-full bg-red-600/90 hover:bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105 shadow-none"
-                      title="Open Full Screen"
-                    >
-                      <Play className="w-3 h-3 fill-current" />
-                      <span>Open Full Screen</span>
-                    </a>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenCaseStudy(prod);
-                      }}
-                      className="px-4 py-1.5 rounded-full bg-red-600/90 hover:bg-red-600 text-white text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105 shadow-none cursor-pointer"
-                    >
-                      <Play className="w-3 h-3 fill-current" />
-                      <span>Open Full Screen</span>
-                    </button>
-                  )}
+                    )}
+                  </div>
                 </div>
 
                 {/* 4. Card Bottom: Clean Overlaid Title & Tagline matching reference screenshot */}
