@@ -50,6 +50,7 @@ const Model3DCard: React.FC<{
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
   const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -65,11 +66,13 @@ const Model3DCard: React.FC<{
     setRotateX(rotX);
     setRotateY(rotY);
     setGlare({ x: (x / rect.width) * 100, y: (y / rect.height) * 100, opacity: 1 });
+    setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
     setRotateX(0);
     setRotateY(0);
+    setIsHovered(false);
     setGlare((prev) => ({ ...prev, opacity: 0 }));
   };
 
@@ -94,28 +97,40 @@ const Model3DCard: React.FC<{
       style={{
         opacity: isInView ? 1 : 0,
         transform: isInView
-          ? `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(0) scale(1)`
+          ? isHovered
+            ? `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`
+            : 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)'
           : 'perspective(1000px) rotateX(16deg) rotateY(0deg) translateY(50px) scale(0.92)',
-        transition: rotateX === 0 && rotateY === 0
-          ? `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms`
-          : 'transform 0.1s ease-out',
+        transition: isHovered
+          ? 'transform 0.12s ease-out'
+          : `opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)`,
         transformStyle: 'preserve-3d',
       }}
-      className="group relative rounded-3xl overflow-hidden bg-white/95 dark:bg-midnight-card/90 border border-purple-200/80 dark:border-midnight-border/80 hover:border-electric-purple/80 dark:hover:border-electric-purple/80 p-8 flex flex-col justify-between shadow-none hover:shadow-none select-none transition-colors duration-300"
+      className="group relative rounded-3xl overflow-hidden bg-white/95 dark:bg-midnight-card/90 border border-purple-200/80 dark:border-midnight-border/80 hover:border-electric-purple/80 dark:hover:border-electric-purple/80 p-8 flex flex-col justify-between shadow-none hover:shadow-none select-none cursor-pointer transition-colors duration-300"
     >
+      {/* Top Neon Accent Bar on Hover */}
+      <div 
+        className={`absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r ${tier.accentColor} opacity-70 group-hover:opacity-100 group-hover:h-2.5 transition-all duration-300 z-20`} 
+      />
+
+      {/* Ambient Internal Color Bloom on Hover */}
+      <div 
+        className={`absolute inset-0 bg-gradient-to-br ${tier.accentColor} opacity-0 group-hover:opacity-[0.06] dark:group-hover:opacity-[0.14] transition-opacity duration-500 pointer-events-none z-0`}
+      />
+
       {/* 3D Dynamic Holographic Mouse Glare Beam */}
       <div
         className="pointer-events-none absolute inset-0 transition-opacity duration-300 z-0"
         style={{
           opacity: glare.opacity,
-          background: `radial-gradient(400px circle at ${glare.x}% ${glare.y}%, rgba(124, 44, 245, 0.14), transparent 70%)`,
+          background: `radial-gradient(450px circle at ${glare.x}% ${glare.y}%, rgba(124, 44, 245, 0.18), transparent 65%)`,
         }}
       />
 
       {/* Subtle 3D Depth Watermark Number */}
       <div 
         style={{ transform: 'translateZ(15px)' }}
-        className="absolute -top-4 -right-2 text-8xl sm:text-9xl font-black font-mono text-purple-900/5 dark:text-white/5 pointer-events-none select-none"
+        className="absolute -top-4 -right-2 text-8xl sm:text-9xl font-black font-mono text-purple-900/5 dark:text-white/5 pointer-events-none select-none group-hover:scale-105 transition-transform duration-500"
       >
         {tier.percentage}
       </div>
@@ -123,12 +138,12 @@ const Model3DCard: React.FC<{
       <div className="relative z-10 space-y-6" style={{ transform: 'translateZ(30px)' }}>
         {/* Top Icon & Percentage Header */}
         <div className="flex items-center justify-between">
-          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tier.accentColor} flex items-center justify-center shadow-none`}>
+          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tier.accentColor} flex items-center justify-center shadow-none group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300`}>
             {getIcon()}
           </div>
           
           <div className="text-right">
-            <span className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-light-text dark:text-white group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-colors">
+            <span className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-light-text dark:text-white group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-all duration-300 group-hover:scale-105 inline-block">
               {tier.percentage}
             </span>
             <div className="text-[10px] font-mono uppercase tracking-wider text-light-subtext dark:text-muted-gray font-bold">
@@ -155,9 +170,9 @@ const Model3DCard: React.FC<{
             <span>Milestone Allocation</span>
             <span>{tier.percentage} of Scope</span>
           </div>
-          <div className="w-full h-2 rounded-full bg-purple-100 dark:bg-midnight-surface overflow-hidden">
+          <div className="w-full h-2 group-hover:h-3 rounded-full bg-purple-100 dark:bg-midnight-surface overflow-hidden transition-all duration-300">
             <div
-              className={`h-full rounded-full bg-gradient-to-r ${tier.accentColor} transition-all duration-1000 ease-out`}
+              className={`h-full rounded-full bg-gradient-to-r ${tier.accentColor} transition-all duration-1000 ease-out group-hover:brightness-125`}
               style={{ width: `${tier.fraction}%` }}
             />
           </div>
@@ -167,7 +182,7 @@ const Model3DCard: React.FC<{
           {tier.deliverables.map((item, idx) => (
             <span
               key={idx}
-              className="px-2.5 py-1 rounded-lg text-[11px] font-mono bg-light-surface dark:bg-midnight-surface/80 text-light-text dark:text-gray-300 border border-purple-100 dark:border-midnight-border flex items-center gap-1 shadow-none"
+              className="px-2.5 py-1 rounded-lg text-[11px] font-mono bg-light-surface dark:bg-midnight-surface/80 text-light-text dark:text-gray-300 border border-purple-100 dark:border-midnight-border group-hover:border-electric-purple/40 dark:group-hover:border-electric-purple/40 flex items-center gap-1 shadow-none transition-all duration-300 hover:scale-105"
             >
               <Check className="w-3 h-3 text-emerald-500 flex-shrink-0" />
               <span>{item}</span>
