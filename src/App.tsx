@@ -8,6 +8,7 @@ import { OurStory } from './components/OurStory';
 import { ServicesSection } from './components/ServicesSection';
 import { PortfolioSection } from './components/PortfolioSection';
 import { ProjectsPage } from './components/ProjectsPage';
+import { ServicesPage } from './components/ServicesPage';
 import { CaseStudyModal } from './components/CaseStudyModal';
 import { ProcessSection } from './components/ProcessSection';
 import { GlobalVision } from './components/GlobalVision';
@@ -58,11 +59,14 @@ export const App: React.FC = () => {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<Product | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [inquiryDomain, setInquiryDomain] = useState<string>('AI, Intelligent Agents & OCR');
-  const [currentRoute, setCurrentRoute] = useState<'home' | 'projects'>(() => {
+  const [currentRoute, setCurrentRoute] = useState<'home' | 'projects' | 'services'>(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname;
       if (path === '/projects') {
         return 'projects';
+      }
+      if (path === '/services') {
+        return 'services';
       }
     }
     return 'home';
@@ -71,7 +75,7 @@ export const App: React.FC = () => {
   // Activate calibrated slow, silky-smooth momentum scrolling
   useSmoothScroll(!isAdminOpen && !selectedCaseStudy);
 
-  // URL-based Admin & Projects route detection (/admin, /projects, or hashes)
+  // URL-based Admin, Projects & Services route detection (/admin, /projects, /services, or hashes)
   useEffect(() => {
     const handleLocationChange = () => {
       const path = window.location.pathname;
@@ -81,6 +85,8 @@ export const App: React.FC = () => {
 
       if (path === '/projects') {
         setCurrentRoute('projects');
+      } else if (path === '/services') {
+        setCurrentRoute('services');
       } else if (!isAdmin) {
         setCurrentRoute('home');
         if (hash) {
@@ -104,7 +110,8 @@ export const App: React.FC = () => {
   const handleCloseAdmin = () => {
     setIsAdminOpen(false);
     if (window.location.pathname === '/admin') {
-      window.history.pushState(null, '', currentRoute === 'projects' ? '/projects' : '/');
+      const fallback = currentRoute === 'home' ? '/' : `/${currentRoute}`;
+      window.history.pushState(null, '', fallback);
     } else if (window.location.hash === '#admin') {
       window.history.pushState(null, '', window.location.pathname);
     }
@@ -113,6 +120,12 @@ export const App: React.FC = () => {
   const navigateToProjects = () => {
     setCurrentRoute('projects');
     window.history.pushState(null, '', '/projects');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToServices = () => {
+    setCurrentRoute('services');
+    window.history.pushState(null, '', '/services');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -129,7 +142,11 @@ export const App: React.FC = () => {
   };
 
   const handleNav = (target: string) => {
-    if (currentRoute === 'projects') {
+    if (target === 'projects') {
+      navigateToProjects();
+    } else if (target === 'services') {
+      navigateToServices();
+    } else if (currentRoute !== 'home') {
       navigateToHome(target);
     } else {
       scrollToSection(target);
@@ -201,8 +218,30 @@ export const App: React.FC = () => {
     scrollToSection('contact');
   };
 
-  const handleUpdateProduct = (updated: Product) => {
+  const handleUpdateProduct = async (updated: Product) => {
     setProducts(prev => prev.map(p => p.id === updated.id ? updated : p));
+    try {
+      await fetch(`/api/v1/products/${updated.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated),
+      });
+    } catch (err) {
+      console.log('Saved to local state:', err);
+    }
+  };
+
+  const handleUpdateService = async (updated: Service) => {
+    setServices(prev => prev.map(s => s.id === updated.id ? updated : s));
+    try {
+      await fetch(`/api/v1/services/${updated.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated),
+      });
+    } catch (err) {
+      console.log('Saved to local state:', err);
+    }
   };
 
   return (
@@ -227,7 +266,7 @@ export const App: React.FC = () => {
       {/* 3D Morphing Logo (Glides and morphs seamlessly between Hero and Top-Left Header dock) */}
       <MorphingLogo 
         anchorRef={heroLogoAnchorRef} 
-        isAlwaysDocked={currentRoute === 'projects'}
+        isAlwaysDocked={currentRoute !== 'home'}
         onLogoClick={() => navigateToHome()}
       />
 
@@ -255,6 +294,16 @@ export const App: React.FC = () => {
               navigateToHome('contact');
             }}
           />
+        ) : currentRoute === 'services' ? (
+          <ServicesPage
+            services={services}
+            onBackToHome={(sectionId) => navigateToHome(sectionId)}
+            onInquire={(domain) => {
+              setInquiryDomain(domain || 'Architecture inspired by Services');
+              navigateToHome('contact');
+            }}
+            onExploreProjects={navigateToProjects}
+          />
         ) : (
           <>
             {/* Section 01: Hero */}
@@ -274,6 +323,7 @@ export const App: React.FC = () => {
             <ServicesSection
               services={services}
               onSelectService={handleSelectServiceForInquiry}
+              onViewAllServices={navigateToServices}
             />
 
             {/* Section 04.5: Top Flagship Projects (Appendix C) */}
@@ -281,7 +331,7 @@ export const App: React.FC = () => {
               products={products}
               onOpenCaseStudy={(prod) => setSelectedCaseStudy(prod)}
               onViewAllProjects={navigateToProjects}
-              onViewAllServices={() => scrollToSection('services')}
+              onViewAllServices={navigateToServices}
             />
 
             {/* Section 05: How We Work (Discovery to Delivery) */}
@@ -326,6 +376,8 @@ export const App: React.FC = () => {
         onClose={handleCloseAdmin}
         products={products}
         onUpdateProduct={handleUpdateProduct}
+        services={services}
+        onUpdateService={handleUpdateService}
       />
 
       {/* Cookie & Session Preferences Consent Banner */}

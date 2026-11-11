@@ -8,7 +8,7 @@ interface NavbarProps {
   dockBtnRef?: React.RefObject<HTMLDivElement>;
   dockStartBtnRef?: React.RefObject<HTMLDivElement>;
   dockExploreBtnRef?: React.RefObject<HTMLDivElement>;
-  currentRoute?: 'home' | 'projects';
+  currentRoute?: 'home' | 'projects' | 'services';
   onLogoClick?: () => void;
 }
 
@@ -27,6 +27,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileProjectsOpen, setMobileProjectsOpen] = useState(false);
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [scrollY, setScrollY] = useState(0);
+
+  const isDedicatedPage = currentRoute === 'projects' || currentRoute === 'services';
 
   const handleMouseEnterProjects = () => {
     if (dropdownTimeoutRef.current) {
@@ -65,8 +67,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   // Dynamic glass opacity that smoothly materializes as user scrolls down and logo docks
-  // If on the dedicated projects page, navbar is always in docked glass state
-  const glassOpacity = currentRoute === 'projects' ? 1 : Math.min(1, Math.max(0, (scrollY - 60) / 180));
+  // If on a dedicated projects or services page, navbar is always in docked glass state
+  const glassOpacity = isDedicatedPage ? 1 : Math.min(1, Math.max(0, (scrollY - 60) / 180));
 
   const navItems = [
     { label: 'Our Story', target: 'story' },
@@ -208,11 +210,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* 2. TOP-RIGHT CORNER: Action Entities & Dock Target */}
       <div className="fixed top-3 right-4 sm:top-5 sm:right-8 z-50 flex items-center gap-2 sm:gap-3">
-        {/* If on dedicated Projects page, render a direct Start a Project button */}
-        {currentRoute === 'projects' ? (
+        {/* If on dedicated Projects or Services page, render a direct Start a Project button */}
+        {isDedicatedPage ? (
           <button
             onClick={() => onNavigate('contact')}
-            className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-gradient-to-r from-electric-purple to-deep-violet text-white text-xs sm:text-sm font-semibold shadow-md shadow-purple-600/30 hover:shadow-purple-600/50 hover:scale-[1.02] transition-all"
+            className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-gradient-to-r from-electric-purple to-deep-violet text-white text-xs sm:text-sm font-semibold shadow-md shadow-purple-600/30 hover:shadow-purple-600/50 hover:scale-[1.02] transition-all cursor-pointer"
           >
             Start a Project
           </button>
@@ -234,8 +236,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         )}
 
-        {/* Mobile Menu Button (Three Bar) - Appears once scrolled or on projects page */}
-        {(currentRoute === 'projects' || scrollY > 60) && (
+        {/* Mobile Menu Button (Three Bar) - Appears once scrolled or on dedicated pages */}
+        {(isDedicatedPage || scrollY > 60) && (
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-text dark:text-white focus:outline-none shadow-sm backdrop-blur-md cursor-pointer flex-shrink-0 transition-all duration-200"

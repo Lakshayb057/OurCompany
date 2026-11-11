@@ -5,6 +5,7 @@ import { Service } from '../types';
 interface ServicesSectionProps {
   services: Service[];
   onSelectService: (serviceName: string) => void;
+  onViewAllServices?: () => void;
 }
 
 const DEFAULT_SERVICE_IMAGES: Record<string, string> = {
@@ -22,7 +23,11 @@ const DEFAULT_SERVICE_IMAGES: Record<string, string> = {
   'campus-marketplaces': '/services/campus-marketplaces.jpg',
 };
 
-export const ServicesSection: React.FC<ServicesSectionProps> = ({ services, onSelectService }) => {
+export const ServicesSection: React.FC<ServicesSectionProps> = ({ 
+  services, 
+  onSelectService,
+  onViewAllServices
+}) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [isInView, setIsInView] = useState(false);
   const hasExitedRef = useRef(false);
@@ -180,6 +185,19 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services, onSe
             );
           })}
         </div>
+
+        {/* Explore All Services Action */}
+        {onViewAllServices && (
+          <div className="mt-14 flex justify-center">
+            <button
+              onClick={onViewAllServices}
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-white/15 text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-light hover:border-electric-purple hover:bg-lavender-soft/40 dark:hover:bg-white/5 hover:scale-[1.02] active:scale-[0.98] transition-all group cursor-pointer shadow-none hover:shadow-none"
+            >
+              <span>Explore All Engineering Services</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        )}
 
       </div>
     </section>

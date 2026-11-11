@@ -2,29 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Lock, Shield, LayoutDashboard, Inbox, FolderKanban, 
   Percent, FileText, CheckCircle2, AlertTriangle, Search, 
-  ExternalLink, Download, RefreshCw, Key, LogOut, Check
+  ExternalLink, Download, RefreshCw, Key, LogOut, Check, Layers
 } from 'lucide-react';
-import { Inquiry, Product, InternalProject } from '../types';
+import { Inquiry, Product, InternalProject, Service } from '../types';
 
 interface AdminPortalProps {
   isOpen: boolean;
   onClose: () => void;
   products: Product[];
   onUpdateProduct: (product: Product) => void;
+  services?: Service[];
+  onUpdateService?: (service: Service) => void;
 }
 
 export const AdminPortal: React.FC<AdminPortalProps> = ({ 
   isOpen, 
   onClose, 
   products, 
-  onUpdateProduct 
+  onUpdateProduct,
+  services = [],
+  onUpdateService
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loginEmail, setLoginEmail] = useState('admin@codeverse.tech');
   const [loginPass, setLoginPass] = useState('CodeVerse@2026');
   const [loginError, setLoginError] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'inquiries' | 'portfolio' | 'allocations' | 'audit'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'inquiries' | 'portfolio' | 'services' | 'allocations' | 'audit'>('overview');
 
   // Inquiries state
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
@@ -344,14 +348,36 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
               <button
                 onClick={() => setActiveTab('portfolio')}
-                className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
                   activeTab === 'portfolio'
                     ? 'bg-electric-purple text-white shadow-md shadow-electric-purple/30 font-semibold'
                     : 'text-light-subtext dark:text-muted-gray hover:text-light-text hover:bg-lavender-soft/60 dark:hover:bg-white/5'
                 }`}
               >
-                <FolderKanban className="w-4 h-4" />
-                <span>Portfolio CMS</span>
+                <div className="flex items-center gap-2.5">
+                  <FolderKanban className="w-4 h-4" />
+                  <span>Projects CMS</span>
+                </div>
+                <span className="px-1.5 py-0.5 rounded text-[10px] bg-white/20 border border-white/20 font-mono font-bold">
+                  {products.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('services')}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                  activeTab === 'services'
+                    ? 'bg-electric-purple text-white shadow-md shadow-electric-purple/30 font-semibold'
+                    : 'text-light-subtext dark:text-muted-gray hover:text-light-text hover:bg-lavender-soft/60 dark:hover:bg-white/5'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Layers className="w-4 h-4" />
+                  <span>Services CMS</span>
+                </div>
+                <span className="px-1.5 py-0.5 rounded text-[10px] bg-white/20 border border-white/20 font-mono font-bold">
+                  {services.length}
+                </span>
               </button>
 
               <button
@@ -686,6 +712,84 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                               <ExternalLink className="w-3 h-3" />
                             </a>
                           )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3.5: SERVICES CMS */}
+              {activeTab === 'services' && (
+                <div className="space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-xl font-bold text-light-text dark:text-white">Engineering Services CMS</h3>
+                      <p className="text-xs text-light-subtext dark:text-muted-gray mt-0.5">
+                        Manage technical capabilities, core stacks, delivery guarantees, and public /services offerings.
+                      </p>
+                    </div>
+
+                    <a
+                      href="/services"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 dark:bg-white/10 text-xs font-semibold text-electric-purple dark:text-lavender-glow hover:bg-purple-100 dark:hover:bg-white/15 transition-all self-start sm:self-auto cursor-pointer"
+                    >
+                      <span>Preview /services</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {services.map((s) => (
+                      <div
+                        key={s.id}
+                        className="p-5 rounded-2xl bg-white dark:bg-midnight-card border border-purple-100 dark:border-midnight-border space-y-3 shadow-sm"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-mono text-electric-purple dark:text-lavender-glow uppercase tracking-wider font-bold">
+                            {s.domain}
+                          </span>
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400">
+                            Active Service
+                          </span>
+                        </div>
+
+                        <div>
+                          <input
+                            type="text"
+                            value={s.title}
+                            onChange={(e) => onUpdateService?.({ ...s, title: e.target.value })}
+                            className="w-full text-base font-bold text-light-text dark:text-white bg-transparent border-b border-transparent hover:border-purple-200 focus:border-electric-purple focus:outline-none transition-colors"
+                          />
+                          <textarea
+                            value={s.summary}
+                            rows={2}
+                            onChange={(e) => onUpdateService?.({ ...s, summary: e.target.value })}
+                            className="w-full text-xs text-light-subtext dark:text-muted-gray mt-1 bg-transparent border rounded p-1.5 border-purple-50 dark:border-midnight-border/70 focus:border-electric-purple focus:outline-none transition-colors"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5 pt-2 border-t border-light-border dark:border-midnight-border/70">
+                          <div className="text-[10px] font-mono text-light-subtext dark:text-muted-gray uppercase font-semibold">Technologies:</div>
+                          <div className="flex flex-wrap gap-1">
+                            {s.technologies.map((t, idx) => (
+                              <span key={idx} className="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-50 dark:bg-white/5 text-slate-700 dark:text-gray-300 border border-purple-100 dark:border-white/10">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-1 pt-1 text-xs">
+                          <div className="text-[10px] font-mono text-light-subtext dark:text-muted-gray uppercase font-semibold">Benefits:</div>
+                          {s.benefits.slice(0, 2).map((b, idx) => (
+                            <div key={idx} className="flex items-center gap-1.5 text-[11px] text-slate-600 dark:text-slate-400 truncate">
+                              <Check className="w-3 h-3 text-emerald-500 flex-shrink-0" />
+                              <span className="truncate">{b}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     ))}

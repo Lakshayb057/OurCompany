@@ -50,10 +50,42 @@ app.get('/api/v1/services', (req, res) => {
   res.json({ success: true, data: data.services || [] });
 });
 
+// Admin API: Update or Create Service
+app.put('/api/v1/services/:id', (req, res) => {
+  const { id } = req.params;
+  const updatedService = req.body;
+  const data = readData();
+  data.services = data.services || [];
+  const index = data.services.findIndex(s => s.id === id);
+  if (index !== -1) {
+    data.services[index] = { ...data.services[index], ...updatedService };
+  } else {
+    data.services.push({ id, ...updatedService });
+  }
+  writeData(data);
+  res.json({ success: true, message: 'Service updated successfully.', data: updatedService });
+});
+
 // Public API: Products
 app.get('/api/v1/products', (req, res) => {
   const data = readData();
   res.json({ success: true, data: data.products || [] });
+});
+
+// Admin API: Update or Create Product
+app.put('/api/v1/products/:id', (req, res) => {
+  const { id } = req.params;
+  const updatedProduct = req.body;
+  const data = readData();
+  data.products = data.products || [];
+  const index = data.products.findIndex(p => p.id === id);
+  if (index !== -1) {
+    data.products[index] = { ...data.products[index], ...updatedProduct };
+  } else {
+    data.products.push({ id, ...updatedProduct });
+  }
+  writeData(data);
+  res.json({ success: true, message: 'Product updated successfully.', data: updatedProduct });
 });
 
 // Public API: Team / Leadership

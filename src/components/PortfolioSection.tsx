@@ -170,10 +170,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
 
           {/* Button 2: Explore All Services */}
           <button
-            onClick={onViewAllServices || (() => {
-              const el = document.getElementById('services');
-              el?.scrollIntoView({ behavior: 'smooth' });
-            })}
+            onClick={onViewAllServices}
             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-white/15 text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-light hover:border-electric-purple hover:bg-lavender-soft/40 dark:hover:bg-white/5 hover:scale-[1.02] active:scale-[0.98] transition-all group cursor-pointer shadow-none hover:shadow-none"
           >
             <span>Explore All Services</span>
