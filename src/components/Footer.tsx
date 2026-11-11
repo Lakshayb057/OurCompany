@@ -1,15 +1,10 @@
 import React from 'react';
-import { ArrowUp } from 'lucide-react';
 
 interface FooterProps {
   onNavigate?: (sectionId: string) => void;
 }
 
 export const Footer: React.FC<FooterProps> = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
     <footer className="bg-white dark:bg-midnight-900 border-t border-light-border dark:border-midnight-border pt-6 pb-4 sm:pt-8 sm:pb-5 relative overflow-hidden transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -29,19 +24,9 @@ export const Footer: React.FC<FooterProps> = () => {
         </div>
 
         {/* Bottom copyright bar */}
-        <div className="pt-3 sm:pt-4 relative flex items-center justify-center text-xs font-mono text-light-subtext dark:text-muted-gray">
+        <div className="pt-3 sm:pt-4 flex items-center justify-center text-xs font-mono text-light-subtext dark:text-muted-gray">
           <div className="text-center font-medium">
             © {new Date().getFullYear()} CodeVerse. All rights reserved.
-          </div>
-
-          <div className="absolute right-0">
-            <button
-              onClick={scrollToTop}
-              className="p-1.5 sm:p-2 rounded-lg bg-light-surface dark:bg-midnight-card border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white hover:border-electric-purple transition-all shadow-sm cursor-pointer"
-              title="Return to top"
-            >
-              <ArrowUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            </button>
           </div>
         </div>
 
