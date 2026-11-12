@@ -24,7 +24,8 @@ import { useSmoothScroll } from './hooks/useSmoothScroll';
 import { getStoredTheme, saveStoredTheme } from './utils/session';
 
 import { INITIAL_SERVICES, INITIAL_PRODUCTS, INITIAL_TEAM } from './data/mockData';
-import { Service, Product, TeamMember } from './types';
+import { Service, Product, TeamMember, SiteContent } from './types';
+import { PlanPackage, PLANS_DATA } from './data/plansData';
 
 export const App: React.FC = () => {
   const heroLogoAnchorRef = useRef<HTMLDivElement>(null);
@@ -57,6 +58,8 @@ export const App: React.FC = () => {
   const [services, setServices] = useState<Service[]>(INITIAL_SERVICES);
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [team, setTeam] = useState<TeamMember[]>(INITIAL_TEAM);
+  const [plans, setPlans] = useState<PlanPackage[]>(PLANS_DATA);
+  const [siteContent, setSiteContent] = useState<SiteContent | null>(null);
 
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<Product | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -193,10 +196,12 @@ export const App: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [srvRes, prodRes, teamRes] = await Promise.allSettled([
+        const [srvRes, prodRes, teamRes, plansRes, contentRes] = await Promise.allSettled([
           fetch('/api/v1/services').then(r => r.json()),
           fetch('/api/v1/products').then(r => r.json()),
           fetch('/api/v1/team').then(r => r.json()),
+          fetch('/api/v1/plans').then(r => r.json()),
+          fetch('/api/v1/content').then(r => r.json()),
         ]);
 
         if (srvRes.status === 'fulfilled' && srvRes.value.success && srvRes.value.data?.length) {
@@ -207,6 +212,12 @@ export const App: React.FC = () => {
         }
         if (teamRes.status === 'fulfilled' && teamRes.value.success && teamRes.value.data?.length) {
           setTeam(teamRes.value.data);
+        }
+        if (plansRes.status === 'fulfilled' && plansRes.value.success && plansRes.value.data?.length) {
+          setPlans(plansRes.value.data);
+        }
+        if (contentRes.status === 'fulfilled' && contentRes.value.success && contentRes.value.data) {
+          setSiteContent(contentRes.value.data);
         }
       } catch (err) {
         console.log('Using optimized built-in data:', err);
@@ -235,28 +246,63 @@ export const App: React.FC = () => {
 
   const handleUpdateProduct = async (updated: Product) => {
     setProducts(prev => prev.map(p => p.id === updated.id ? updated : p));
-    try {
-      await fetch(`/api/v1/products/${updated.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updated),
-      });
-    } catch (err) {
-      console.log('Saved to local state:', err);
-    }
+  };
+
+  const handleAddProduct = (newProd: Product) => {
+    setProducts(prev => [newProd, ...prev]);
+  };
+
+  const handleDeleteProduct = (id: string) => {
+    setProducts(prev => prev.filter(p => p.id !== id));
   };
 
   const handleUpdateService = async (updated: Service) => {
     setServices(prev => prev.map(s => s.id === updated.id ? updated : s));
-    try {
-      await fetch(`/api/v1/services/${updated.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updated),
-      });
-    } catch (err) {
-      console.log('Saved to local state:', err);
-    }
+  };
+
+  const handleAddService = (newSrv: Service) => {
+    setServices(prev => [newSrv, ...prev]);
+  };
+
+  const handleDeleteService = (id: string) => {
+    setServices(prev => prev.filter(s => s.id !== id));
+  };
+
+  const handleUpdateTeamMember = (updated: TeamMember) => {
+    setTeam(prev => prev.map(t => t.id === updated.id ? updated : t));
+  };
+
+  const handleAddTeamMember = (newMember: TeamMember) => {
+    setTeam(prev => [...prev, newMember]);
+  };
+
+  const handleDeleteTeamMember = (id: string) => {
+    setTeam(prev => prev.filter(t => t.id !== id));
+  };
+
+  const handleUpdatePlan = (updated: PlanPackage) => {
+    setPlans(prev => prev.map(p => p.id === updated.id ? updated : p));
+  };
+
+  const handleAddPlan = (newPlan: PlanPackage) => {
+    setPlans(prev => [...prev, newPlan]);
+  };
+
+  const handleDeletePlan = (id: string) => {
+    setPlans(prev => prev.filter(p => p.id !== id));
+  };
+
+  const handleUpdateSiteContent = (section: keyof SiteContent, data: any) => {
+    setSiteContent(prev => {
+      const current = prev || {
+        hero: { line1: '', line2: '', line3: '', badge1: '', badge2: '', statCode: '' },
+        story: { heading: '', subheading: '', paragraph1: '', paragraph2: '', stats: [] },
+        process: [],
+        globalVision: { headline: '', subheading: '', metrics: [] },
+        siteSettings: { companyName: '', legalHeadquarters: '', contactEmail: '', contactPhone: '', copyrightNotice: '' }
+      };
+      return { ...current, [section]: data };
+    });
   };
 
   return (
@@ -302,6 +348,7 @@ export const App: React.FC = () => {
         {currentRoute === 'plan' ? (
           <PlansPage
             onBackToHome={() => navigateToHome()}
+            plans={plans}
           />
         ) : currentRoute === 'projects' ? (
           <ProjectsPage
@@ -327,6 +374,7 @@ export const App: React.FC = () => {
           <>
             {/* Section 01: Hero */}
             <Hero
+              content={siteContent?.hero}
               anchorRef={heroLogoAnchorRef}
               startBtnAnchorRef={heroBtnAnchorRef}
               exploreBtnAnchorRef={heroExploreBtnAnchorRef}
@@ -336,7 +384,9 @@ export const App: React.FC = () => {
             />
 
             {/* Section 02 & 03: Our Story & Philosophy */}
-            <OurStory />
+            <OurStory
+              content={siteContent?.story}
+            />
 
             {/* Section 04: What We Build / Engineering Capabilities */}
             <ServicesSection
@@ -354,10 +404,13 @@ export const App: React.FC = () => {
             />
 
             {/* Section 05: How We Work (Discovery to Delivery) */}
-            <ProcessSection />
+            <ProcessSection
+              stages={siteContent?.process}
+            />
 
             {/* Section 07: Global Vision */}
             <GlobalVision
+              content={siteContent?.globalVision}
               onStartProject={() => scrollToSection('contact')}
             />
 
@@ -368,6 +421,7 @@ export const App: React.FC = () => {
 
             {/* Section 08: Engineering Plans & Packages */}
             <PlansSection
+              plans={plans}
               onOpenPlansPage={navigateToPlans}
             />
 
@@ -385,6 +439,7 @@ export const App: React.FC = () => {
 
       {/* Footer */}
       <Footer
+        settings={siteContent?.siteSettings}
         onNavigate={handleNav}
       />
 
@@ -401,8 +456,24 @@ export const App: React.FC = () => {
         onClose={handleCloseAdmin}
         products={products}
         onUpdateProduct={handleUpdateProduct}
+        onDeleteProduct={handleDeleteProduct}
+        onAddProduct={handleAddProduct}
         services={services}
         onUpdateService={handleUpdateService}
+        onDeleteService={handleDeleteService}
+        onAddService={handleAddService}
+        team={team}
+        onUpdateTeamMember={handleUpdateTeamMember}
+        onDeleteTeamMember={handleDeleteTeamMember}
+        onAddTeamMember={handleAddTeamMember}
+        plans={plans}
+        onUpdatePlan={handleUpdatePlan}
+        onDeletePlan={handleDeletePlan}
+        onAddPlan={handleAddPlan}
+        siteContent={siteContent || undefined}
+        onUpdateSiteContent={handleUpdateSiteContent}
+        isDark={theme === 'dark'}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Cookie & Session Preferences Consent Banner */}

@@ -2,6 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
 
 interface HeroProps {
+  content?: {
+    line1?: string;
+    line2?: string;
+    line3?: string;
+    badge1?: string;
+    badge2?: string;
+    statCode?: string;
+  };
   onStartProject?: () => void;
   onExplorePortfolio?: () => void;
   onExploreProjects?: () => void;
@@ -12,6 +20,7 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({
+  content,
   onStartProject,
   onExplorePortfolio,
   onExploreProjects,
@@ -20,6 +29,12 @@ export const Hero: React.FC<HeroProps> = ({
   startBtnAnchorRef,
   exploreBtnAnchorRef
 }) => {
+  const line1 = content?.line1 || 'CODEVERSE';
+  const line2 = content?.line2 || 'TURNING IDEAS INTO';
+  const line3 = content?.line3 || 'TECHNOLOGY';
+  const badge1 = content?.badge1 || 'PERN / Microservices';
+  const badge2 = content?.badge2 || 'WebSockets & Real-Time';
+  const statCode = content?.statCode || 'Distributed Architecture';
   const [isEntered, setIsEntered] = useState(false);
   const heroSectionRef = useRef<HTMLElement>(null);
   const hasExitedRef = useRef(false);
@@ -162,7 +177,7 @@ export const Hero: React.FC<HeroProps> = ({
                     transformOrigin: 'bottom center',
                   }}
                 >
-                  <span className="text-gradient-purple drop-shadow-[0_4px_18px_rgba(124,44,245,0.25)]">CODEVERSE</span>
+                  <span className="text-gradient-purple drop-shadow-[0_4px_18px_rgba(124,44,245,0.25)]">{line1}</span>
                 </div>
               </div>
 
@@ -180,7 +195,7 @@ export const Hero: React.FC<HeroProps> = ({
                     transformOrigin: 'bottom center',
                   }}
                 >
-                  TURNING IDEAS INTO
+                  {line2}
                 </div>
               </div>
 
@@ -198,7 +213,7 @@ export const Hero: React.FC<HeroProps> = ({
                     transformOrigin: 'bottom center',
                   }}
                 >
-                  <span className="text-gradient-purple drop-shadow-[0_4px_18px_rgba(124,44,245,0.25)]">TECHNOLOGY</span>
+                  <span className="text-gradient-purple drop-shadow-[0_4px_18px_rgba(124,44,245,0.25)]">{line3}</span>
                 </div>
               </div>
             </h1>
@@ -262,7 +277,7 @@ export const Hero: React.FC<HeroProps> = ({
                   className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70 text-[11px] sm:text-xs lg:text-sm whitespace-nowrap shadow-sm"
                 >
                   <span className="text-electric-purple font-semibold">&gt;_</span>
-                  <span className="text-light-text dark:text-gray-200">PERN / Microservices</span>
+                  <span className="text-light-text dark:text-gray-200">{badge1}</span>
                 </div>
 
                 <span className="text-light-border dark:text-midnight-border hidden lg:inline">•</span>
@@ -277,7 +292,7 @@ export const Hero: React.FC<HeroProps> = ({
                   className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70 text-[11px] sm:text-xs lg:text-sm whitespace-nowrap shadow-sm"
                 >
                   <span className="text-electric-purple font-semibold">&gt;_</span>
-                  <span className="text-light-text dark:text-gray-200">WebSockets &amp; Real-Time</span>
+                  <span className="text-light-text dark:text-gray-200">{badge2}</span>
                 </div>
 
                 {/* On desktop (lg:), the 3rd badge is in the same row */}
@@ -292,7 +307,7 @@ export const Hero: React.FC<HeroProps> = ({
                   className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70 text-sm whitespace-nowrap shadow-sm"
                 >
                   <span className="text-electric-purple font-semibold">&gt;_</span>
-                  <span className="text-light-text dark:text-gray-200">Gemini 2.5 Flash OCR</span>
+                  <span className="text-light-text dark:text-gray-200">{statCode}</span>
                 </div>
               </div>
 
@@ -308,7 +323,7 @@ export const Hero: React.FC<HeroProps> = ({
               >
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50/70 dark:bg-midnight-card/70 border border-purple-100/90 dark:border-midnight-border/70 text-[11px] sm:text-xs whitespace-nowrap shadow-sm">
                   <span className="text-electric-purple font-semibold">&gt;_</span>
-                  <span className="text-light-text dark:text-gray-200">Gemini 2.5 Flash OCR</span>
+                  <span className="text-light-text dark:text-gray-200">{statCode}</span>
                 </div>
               </div>
             </div>

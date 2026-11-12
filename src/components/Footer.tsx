@@ -2,9 +2,16 @@ import React from 'react';
 
 interface FooterProps {
   onNavigate?: (sectionId: string) => void;
+  settings?: {
+    companyName?: string;
+    legalHeadquarters?: string;
+    contactEmail?: string;
+    contactPhone?: string;
+    copyrightNotice?: string;
+  };
 }
 
-export const Footer: React.FC<FooterProps> = () => {
+export const Footer: React.FC<FooterProps> = ({ settings }) => {
   return (
     <footer className="bg-white dark:bg-midnight-900 border-t border-light-border dark:border-midnight-border pt-6 pb-4 sm:pt-8 sm:pb-5 relative overflow-hidden transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -24,10 +31,15 @@ export const Footer: React.FC<FooterProps> = () => {
         </div>
 
         {/* Bottom copyright bar */}
-        <div className="pt-3 sm:pt-4 flex items-center justify-center text-xs font-mono text-light-subtext dark:text-muted-gray">
-          <div className="text-center font-medium">
-            © {new Date().getFullYear()} CodeVerse. All rights reserved.
+        <div className="pt-3 sm:pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono text-light-subtext dark:text-muted-gray">
+          <div className="text-center sm:text-left font-medium">
+            © {new Date().getFullYear()} {settings?.companyName || 'CodeVerse'}. {settings?.copyrightNotice || 'All rights reserved.'}
           </div>
+          {settings?.legalHeadquarters && (
+            <div className="text-[11px] text-light-subtext/80 dark:text-muted-gray/80 text-center sm:text-right truncate max-w-md">
+              {settings.legalHeadquarters}
+            </div>
+          )}
         </div>
 
       </div>

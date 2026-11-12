@@ -4,7 +4,10 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { connectDB, isConnected, Inquiry, PlanRegistration } from './db.js';
+import { 
+  connectDB, isConnected, 
+  Inquiry, PlanRegistration, ServiceModel, ProductModel, TeamModel, PlanModel, SiteContentModel 
+} from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,28 +21,38 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Initialize DB connection
-connectDB();
+connectDB().then(async (connected) => {
+  if (connected) {
+    try {
+      await seedInitialDataIfEmpty();
+    } catch (e) {
+      console.warn('[Database] Seeding check warning:', e.message);
+    }
+  }
+});
 
 app.use(cors());
 app.use(express.json());
 
-// Helper to read data
+// Helper to read local JSON data store fallback
 function readData() {
   try {
     if (!fs.existsSync(DATA_FILE)) {
-      return { inquiries: [], planRegistrations: [], services: [], products: [], team: [], internalProjects: [] };
+      return getInitialEmptyStore();
     }
     const raw = fs.readFileSync(DATA_FILE, 'utf-8');
     const parsed = JSON.parse(raw);
     if (!parsed.planRegistrations) parsed.planRegistrations = [];
+    if (!parsed.plans) parsed.plans = [];
+    if (!parsed.siteContent) parsed.siteContent = getDefaultSiteContent();
     return parsed;
   } catch (err) {
     console.error('Error reading data store:', err);
-    return { inquiries: [], planRegistrations: [], services: [], products: [], team: [], internalProjects: [] };
+    return getInitialEmptyStore();
   }
 }
 
-// Helper to write data
+// Helper to write data store fallback
 function writeData(data) {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
@@ -50,66 +63,219 @@ function writeData(data) {
   }
 }
 
-// Public API: Health
+function getInitialEmptyStore() {
+  return { 
+    inquiries: [], 
+    planRegistrations: [], 
+    services: [], 
+    products: [], 
+    team: [], 
+    plans: [], 
+    internalProjects: [],
+    siteContent: getDefaultSiteContent()
+  };
+}
+
+function getDefaultSiteContent() {
+  return {
+    hero: {
+      line1: 'CODEVERSE',
+      line2: 'TURNING IDEAS INTO',
+      line3: 'TECHNOLOGY',
+      badge1: 'Production-Grade Distributed Cloud Systems',
+      badge2: 'Zero-Downtime Mission-Critical Deployments',
+      statCode: '100% Type-Safe Architecture'
+    },
+    story: {
+      heading: 'Engineered for Performance. Built for Reliability.',
+      subheading: 'We build mission-critical digital systems with architectural precision.',
+      paragraph1: 'Founded by engineers with deep passion for distributed computing, CodeVerse designs, architects, and scales resilient full-stack systems. We eliminate technical debt at the design phase.',
+      paragraph2: 'From real-time campus dining ecosystems to intelligent OCR pipeline fleets, our software powers operations with sub-100ms response times and zero-downtime reliability.',
+      stats: [
+        { label: 'Clean Codebase', value: '100%' },
+        { label: 'API Latency', value: '<200ms' },
+        { label: 'Architecture', value: 'ACID' },
+        { label: 'Sprint Delivery', value: '30 Days' }
+      ]
+    },
+    process: [
+      {
+        num: '01',
+        title: 'Discovery & System Design',
+        shortTitle: 'System Discovery',
+        image: '/process/step-01-discovery.jpg',
+        deliverables: ['SRS & Architectural Blueprint', 'Entity Relationship Diagram', 'API Contract Specification']
+      },
+      {
+        num: '02',
+        title: 'Rapid Prototyping & Validation',
+        shortTitle: 'Interactive Prototyping',
+        image: '/process/step-02-prototyping.jpg',
+        deliverables: ['Figma Design System', 'Key Interaction Proof-of-Concept', 'Database Schema Validation']
+      },
+      {
+        num: '03',
+        title: 'Production Engineering',
+        shortTitle: 'Full-Stack Engineering',
+        image: '/process/step-03-engineering.jpg',
+        deliverables: ['Type-Safe Clean Codebase', 'REST / WebSocket Microservices', 'ACID Data Persistence']
+      },
+      {
+        num: '04',
+        title: 'QA, Security & Hardening',
+        shortTitle: 'Security & QA',
+        image: '/process/step-04-qa-security.jpg',
+        deliverables: ['Unit & Integration Testing', 'Security & RBAC Auditing', 'Sub-200ms Latency Tuning']
+      },
+      {
+        num: '05',
+        title: 'Deployment & Observability',
+        shortTitle: 'CI/CD & Live Telemetry',
+        image: '/process/step-05-deployment.jpg',
+        deliverables: ['Zero-Downtime CI/CD Handover', 'Structured Logs & Telemetry', 'Full IP & Source Transfer']
+      }
+    ],
+    globalVision: {
+      headline: 'Engineered Locally. Deployed Globally.',
+      subheading: 'Headquartered in India, building scalable cloud platforms for global high-growth businesses and enterprises.',
+      metrics: [
+        { label: 'Global Delivery', value: '24/7' },
+        { label: 'Average Uptime', value: '99.98%' },
+        { label: 'Source Code IP', value: '100% Client Owned' }
+      ]
+    },
+    siteSettings: {
+      companyName: 'CodeVerse',
+      legalHeadquarters: 'Corporate Headquarters: India • Global Remote Delivery',
+      contactEmail: 'leadership@codeverse.tech',
+      contactPhone: '+91 99999 99999',
+      copyrightNotice: '© 2026 CodeVerse. All rights reserved.'
+    }
+  };
+}
+
+// Seed initial documents to Atlas if collections are newly created
+async function seedInitialDataIfEmpty() {
+  if (!isConnected()) return;
+  const store = readData();
+
+  // 1. Services
+  const svcCount = await ServiceModel.countDocuments();
+  if (svcCount === 0 && store.services?.length) {
+    await ServiceModel.insertMany(store.services);
+    console.log(`[Seed] Seeded ${store.services.length} services to MongoDB Atlas`);
+  }
+
+  // 2. Products
+  const prodCount = await ProductModel.countDocuments();
+  if (prodCount === 0 && store.products?.length) {
+    await ProductModel.insertMany(store.products);
+    console.log(`[Seed] Seeded ${store.products.length} products to MongoDB Atlas`);
+  }
+
+  // 3. Team
+  const teamCount = await TeamModel.countDocuments();
+  if (teamCount === 0 && store.team?.length) {
+    await TeamModel.insertMany(store.team);
+    console.log(`[Seed] Seeded ${store.team.length} team members to MongoDB Atlas`);
+  }
+
+  // 4. Site Content
+  const contentCount = await SiteContentModel.countDocuments();
+  if (contentCount === 0) {
+    await SiteContentModel.create(getDefaultSiteContent());
+    console.log(`[Seed] Seeded default site content singleton to MongoDB Atlas`);
+  }
+}
+
+// -------------------------------------------------------------
+// PUBLIC API ENDPOINTS
+// -------------------------------------------------------------
+
+// Health & System Status
 app.get('/api/v1/health', (req, res) => {
-  res.json({ success: true, status: 'operational', timestamp: new Date().toISOString() });
+  res.json({ 
+    success: true, 
+    status: 'operational', 
+    database: isConnected() ? 'MongoDB Atlas (Connected)' : 'Local JSON Store (Fallback)',
+    timestamp: new Date().toISOString() 
+  });
 });
 
-// Public API: Services
-app.get('/api/v1/services', (req, res) => {
+// Full Dynamic Site Content (Hero, Story, Process, Global Vision, Site Settings)
+app.get('/api/v1/content', async (req, res) => {
+  if (isConnected()) {
+    try {
+      const doc = await SiteContentModel.findOne({ id: 'site_singleton' }).lean();
+      if (doc) return res.json({ success: true, data: doc });
+    } catch (e) {
+      console.warn('Error reading content from Atlas:', e.message);
+    }
+  }
+  const store = readData();
+  res.json({ success: true, data: store.siteContent || getDefaultSiteContent() });
+});
+
+// Services
+app.get('/api/v1/services', async (req, res) => {
+  if (isConnected()) {
+    try {
+      const services = await ServiceModel.find().lean();
+      if (services && services.length) return res.json({ success: true, data: services });
+    } catch (e) {
+      console.warn('Error fetching services from Atlas:', e.message);
+    }
+  }
   const data = readData();
   res.json({ success: true, data: data.services || [] });
 });
 
-// Admin API: Update or Create Service
-app.put('/api/v1/services/:id', (req, res) => {
-  const { id } = req.params;
-  const updatedService = req.body;
-  const data = readData();
-  data.services = data.services || [];
-  const index = data.services.findIndex(s => s.id === id);
-  if (index !== -1) {
-    data.services[index] = { ...data.services[index], ...updatedService };
-  } else {
-    data.services.push({ id, ...updatedService });
+// Products / Portfolio
+app.get('/api/v1/products', async (req, res) => {
+  if (isConnected()) {
+    try {
+      const products = await ProductModel.find().lean();
+      if (products && products.length) return res.json({ success: true, data: products });
+    } catch (e) {
+      console.warn('Error fetching products from Atlas:', e.message);
+    }
   }
-  writeData(data);
-  res.json({ success: true, message: 'Service updated successfully.', data: updatedService });
-});
-
-// Public API: Products
-app.get('/api/v1/products', (req, res) => {
   const data = readData();
   res.json({ success: true, data: data.products || [] });
 });
 
-// Admin API: Update or Create Product
-app.put('/api/v1/products/:id', (req, res) => {
-  const { id } = req.params;
-  const updatedProduct = req.body;
-  const data = readData();
-  data.products = data.products || [];
-  const index = data.products.findIndex(p => p.id === id);
-  if (index !== -1) {
-    data.products[index] = { ...data.products[index], ...updatedProduct };
-  } else {
-    data.products.push({ id, ...updatedProduct });
+// Team / Leadership
+app.get('/api/v1/team', async (req, res) => {
+  if (isConnected()) {
+    try {
+      const team = await TeamModel.find().lean();
+      if (team && team.length) return res.json({ success: true, data: team });
+    } catch (e) {
+      console.warn('Error fetching team from Atlas:', e.message);
+    }
   }
-  writeData(data);
-  res.json({ success: true, message: 'Product updated successfully.', data: updatedProduct });
-});
-
-// Public API: Team / Leadership
-app.get('/api/v1/team', (req, res) => {
   const data = readData();
   res.json({ success: true, data: data.team || [] });
 });
 
-// Public API: Submit Inquiry (FR-09, FR-10, FR-11)
+// Plans
+app.get('/api/v1/plans', async (req, res) => {
+  if (isConnected()) {
+    try {
+      const plans = await PlanModel.find().lean();
+      if (plans && plans.length) return res.json({ success: true, data: plans });
+    } catch (e) {
+      console.warn('Error fetching plans from Atlas:', e.message);
+    }
+  }
+  const data = readData();
+  res.json({ success: true, data: data.plans || [] });
+});
+
+// Submit Inquiry
 app.post('/api/v1/inquiries', async (req, res) => {
   const { fullName, contact, phone, email, company, country, projectType, budgetRange, timeline, preferredContact, description } = req.body;
 
-  // Validation
   if (!fullName || !fullName.trim()) {
     return res.status(400).json({ success: false, message: 'Full name is required.' });
   }
@@ -137,22 +303,17 @@ app.post('/api/v1/inquiries', async (req, res) => {
     createdAt: new Date().toISOString()
   };
 
-  // 1. Save to local store fallback
   data.inquiries.unshift(newInquiry);
   writeData(data);
 
-  // 2. Save to MongoDB Atlas if connected
   if (isConnected()) {
     try {
       await Inquiry.create(newInquiry);
-      console.log(`[MongoDB Atlas] Inquiry persisted successfully: ${newInquiry.fullName}`);
+      console.log(`[MongoDB Atlas] Inquiry persisted: ${newInquiry.fullName}`);
     } catch (dbErr) {
-      console.error('[MongoDB Atlas] Error writing inquiry to MongoDB:', dbErr.message);
+      console.error('[MongoDB Atlas] Error writing inquiry:', dbErr.message);
     }
   }
-
-  // Email Notification simulation as per Section 5.1 & 7.1
-  console.log(`[Notification Dispatch] New qualified project inquiry received from ${newInquiry.fullName} (${newInquiry.email}) for ${newInquiry.projectType}.`);
 
   return res.status(201).json({
     success: true,
@@ -161,23 +322,14 @@ app.post('/api/v1/inquiries', async (req, res) => {
   });
 });
 
-// Public API: Register for a Plan / Package
+// Register for Plan
 app.post('/api/v1/plan-registrations', async (req, res) => {
   const { fullName, email, contact, company, planId, planName, category, domainOption, billingPeriod, estimatedPrice, notes } = req.body;
 
-  // Validation
-  if (!fullName || !fullName.trim()) {
-    return res.status(400).json({ success: false, message: 'Full name is required.' });
-  }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-    return res.status(400).json({ success: false, message: 'A valid email address is required.' });
-  }
-  if (!contact || !contact.trim()) {
-    return res.status(400).json({ success: false, message: 'Contact number / WhatsApp is required.' });
-  }
-  if (!planName || !planName.trim()) {
-    return res.status(400).json({ success: false, message: 'Plan name is required.' });
-  }
+  if (!fullName || !fullName.trim()) return res.status(400).json({ success: false, message: 'Full name is required.' });
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return res.status(400).json({ success: false, message: 'A valid email is required.' });
+  if (!contact || !contact.trim()) return res.status(400).json({ success: false, message: 'Contact number is required.' });
+  if (!planName || !planName.trim()) return res.status(400).json({ success: false, message: 'Plan name is required.' });
 
   const data = readData();
   data.planRegistrations = data.planRegistrations || [];
@@ -199,36 +351,30 @@ app.post('/api/v1/plan-registrations', async (req, res) => {
     createdAt: new Date().toISOString()
   };
 
-  // 1. Save to local store fallback
   data.planRegistrations.unshift(newReg);
   writeData(data);
 
-  // 2. Save to MongoDB Atlas if connected
   if (isConnected()) {
     try {
       await PlanRegistration.create(newReg);
-      console.log(`[MongoDB Atlas] Plan registration persisted successfully: ${newReg.fullName} for ${newReg.planName}`);
+      console.log(`[MongoDB Atlas] Plan registration saved: ${newReg.fullName}`);
     } catch (dbErr) {
-      console.error('[MongoDB Atlas] Error writing plan registration to MongoDB:', dbErr.message);
+      console.error('[MongoDB Atlas] Error saving plan registration:', dbErr.message);
     }
   }
 
-  console.log(`[Plan Registration] New registration: ${newReg.fullName} (${newReg.email}) for "${newReg.planName}" [${newReg.domainOption}]`);
-
   return res.status(201).json({
     success: true,
-    message: `Plan registration for "${newReg.planName}" confirmed! Our engineering team will contact you within 24 hours to initiate onboarding.`,
+    message: `Plan registration for "${newReg.planName}" confirmed! Our engineering team will contact you within 24 hours.`,
     data: { registrationId: newReg.id }
   });
 });
 
-// Admin API: List Plan Registrations
-app.get('/api/v1/admin/plan-registrations', (req, res) => {
-  const data = readData();
-  res.json({ success: true, data: data.planRegistrations || [] });
-});
+// -------------------------------------------------------------
+// ADMIN AUTHENTICATION & CONTROL APIS
+// -------------------------------------------------------------
 
-// Auth API: Admin Login
+// Admin Login
 app.post('/api/v1/auth/login', (req, res) => {
   const { email, password } = req.body;
   if (email === 'admin@codeverse.tech' && password === 'CodeVerse@2026') {
@@ -248,97 +394,482 @@ app.post('/api/v1/auth/login', (req, res) => {
   return res.status(401).json({ success: false, message: 'Invalid administrative credentials.' });
 });
 
-// Admin API: List Inquiries
-app.get('/api/v1/admin/inquiries', (req, res) => {
-  const data = readData();
-  const { status, search } = req.query;
-  let inquiries = data.inquiries || [];
+// Admin System / Database Connectivity Status
+app.get('/api/v1/admin/status', async (req, res) => {
+  const store = readData();
+  let dbInfo = {
+    connected: isConnected(),
+    provider: isConnected() ? 'MongoDB Atlas' : 'Local Fallback Store',
+    host: isConnected() ? 'ourcompany.fwhyx65.mongodb.net' : 'localhost (server/data/store.json)',
+    database: 'codeverse',
+    counts: {
+      inquiries: store.inquiries?.length || 0,
+      planRegistrations: store.planRegistrations?.length || 0,
+      services: store.services?.length || 0,
+      products: store.products?.length || 0,
+      team: store.team?.length || 0,
+      plans: store.plans?.length || 0
+    }
+  };
 
+  if (isConnected()) {
+    try {
+      dbInfo.counts.inquiries = await Inquiry.countDocuments();
+      dbInfo.counts.planRegistrations = await PlanRegistration.countDocuments();
+      dbInfo.counts.services = await ServiceModel.countDocuments();
+      dbInfo.counts.products = await ProductModel.countDocuments();
+      dbInfo.counts.team = await TeamModel.countDocuments();
+      dbInfo.counts.plans = await PlanModel.countDocuments();
+    } catch (e) {
+      console.warn('Error reading counts from Atlas:', e.message);
+    }
+  }
+
+  res.json({ success: true, data: dbInfo });
+});
+
+// -------------------------------------------------------------
+// SECTION CONTENT CRUD (Hero, Story, Process, Global Vision, Settings)
+// -------------------------------------------------------------
+
+app.put('/api/v1/admin/content/:section', async (req, res) => {
+  const { section } = req.params;
+  const updatePayload = req.body;
+  const store = readData();
+  store.siteContent = store.siteContent || getDefaultSiteContent();
+
+  store.siteContent[section] = updatePayload;
+  store.siteContent.updatedAt = new Date().toISOString();
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await SiteContentModel.findOneAndUpdate(
+        { id: 'site_singleton' },
+        { [section]: updatePayload, updatedAt: new Date() },
+        { upsert: true, new: true }
+      );
+      console.log(`[MongoDB Atlas] SiteContent.${section} updated successfully`);
+    } catch (e) {
+      console.error('[MongoDB Atlas] Error updating site content:', e.message);
+    }
+  }
+
+  res.json({ 
+    success: true, 
+    message: `${section.toUpperCase()} section updated successfully.`, 
+    data: store.siteContent[section] 
+  });
+});
+
+// -------------------------------------------------------------
+// SERVICES CRUD (Add, Update, Delete)
+// -------------------------------------------------------------
+
+app.post('/api/v1/admin/services', async (req, res) => {
+  const newService = {
+    ...req.body,
+    id: req.body.id || `srv-${Date.now()}`
+  };
+  const store = readData();
+  store.services = store.services || [];
+  store.services.push(newService);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await ServiceModel.create(newService);
+    } catch (e) {
+      console.warn('Atlas service create error:', e.message);
+    }
+  }
+
+  res.status(201).json({ success: true, message: 'Service added successfully.', data: newService });
+});
+
+app.put('/api/v1/admin/services/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedService = req.body;
+  const store = readData();
+  store.services = store.services || [];
+  const idx = store.services.findIndex(s => s.id === id);
+  if (idx !== -1) {
+    store.services[idx] = { ...store.services[idx], ...updatedService };
+  } else {
+    store.services.push({ id, ...updatedService });
+  }
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await ServiceModel.findOneAndUpdate({ id }, updatedService, { upsert: true, new: true });
+    } catch (e) {
+      console.warn('Atlas service update error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Service updated successfully.', data: updatedService });
+});
+
+app.delete('/api/v1/admin/services/:id', async (req, res) => {
+  const { id } = req.params;
+  const store = readData();
+  store.services = (store.services || []).filter(s => s.id !== id);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await ServiceModel.deleteOne({ id });
+    } catch (e) {
+      console.warn('Atlas service delete error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Service deleted successfully.' });
+});
+
+// -------------------------------------------------------------
+// PRODUCTS / PORTFOLIO CRUD (Add, Update, Delete)
+// -------------------------------------------------------------
+
+app.post('/api/v1/admin/products', async (req, res) => {
+  const newProduct = {
+    ...req.body,
+    id: req.body.id || `prod-${Date.now()}`
+  };
+  const store = readData();
+  store.products = store.products || [];
+  store.products.push(newProduct);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await ProductModel.create(newProduct);
+    } catch (e) {
+      console.warn('Atlas product create error:', e.message);
+    }
+  }
+
+  res.status(201).json({ success: true, message: 'Project added successfully.', data: newProduct });
+});
+
+app.put('/api/v1/admin/products/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedProduct = req.body;
+  const store = readData();
+  store.products = store.products || [];
+  const idx = store.products.findIndex(p => p.id === id);
+  if (idx !== -1) {
+    store.products[idx] = { ...store.products[idx], ...updatedProduct };
+  } else {
+    store.products.push({ id, ...updatedProduct });
+  }
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await ProductModel.findOneAndUpdate({ id }, updatedProduct, { upsert: true, new: true });
+    } catch (e) {
+      console.warn('Atlas product update error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Project updated successfully.', data: updatedProduct });
+});
+
+app.delete('/api/v1/admin/products/:id', async (req, res) => {
+  const { id } = req.params;
+  const store = readData();
+  store.products = (store.products || []).filter(p => p.id !== id);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await ProductModel.deleteOne({ id });
+    } catch (e) {
+      console.warn('Atlas product delete error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Project deleted successfully.' });
+});
+
+// -------------------------------------------------------------
+// TEAM MEMBERS CRUD (Add, Update, Delete)
+// -------------------------------------------------------------
+
+app.post('/api/v1/admin/team', async (req, res) => {
+  const newMember = {
+    ...req.body,
+    id: req.body.id || `team-${Date.now()}`
+  };
+  const store = readData();
+  store.team = store.team || [];
+  store.team.push(newMember);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await TeamModel.create(newMember);
+    } catch (e) {
+      console.warn('Atlas team create error:', e.message);
+    }
+  }
+
+  res.status(201).json({ success: true, message: 'Team member added successfully.', data: newMember });
+});
+
+app.put('/api/v1/admin/team/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedMember = req.body;
+  const store = readData();
+  store.team = store.team || [];
+  const idx = store.team.findIndex(t => t.id === id);
+  if (idx !== -1) {
+    store.team[idx] = { ...store.team[idx], ...updatedMember };
+  } else {
+    store.team.push({ id, ...updatedMember });
+  }
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await TeamModel.findOneAndUpdate({ id }, updatedMember, { upsert: true, new: true });
+    } catch (e) {
+      console.warn('Atlas team update error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Team member updated successfully.', data: updatedMember });
+});
+
+app.delete('/api/v1/admin/team/:id', async (req, res) => {
+  const { id } = req.params;
+  const store = readData();
+  store.team = (store.team || []).filter(t => t.id !== id);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await TeamModel.deleteOne({ id });
+    } catch (e) {
+      console.warn('Atlas team delete error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Team member deleted successfully.' });
+});
+
+// -------------------------------------------------------------
+// PLANS & PACKAGES CRUD (Add, Update, Delete)
+// -------------------------------------------------------------
+
+app.post('/api/v1/admin/plans', async (req, res) => {
+  const newPlan = {
+    ...req.body,
+    id: req.body.id || `plan-${Date.now()}`
+  };
+  const store = readData();
+  store.plans = store.plans || [];
+  store.plans.push(newPlan);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await PlanModel.create(newPlan);
+    } catch (e) {
+      console.warn('Atlas plan create error:', e.message);
+    }
+  }
+
+  res.status(201).json({ success: true, message: 'Plan added successfully.', data: newPlan });
+});
+
+app.put('/api/v1/admin/plans/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedPlan = req.body;
+  const store = readData();
+  store.plans = store.plans || [];
+  const idx = store.plans.findIndex(p => p.id === id);
+  if (idx !== -1) {
+    store.plans[idx] = { ...store.plans[idx], ...updatedPlan };
+  } else {
+    store.plans.push({ id, ...updatedPlan });
+  }
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await PlanModel.findOneAndUpdate({ id }, updatedPlan, { upsert: true, new: true });
+    } catch (e) {
+      console.warn('Atlas plan update error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Plan updated successfully.', data: updatedPlan });
+});
+
+app.delete('/api/v1/admin/plans/:id', async (req, res) => {
+  const { id } = req.params;
+  const store = readData();
+  store.plans = (store.plans || []).filter(p => p.id !== id);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await PlanModel.deleteOne({ id });
+    } catch (e) {
+      console.warn('Atlas plan delete error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Plan deleted successfully.' });
+});
+
+// -------------------------------------------------------------
+// INQUIRIES & PLAN REGISTRATIONS MANAGEMENT
+// -------------------------------------------------------------
+
+app.get('/api/v1/admin/inquiries', async (req, res) => {
+  let inquiries = [];
+  if (isConnected()) {
+    try {
+      inquiries = await Inquiry.find().sort({ createdAt: -1 }).lean();
+    } catch (e) {
+      console.warn('Atlas inquiries fetch error:', e.message);
+    }
+  }
+  if (!inquiries || !inquiries.length) {
+    const data = readData();
+    inquiries = data.inquiries || [];
+  }
+
+  const { status, search } = req.query;
   if (status && status !== 'All') {
-    inquiries = inquiries.filter(i => i.status.toLowerCase() === status.toLowerCase());
+    inquiries = inquiries.filter(i => (i.status || '').toLowerCase() === status.toLowerCase());
   }
   if (search) {
     const q = search.toLowerCase();
     inquiries = inquiries.filter(i => 
-      i.fullName.toLowerCase().includes(q) || 
-      i.email.toLowerCase().includes(q) || 
+      (i.fullName || '').toLowerCase().includes(q) || 
+      (i.email || '').toLowerCase().includes(q) || 
       (i.company && i.company.toLowerCase().includes(q)) ||
-      i.projectType.toLowerCase().includes(q)
+      (i.projectType || '').toLowerCase().includes(q)
     );
   }
 
   res.json({ success: true, data: inquiries });
 });
 
-// Admin API: Update Inquiry Status
-app.patch('/api/v1/admin/inquiries/:id', (req, res) => {
+app.patch('/api/v1/admin/inquiries/:id', async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
-  const data = readData();
-  const index = data.inquiries.findIndex(i => i.id === id);
-
-  if (index === -1) {
-    return res.status(404).json({ success: false, message: 'Inquiry not found.' });
+  const store = readData();
+  const idx = store.inquiries.findIndex(i => i.id === id);
+  if (idx !== -1) {
+    store.inquiries[idx].status = status;
+    writeData(store);
   }
 
-  data.inquiries[index].status = status;
-  writeData(data);
-  res.json({ success: true, message: 'Inquiry status updated successfully.', data: data.inquiries[index] });
-});
-
-// Admin API: Internal Projects & Allocation Management (FR-14 & 10.4)
-app.get('/api/v1/admin/projects', (req, res) => {
-  const data = readData();
-  res.json({ success: true, data: data.internalProjects || [] });
-});
-
-// Admin API: Validate Allocation Rule
-app.post('/api/v1/admin/allocations/validate', (req, res) => {
-  const { projectLead, engineering, companyReserve, budget } = req.body;
-  const leadPct = Number(projectLead) || 0;
-  const engPct = Number(engineering) || 0;
-  const compPct = Number(companyReserve) || 0;
-  const total = leadPct + engPct + compPct;
-
-  if (Math.abs(total - 100) > 0.01) {
-    return res.status(400).json({
-      success: false,
-      message: `Invalid allocation: percentages sum to ${total}%, but must total exactly 100%.`
-    });
+  if (isConnected()) {
+    try {
+      await Inquiry.findOneAndUpdate({ id }, { status });
+    } catch (e) {
+      console.warn('Atlas inquiry update error:', e.message);
+    }
   }
 
-  const b = Number(budget) || 0;
-  const breakdown = {
-    totalBudget: b,
-    leadAmount: (b * leadPct) / 100,
-    engineeringAmount: (b * engPct) / 100,
-    companyAmount: (b * compPct) / 100,
-    valid: true
-  };
-
-  res.json({ success: true, message: 'Allocation percentages valid (100%).', data: breakdown });
+  res.json({ success: true, message: 'Inquiry status updated successfully.' });
 });
 
-// Admin API: Analytics Overview (FR-16)
+app.delete('/api/v1/admin/inquiries/:id', async (req, res) => {
+  const { id } = req.params;
+  const store = readData();
+  store.inquiries = (store.inquiries || []).filter(i => i.id !== id);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await Inquiry.deleteOne({ id });
+    } catch (e) {
+      console.warn('Atlas inquiry delete error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Inquiry deleted successfully.' });
+});
+
+app.get('/api/v1/admin/plan-registrations', async (req, res) => {
+  let regs = [];
+  if (isConnected()) {
+    try {
+      regs = await PlanRegistration.find().sort({ createdAt: -1 }).lean();
+    } catch (e) {
+      console.warn('Atlas plan registrations fetch error:', e.message);
+    }
+  }
+  if (!regs || !regs.length) {
+    const data = readData();
+    regs = data.planRegistrations || [];
+  }
+  res.json({ success: true, data: regs });
+});
+
+app.patch('/api/v1/admin/plan-registrations/:id', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const store = readData();
+  const idx = (store.planRegistrations || []).findIndex(r => r.id === id);
+  if (idx !== -1) {
+    store.planRegistrations[idx].status = status;
+    writeData(store);
+  }
+
+  if (isConnected()) {
+    try {
+      await PlanRegistration.findOneAndUpdate({ id }, { status });
+    } catch (e) {
+      console.warn('Atlas plan registration update error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Plan registration status updated.' });
+});
+
+app.delete('/api/v1/admin/plan-registrations/:id', async (req, res) => {
+  const { id } = req.params;
+  const store = readData();
+  store.planRegistrations = (store.planRegistrations || []).filter(r => r.id !== id);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await PlanRegistration.deleteOne({ id });
+    } catch (e) {
+      console.warn('Atlas plan registration delete error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Plan registration deleted.' });
+});
+
+// Admin Analytics Overview
 app.get('/api/v1/admin/analytics', (req, res) => {
   const data = readData();
   const inquiries = data.inquiries || [];
-  const totalInquiries = inquiries.length;
   const statusCounts = inquiries.reduce((acc, curr) => {
     acc[curr.status] = (acc[curr.status] || 0) + 1;
     return acc;
   }, {});
 
-  const projectCounts = (data.products || []).length;
-  const servicesCounts = (data.services || []).length;
-
   res.json({
     success: true,
     data: {
-      totalInquiries,
+      totalInquiries: inquiries.length,
       statusCounts,
-      totalProjects: projectCounts,
-      totalServices: servicesCounts,
+      totalProjects: (data.products || []).length,
+      totalServices: (data.services || []).length,
+      totalPlanRegistrations: (data.planRegistrations || []).length,
       recentInquiries: inquiries.slice(0, 5)
     }
   });

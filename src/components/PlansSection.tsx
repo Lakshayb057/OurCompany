@@ -5,18 +5,21 @@ import { PlanRegistrationModal } from './PlanRegistrationModal';
 
 interface PlansSectionProps {
   onOpenPlansPage: () => void;
+  plans?: PlanPackage[];
 }
 
-export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage }) => {
+export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, plans }) => {
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
   const [selectedPlanForModal, setSelectedPlanForModal] = useState<PlanPackage | null>(null);
 
+  const allPlans = (plans && plans.length > 0) ? plans : PLANS_DATA;
+
   // Exactly 3 featured plans on the home section (Startup Launchpad, Sprint MVP, Custom Enterprise ERP)
   const homeFeaturedPlans: PlanPackage[] = [
-    PLANS_DATA.find(p => p.id === 'single-page-startup-with-domain') || PLANS_DATA[1],
-    PLANS_DATA.find(p => p.id === 'webapp-sprint-mvp') || PLANS_DATA[3],
-    PLANS_DATA.find(p => p.id === 'software-custom-erp') || PLANS_DATA[6],
-  ];
+    allPlans.find(p => p.id === 'single-page-startup-with-domain') || allPlans[1] || allPlans[0],
+    allPlans.find(p => p.id === 'webapp-sprint-mvp') || allPlans[3] || allPlans[1] || allPlans[0],
+    allPlans.find(p => p.id === 'software-custom-erp') || allPlans[6] || allPlans[2] || allPlans[0],
+  ].filter(Boolean);
 
   const handleRegisterClick = (plan: PlanPackage) => {
     setSelectedPlanForModal(plan);

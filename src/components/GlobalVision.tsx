@@ -1,7 +1,18 @@
 import React from 'react';
 import { Clock, Shield, Laptop, Globe } from 'lucide-react';
 
-export const GlobalVision: React.FC<{ onStartProject: () => void }> = ({ onStartProject }) => {
+interface GlobalVisionProps {
+  onStartProject: () => void;
+  content?: {
+    headline?: string;
+    subheading?: string;
+    metrics?: { label: string; value: string }[];
+  };
+}
+
+export const GlobalVision: React.FC<GlobalVisionProps> = ({ onStartProject, content }) => {
+  const headline = content?.headline || 'Engineered Locally. Deployed Globally.';
+  const subheading = content?.subheading || 'CodeVerse is architected from day one for global delivery. Whether partnering with fast-moving startups in London, agritech pioneers in South Asia, or scale-ups in North America, we deliver frictionless remote collaboration backed by airtight SLAs.';
   return (
     <section id="global" className="pt-2 sm:pt-16 md:pt-20 pb-8 sm:pb-16 md:pb-24 relative overflow-hidden">
       {/* Ambient background glows */}
@@ -37,12 +48,11 @@ export const GlobalVision: React.FC<{ onStartProject: () => void }> = ({ onStart
             
             {/* Title - Balanced Scale */}
             <h2 className="text-3xl sm:text-4xl lg:text-[3.15rem] font-extrabold tracking-tight text-slate-950 dark:text-white leading-[1.14] transition-colors">
-              Engineered Locally. <br />
-              <span className="text-gradient-purple">Deployed Globally.</span>
+              {headline}
             </h2>
 
             <p className="text-sm sm:text-base text-slate-700 dark:text-muted-gray leading-relaxed max-w-xl font-medium transition-colors">
-              CodeVerse is architected from day one for global delivery. Whether partnering with fast-moving startups in London, agritech pioneers in South Asia, or scale-ups in North America, we deliver frictionless remote collaboration backed by airtight SLAs.
+              {subheading}
             </p>
 
             {/* 3 Pillar Cards - Well-proportioned Frosted Glass */}

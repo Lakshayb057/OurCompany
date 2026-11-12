@@ -1,7 +1,52 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Layout, Zap, Shield, Rocket, Check } from 'lucide-react';
 
-export const ProcessSection: React.FC = () => {
+import { ProcessStage } from '../types';
+
+interface ProcessSectionProps {
+  stages?: ProcessStage[];
+}
+
+const DEFAULT_STEPS = [
+  {
+    num: '01',
+    title: 'Discovery & System Design',
+    shortTitle: 'System Discovery',
+    image: '/process/step-01-discovery.jpg',
+    deliverables: ['SRS & Architectural Blueprint', 'Entity Relationship Diagram', 'API Contract Specification']
+  },
+  {
+    num: '02',
+    title: 'Rapid Prototyping & Validation',
+    shortTitle: 'Interactive Prototyping',
+    image: '/process/step-02-prototyping.jpg',
+    deliverables: ['Figma Design System', 'Key Interaction Proof-of-Concept', 'Database Schema Validation']
+  },
+  {
+    num: '03',
+    title: 'Production Engineering',
+    shortTitle: 'Full-Stack Engineering',
+    image: '/process/step-03-engineering.jpg',
+    deliverables: ['Type-Safe Clean Codebase', 'REST / WebSocket Microservices', 'ACID Data Persistence']
+  },
+  {
+    num: '04',
+    title: 'QA, Security & Hardening',
+    shortTitle: 'Security & QA',
+    image: '/process/step-04-qa-security.jpg',
+    deliverables: ['Unit & Integration Testing', 'Security & RBAC Auditing', 'Sub-200ms Latency Tuning']
+  },
+  {
+    num: '05',
+    title: 'Deployment & Observability',
+    shortTitle: 'CI/CD & Live Telemetry',
+    image: '/process/step-05-deployment.jpg',
+    deliverables: ['Zero-Downtime CI/CD Handover', 'Structured Logs & Telemetry', 'Full IP & Source Transfer']
+  }
+];
+
+export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
+  const steps = (stages && stages.length > 0) ? stages : DEFAULT_STEPS;
   const [activeStep, setActiveStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isMobile, setIsMobile] = useState<boolean>(() => {
@@ -19,43 +64,7 @@ export const ProcessSection: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const steps = [
-    {
-      num: '01',
-      title: 'Discovery & System Design',
-      shortTitle: 'System Discovery',
-      image: '/process/step-01-discovery.jpg',
-      deliverables: ['SRS & Architectural Blueprint', 'Entity Relationship Diagram', 'API Contract Specification']
-    },
-    {
-      num: '02',
-      title: 'Rapid Prototyping & Validation',
-      shortTitle: 'Interactive Prototyping',
-      image: '/process/step-02-prototyping.jpg',
-      deliverables: ['Figma Design System', 'Key Interaction Proof-of-Concept', 'Database Schema Validation']
-    },
-    {
-      num: '03',
-      title: 'Production Engineering',
-      shortTitle: 'Full-Stack Engineering',
-      image: '/process/step-03-engineering.jpg',
-      deliverables: ['Type-Safe Clean Codebase', 'REST / WebSocket Microservices', 'ACID Data Persistence']
-    },
-    {
-      num: '04',
-      title: 'QA, Security & Hardening',
-      shortTitle: 'Security & QA',
-      image: '/process/step-04-qa-security.jpg',
-      deliverables: ['Unit & Integration Testing', 'Security & RBAC Auditing', 'Sub-200ms Latency Tuning']
-    },
-    {
-      num: '05',
-      title: 'Deployment & Observability',
-      shortTitle: 'CI/CD & Live Telemetry',
-      image: '/process/step-05-deployment.jpg',
-      deliverables: ['Zero-Downtime CI/CD Handover', 'Structured Logs & Telemetry', 'Full IP & Source Transfer']
-    }
-  ];
+
 
   const renderStepIcon = (index: number, isActive: boolean) => {
     const iconClass = `w-4 h-4 sm:w-4.5 sm:h-4.5 transition-all duration-300 ${

@@ -75,3 +75,59 @@ export interface InternalProject {
   notes?: string;
 }
 
+export interface PlanRegistrationItem {
+  id: string;
+  fullName: string;
+  email: string;
+  contact: string;
+  company?: string;
+  planId: string;
+  planName: string;
+  category?: string;
+  domainOption?: string;
+  billingPeriod?: string;
+  estimatedPrice?: string;
+  notes?: string;
+  status: string;
+  createdAt: string;
+}
+
+export interface ProcessStage {
+  num: string;
+  title: string;
+  shortTitle: string;
+  image: string;
+  deliverables: string[];
+}
+
+export interface SiteContent {
+  hero: {
+    line1: string;
+    line2: string;
+    line3: string;
+    badge1: string;
+    badge2: string;
+    statCode: string;
+  };
+  story: {
+    heading: string;
+    subheading: string;
+    paragraph1: string;
+    paragraph2: string;
+    stats: { label: string; value: string }[];
+  };
+  process: ProcessStage[];
+  globalVision: {
+    headline: string;
+    subheading: string;
+    metrics: { label: string; value: string }[];
+  };
+  siteSettings: {
+    companyName: string;
+    legalHeadquarters: string;
+    contactEmail: string;
+    contactPhone: string;
+    copyrightNotice: string;
+  };
+}
+

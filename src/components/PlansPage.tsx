@@ -9,9 +9,10 @@ import { PlanRegistrationModal } from './PlanRegistrationModal';
 
 interface PlansPageProps {
   onBackToHome: () => void;
+  plans?: PlanPackage[];
 }
 
-export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome }) => {
+export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome, plans }) => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [domainFilter, setDomainFilter] = useState<'all' | 'with-domain' | 'without-domain'>('all');
   const [currency, setCurrency] = useState<'INR' | 'USD'>('INR');
@@ -20,6 +21,8 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome }) => {
   const [selectedPlanForModal, setSelectedPlanForModal] = useState<PlanPackage | null>(null);
   const [clientInquiryData, setClientInquiryData] = useState<{ fullName?: string; email?: string } | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  const basePlans = (plans && plans.length > 0) ? plans : PLANS_DATA;
 
   // Check if user came from the project inquiry form
   useEffect(() => {
@@ -39,7 +42,7 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome }) => {
   }, []);
 
   // Filter plans
-  const filteredPlans = PLANS_DATA.filter((plan) => {
+  const filteredPlans = basePlans.filter((plan) => {
     // Category match
     if (activeCategory !== 'all' && plan.category !== activeCategory) {
       return false;

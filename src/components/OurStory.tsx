@@ -25,11 +25,24 @@ const useScrollReveal = (threshold = 0.18, rootMargin = '0px 0px -40px 0px') => 
   return [ref, inView] as const;
 };
 
-export const OurStory: React.FC = () => {
+interface OurStoryProps {
+  content?: {
+    heading?: string;
+    subheading?: string;
+    paragraph1?: string;
+    paragraph2?: string;
+    stats?: { label: string; value: string }[];
+  };
+}
+
+export const OurStory: React.FC<OurStoryProps> = ({ content }) => {
   // Independent scroll observers for each distinct content block
   const [headerRef, isHeaderInView] = useScrollReveal(0.25, '0px 0px -30px 0px');
   const [cardsRowRef, isCardsRowInView] = useScrollReveal(0.18, '0px 0px -40px 0px');
   const [processRef, isProcessInView] = useScrollReveal(0.18, '0px 0px -40px 0px');
+
+  const headline = content?.heading || 'Why CodeVerse Exists';
+  const subheading = content?.subheading || "We started with a foundational truth: modern businesses don't just need software; they need resilient, intelligent digital engines built with surgical craftsmanship.";
 
   return (
     <section 
@@ -50,7 +63,7 @@ export const OurStory: React.FC = () => {
           }}
         >
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
-            Why <span className="text-gradient-purple">CodeVerse</span> Exists
+            {headline}
           </h2>
           <p 
             className="text-light-subtext dark:text-muted-gray text-base sm:text-lg leading-relaxed"
@@ -60,7 +73,7 @@ export const OurStory: React.FC = () => {
               transition: 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 100ms, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 100ms',
             }}
           >
-            We started with a foundational truth: modern businesses don't just need software; they need resilient, intelligent digital engines built with surgical craftsmanship.
+            {subheading}
           </p>
         </div>
 
