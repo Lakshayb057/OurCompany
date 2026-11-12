@@ -20,19 +20,27 @@ const DATA_FILE = path.join(__dirname, 'data', 'store.json');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Initialize DB connection
-connectDB().then(async (connected) => {
-  if (connected) {
-    try {
-      await seedInitialDataIfEmpty();
-    } catch (e) {
-      console.warn('[Database] Seeding check warning:', e.message);
-    }
-  }
-});
-
 app.use(cors());
 app.use(express.json());
+
+// Serverless-ready MongoDB Atlas connection middleware
+// Ensures online Atlas DB is connected before resolving any API endpoint on Vercel or local
+app.use(async (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    try {
+      await connectDB();
+      if (isConnected()) {
+        await seedInitialDataIfEmpty();
+      }
+    } catch (err) {
+      console.warn('[Database] Middleware connection warning:', err.message);
+    }
+  }
+  next();
+});
+
+// Non-blocking initial connection attempt on startup
+connectDB().catch(() => {});
 
 // Helper to read local JSON data store fallback
 function readData() {
@@ -58,7 +66,7 @@ function writeData(data) {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
     return true;
   } catch (err) {
-    console.error('Error writing data store:', err);
+    // Expected on serverless read-only platforms like Vercel
     return false;
   }
 }
@@ -155,8 +163,10 @@ function getDefaultSiteContent() {
 }
 
 // Seed initial documents to Atlas if collections are newly created
+let isSeeded = false;
 async function seedInitialDataIfEmpty() {
-  if (!isConnected()) return;
+  if (!isConnected() || isSeeded) return;
+  isSeeded = true;
   const store = readData();
 
   // 1. Services
@@ -397,10 +407,11 @@ app.post('/api/v1/auth/login', (req, res) => {
 // Admin System / Database Connectivity Status
 app.get('/api/v1/admin/status', async (req, res) => {
   const store = readData();
+  const connected = isConnected();
   let dbInfo = {
-    connected: isConnected(),
-    provider: isConnected() ? 'MongoDB Atlas' : 'Local Fallback Store',
-    host: isConnected() ? 'ourcompany.fwhyx65.mongodb.net' : 'localhost (server/data/store.json)',
+    connected,
+    provider: 'MongoDB Atlas',
+    host: 'ourcompany.fwhyx65.mongodb.net',
     database: 'codeverse',
     counts: {
       inquiries: store.inquiries?.length || 0,

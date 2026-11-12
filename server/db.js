@@ -202,29 +202,47 @@ export const TeamModel = mongoose.models.TeamMember || mongoose.model('TeamMembe
 export const PlanModel = mongoose.models.PlanPackage || mongoose.model('PlanPackage', planSchema);
 export const SiteContentModel = mongoose.models.SiteContent || mongoose.model('SiteContent', siteContentSchema);
 
-// Connect to MongoDB Atlas
+export const DEFAULT_ATLAS_URI = 'mongodb+srv://Lakshay:Lakshay123@ourcompany.fwhyx65.mongodb.net/codeverse?compressors=zlib';
+
+let cachedConnectionPromise = null;
+
+// Connect to MongoDB Atlas with serverless connection pooling & reuse
 export async function connectDB() {
-  const uri = process.env.MONGODB_URI;
-  if (!uri || uri.trim() === '' || uri.includes('YOUR_MONGODB_ATLAS_CONNECTION_STRING')) {
-    console.log('[Database] MONGODB_URI not set in .env. Running with JSON store fallback.');
-    return false;
+  if (mongoose.connection.readyState === 1) {
+    isMongoConnected = true;
+    return true;
   }
 
+  if (cachedConnectionPromise) {
+    try {
+      await cachedConnectionPromise;
+      isMongoConnected = mongoose.connection.readyState === 1;
+      return isMongoConnected;
+    } catch {
+      cachedConnectionPromise = null;
+    }
+  }
+
+  const uri = (process.env.MONGODB_URI && process.env.MONGODB_URI.trim()) || DEFAULT_ATLAS_URI;
+
   try {
-    console.log('[Database] Connecting to MongoDB Atlas...');
-    await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 5000,
+    console.log('[Database] Connecting to online MongoDB Atlas cluster...');
+    cachedConnectionPromise = mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 10000,
+      maxPoolSize: 10,
     });
+    await cachedConnectionPromise;
     isMongoConnected = true;
-    console.log('[Database] Successfully connected to MongoDB Atlas database.');
+    console.log('[Database] Successfully connected to online MongoDB Atlas database.');
     return true;
   } catch (err) {
-    console.warn('[Database] MongoDB Atlas connection warning:', err.message);
+    console.warn('[Database] MongoDB Atlas connection error:', err.message);
     isMongoConnected = false;
+    cachedConnectionPromise = null;
     return false;
   }
 }
 
 export function isConnected() {
-  return isMongoConnected && mongoose.connection.readyState === 1;
+  return mongoose.connection.readyState === 1;
 }
