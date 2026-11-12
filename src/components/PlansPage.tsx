@@ -94,70 +94,59 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-light-100 dark:bg-midnight-950 text-light-text dark:text-white transition-colors duration-300">
+    <div className="min-h-screen pt-20 sm:pt-32 pb-12 sm:pb-24 bg-light-100/60 dark:bg-midnight-900/60 relative overflow-hidden transition-colors duration-300">
       
-      {/* Top Floating Sticky Navigation */}
-      <nav className="sticky top-0 z-40 bg-white/80 dark:bg-midnight-900/80 backdrop-blur-xl border-b border-light-border dark:border-midnight-border px-4 sm:px-8 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      {/* Background ambient lighting glows */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-electric-purple/5 dark:bg-electric-purple/10 blur-[140px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-lavender-glow/5 dark:bg-deep-violet/15 blur-[140px] rounded-full pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8 sm:space-y-12">
+        
+        {/* Navigation Breadcrumb & Controls (Matches Projects & Services page) */}
+        <div className="flex items-center justify-between gap-4">
           <button
-            type="button"
-            onClick={onBackToHome}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-purple-200 dark:border-white/10 text-xs sm:text-sm font-semibold hover:bg-purple-50 dark:hover:bg-white/5 transition-all text-light-subtext dark:text-gray-300 hover:text-electric-purple"
+            onClick={() => onBackToHome()}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 dark:bg-midnight-card/80 border border-purple-200/70 dark:border-midnight-border text-xs sm:text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-glow shadow-sm hover:shadow transition-all group"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 text-electric-purple group-hover:-translate-x-1 transition-transform" />
             <span>Back to Home</span>
           </button>
-          
-          <div className="hidden sm:flex items-center gap-1.5 pl-3 border-l border-purple-200 dark:border-white/10">
-            <span className="font-extrabold text-sm sm:text-base tracking-tight text-light-text dark:text-white">
-              CodeVerse <span className="text-electric-purple">Plans</span>
-            </span>
+
+          <div className="flex items-center gap-3">
+            {/* Currency Switcher */}
+            <div className="inline-flex items-center p-1 rounded-full bg-white dark:bg-midnight-card border border-purple-200 dark:border-midnight-border shadow-sm text-xs font-mono font-bold">
+              <button
+                type="button"
+                onClick={() => setCurrency('INR')}
+                className={`px-3 py-1 rounded-full transition-all ${
+                  currency === 'INR'
+                    ? 'bg-electric-purple text-white shadow-md'
+                    : 'text-light-subtext dark:text-gray-400 hover:text-electric-purple'
+                }`}
+              >
+                ₹ INR
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrency('USD')}
+                className={`px-3 py-1 rounded-full transition-all ${
+                  currency === 'USD'
+                    ? 'bg-electric-purple text-white shadow-md'
+                    : 'text-light-subtext dark:text-gray-400 hover:text-electric-purple'
+                }`}
+              >
+                $ USD
+              </button>
+            </div>
+
+            <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-light-subtext dark:text-muted-gray">
+              <button onClick={() => onBackToHome()} className="hover:text-electric-purple transition-colors">Home</button>
+              <span>/</span>
+              <span className="text-electric-purple dark:text-lavender-glow font-bold">Plans & Packages</span>
+            </div>
           </div>
         </div>
 
-        {/* Currency Toggle in Nav */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="inline-flex items-center p-1 rounded-full bg-purple-50 dark:bg-midnight-card border border-purple-200 dark:border-midnight-border shadow-sm text-xs font-mono font-bold">
-            <button
-              type="button"
-              onClick={() => setCurrency('INR')}
-              className={`px-2.5 sm:px-3 py-1 rounded-full transition-all ${
-                currency === 'INR'
-                  ? 'bg-electric-purple text-white shadow-md'
-                  : 'text-light-subtext dark:text-gray-400 hover:text-electric-purple'
-              }`}
-            >
-              ₹ INR
-            </button>
-            <button
-              type="button"
-              onClick={() => setCurrency('USD')}
-              className={`px-2.5 sm:px-3 py-1 rounded-full transition-all ${
-                currency === 'USD'
-                  ? 'bg-electric-purple text-white shadow-md'
-                  : 'text-light-subtext dark:text-gray-400 hover:text-electric-purple'
-              }`}
-            >
-              $ USD
-            </button>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              const firstPlan = PLANS_DATA[0];
-              setSelectedPlanForModal(firstPlan);
-              setRegisterModalOpen(true);
-            }}
-            className="px-3.5 sm:px-5 py-2 rounded-xl bg-electric-purple hover:bg-electric-purple/90 text-white font-semibold text-xs sm:text-sm shadow-md shadow-purple-600/30 transition-all flex items-center gap-1.5"
-          >
-            <span>Register Custom Scope</span>
-          </button>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 space-y-10 sm:space-y-14">
-        
         {/* Welcome Notification if redirected from Inquiry */}
         {clientInquiryData && (
           <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-purple-50 to-emerald-50 dark:from-emerald-950/40 dark:via-midnight-card dark:to-emerald-950/40 border border-emerald-300 dark:border-emerald-500/40 shadow-lg flex items-center justify-between gap-4 animate-fadeIn">
@@ -581,7 +570,7 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome }) => {
           </div>
         </div>
 
-      </main>
+      </div>
 
       {/* Plan Registration Modal */}
       <PlanRegistrationModal
