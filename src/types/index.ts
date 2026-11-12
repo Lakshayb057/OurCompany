@@ -24,6 +24,9 @@ export interface Service {
   technologies: string[];
   benefits: string[];
   image?: string;
+  tag?: string;
+  description?: string;
+  deliverables?: string[];
 }
 
 export interface ProductMetric {

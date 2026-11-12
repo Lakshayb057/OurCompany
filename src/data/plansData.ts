@@ -9,6 +9,8 @@ export interface PlanPackage {
   priceINR: number;
   priceUSD: number;
   billingPeriod: 'One-Time' | 'Yearly Retainer' | 'Monthly Retainer';
+  billingCycle?: string;
+  popular?: boolean;
   domainIncluded: boolean;
   domainNote?: string;
   turnaroundTime: string;

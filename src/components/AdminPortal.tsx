@@ -470,7 +470,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     }
     const created: Service = {
       id: `srv-${Date.now()}`,
+      slug: newService.slug || newService.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       title: newService.title.trim(),
+      domain: newService.domain || newService.tag || 'Web & Enterprise',
+      summary: newService.summary || newService.description || '',
+      technologies: newService.technologies || ['React', 'Node.js', 'TypeScript', 'MongoDB'],
+      benefits: newService.benefits || ['Sustained 99.98% Uptime', 'High Concurrency'],
       tag: newService.tag || 'Web & Enterprise',
       description: newService.description || '',
       deliverables: newService.deliverables || ['Architectural Blueprint', 'Production Deployment'],
@@ -723,11 +728,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       description: newPlan.description || '',
       priceINR: Number(newPlan.priceINR) || 19999,
       priceUSD: Number(newPlan.priceUSD) || 249,
+      billingPeriod: (newPlan.billingPeriod || 'One-Time') as any,
       billingCycle: newPlan.billingCycle || 'One-Time Project',
+      turnaroundTime: newPlan.turnaroundTime || '5-7 Days',
+      features: newPlan.features || newPlan.deliverables || ['Architectural Handover'],
       deliverables: newPlan.deliverables || ['Architectural Handover'],
       popular: Boolean(newPlan.popular),
+      isPopular: Boolean(newPlan.popular || newPlan.isPopular),
       domainIncluded: Boolean(newPlan.domainIncluded),
-      techStack: newPlan.techStack || ['React', 'Node.js']
+      techStack: newPlan.techStack || ['React', 'Node.js'],
+      idealFor: newPlan.idealFor || 'Startups & Growing Businesses'
     };
 
     try {
