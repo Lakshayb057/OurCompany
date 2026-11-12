@@ -88,9 +88,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       {/* 1. CENTER: Standalone Floating Navigation Bar (Desktop) with Integrated Theme Toggle */}
-      <div className="hidden lg:block fixed top-4 sm:top-5 left-1/2 -translate-x-1/2 z-50">
+      <div className="hidden lg:block fixed top-4 sm:top-5 left-1/2 -translate-x-1/2 z-50 max-w-[95vw]">
         <nav 
-          className={`flex items-center gap-1 rounded-full pl-5 pr-3 py-1.5 backdrop-blur-md transition-all duration-300 ${
+          className={`flex items-center flex-nowrap whitespace-nowrap gap-0.5 xl:gap-1 rounded-full pl-4 xl:pl-5 pr-2 xl:pr-3 py-1.5 backdrop-blur-md transition-all duration-300 ${
             glassOpacity > 0.5 
               ? 'bg-white/20 dark:bg-white/[0.06] border border-purple-200/30 dark:border-white/10 shadow-none'
               : 'bg-white/90 dark:bg-black/80 border border-purple-200 dark:border-white/15 shadow-lg shadow-purple-950/5 dark:shadow-black/50 py-2'
@@ -101,18 +101,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               return (
                 <div
                   key={item.target}
-                  className="relative"
+                  className="relative flex-shrink-0"
                   onMouseEnter={handleMouseEnterProjects}
                   onMouseLeave={handleMouseLeaveProjects}
                 >
                   <button
                     onClick={() => handleLinkClick('projects')}
-                    className="px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 rounded-full text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10 flex items-center gap-1 group/btn"
+                    className="px-2.5 xl:px-3.5 py-1.5 text-[13px] xl:text-sm font-semibold transition-all duration-200 rounded-full text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10 flex items-center gap-1 group/btn whitespace-nowrap flex-shrink-0"
                     aria-expanded={projectsDropdownOpen}
                   >
-                    <span>{item.label}</span>
+                    <span className="whitespace-nowrap">{item.label}</span>
                     <ChevronDown
-                      className={`w-3.5 h-3.5 transition-transform duration-300 ${
+                      className={`w-3.5 h-3.5 transition-transform duration-300 flex-shrink-0 ${
                         projectsDropdownOpen
                           ? 'rotate-180 text-electric-purple dark:text-lavender-glow'
                           : 'opacity-60 group-hover/btn:opacity-100 group-hover/btn:translate-y-0.5'
@@ -172,7 +172,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 key={item.target}
                 onClick={() => handleLinkClick(item.target)}
-                className="px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 rounded-full text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10"
+                className="px-2.5 xl:px-3.5 py-1.5 text-[13px] xl:text-sm font-semibold transition-all duration-200 rounded-full text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10 whitespace-nowrap flex-shrink-0"
               >
                 {item.label}
               </button>
@@ -182,10 +182,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Centered Dark/Light Mode Toggle */}
           {onToggleTheme && (
             <>
-              <div className="h-4 w-[1px] bg-purple-200/80 dark:bg-white/15 mx-1" aria-hidden="true" />
+              <div className="h-4 w-[1px] bg-purple-200/80 dark:bg-white/15 mx-0.5 xl:mx-1 flex-shrink-0" aria-hidden="true" />
               <button
                 onClick={onToggleTheme}
-                className="p-1.5 rounded-full text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10 transition-colors focus:outline-none"
+                className="p-1.5 rounded-full text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10 transition-colors focus:outline-none flex-shrink-0"
                 title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 aria-label="Toggle theme"
               >
