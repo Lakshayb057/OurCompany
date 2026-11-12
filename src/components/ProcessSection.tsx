@@ -144,32 +144,6 @@ export const ProcessSection: React.FC = () => {
             </p>
           </div>
 
-          {/* Mobile Stage Progress Pill Track - Quick jump & stage indicator */}
-          <div className="lg:hidden flex items-center justify-center gap-1.5 w-full max-w-md mx-auto px-1 py-1 mb-1 flex-shrink-0">
-            {steps.map((step, idx) => {
-              const isActive = activeStep === idx;
-              return (
-                <button
-                  key={step.num}
-                  type="button"
-                  onClick={() => handleStepClick(idx)}
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold transition-all duration-300 ${
-                    isActive
-                      ? 'bg-electric-purple text-white shadow-md shadow-purple-600/30 scale-105 ring-1 ring-purple-300'
-                      : 'bg-white/80 dark:bg-white/5 border border-purple-200/60 dark:border-white/10 text-light-subtext dark:text-gray-400 hover:text-electric-purple'
-                  }`}
-                >
-                  <span>{step.num}</span>
-                  {isActive && (
-                    <span className="font-sans font-medium truncate max-w-[80px] sm:max-w-none">
-                      {step.shortTitle}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
           {/* Main Layout: Desktop 2-Column Split (Left list + Right deck) | Mobile: Full-width Vertical Stacking Cards Deck */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-10 items-center flex-1 min-h-0 pb-1 sm:pb-2 w-full">
             
