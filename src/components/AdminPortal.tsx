@@ -101,8 +101,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     counts?: Record<string, number>;
   }>({
     connected: true,
-    provider: 'MongoDB Atlas',
-    host: 'ourcompany.fwhyx65.mongodb.net',
+    provider: 'Database',
+    host: 'database.cluster',
     database: 'codeverse',
   });
   const [isCheckingDb, setIsCheckingDb] = useState(false);
@@ -273,7 +273,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     } catch {}
   };
 
-  // Section Save Handlers (Dual writes to Atlas & React state)
+  // Section Save Handlers (Dual writes to Database & React state)
   const handleSaveSection = async (section: keyof SiteContent, data: any) => {
     try {
       const res = await fetch(`/api/v1/admin/content/${section}`, {
@@ -282,7 +282,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
         body: JSON.stringify(data)
       });
       if (res.ok) {
-        showToast(`Successfully saved ${section.toUpperCase()} to MongoDB Atlas!`);
+        showToast(`Successfully saved ${section.toUpperCase()} to database!`);
       } else {
         showToast(`Updated ${section.toUpperCase()} in local state.`);
       }
@@ -339,7 +339,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       deliverables: ['Custom Microservice Blueprint', 'REST & GraphQL API Endpoints'],
       icon: 'Layers'
     });
-    showToast(`Service "${created.title}" created & synced with MongoDB Atlas.`);
+    showToast(`Service "${created.title}" created & saved.`);
   };
 
   const handleSaveExistingService = async (service: Service) => {
@@ -430,7 +430,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       githubUrl: 'https://github.com/codeverse-technologies',
       badge: 'LIVE PRODUCTION'
     });
-    showToast(`Project "${created.name}" created & saved to MongoDB Atlas.`);
+    showToast(`Project "${created.name}" created & saved.`);
   };
 
   const handleSaveExistingProduct = async (prod: Product) => {
@@ -683,17 +683,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
         <div className="w-full max-w-md bg-white/95 dark:bg-midnight-800/95 backdrop-blur-2xl rounded-3xl border border-light-border dark:border-midnight-border/80 p-8 shadow-2xl relative z-10 space-y-6">
           <div className="text-center space-y-2">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-electric-purple to-purple-500 p-0.5 shadow-lg shadow-purple-500/30 flex items-center justify-center">
-              <div className="w-full h-full bg-white dark:bg-midnight-900 rounded-[14px] flex items-center justify-center">
-                <Shield className="w-8 h-8 text-electric-purple dark:text-lavender-glow" />
-              </div>
+            <div className="flex items-center justify-center gap-2.5 mb-1">
+              <img
+                src="/hero-ribbon.png"
+                alt="CodeVerse Ribbon"
+                className="w-10 h-10 object-contain drop-shadow-[0_2px_14px_rgba(124,44,245,0.45)]"
+              />
+              <span className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-light-text via-electric-purple to-deep-violet dark:from-white dark:via-lavender-light dark:to-electric-light bg-clip-text text-transparent tracking-tight">
+                CodeVerse
+              </span>
             </div>
-            <h2 className="text-2xl font-black text-light-text dark:text-white tracking-tight">
-              CodeVerse <span className="text-gradient-purple">Executive CMS</span>
-            </h2>
-            <p className="text-xs text-light-subtext dark:text-muted-gray">
-              Secure Administrative Gateway & MongoDB Atlas Data Controller
-            </p>
           </div>
 
           {loginError && (
@@ -779,42 +778,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
       {/* Top Header Bar */}
       <header className="h-16 px-4 sm:px-6 lg:px-8 border-b border-light-border dark:border-midnight-border/80 bg-white/90 dark:bg-midnight-900/90 backdrop-blur-xl flex items-center justify-between flex-shrink-0 z-20">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-electric-purple to-purple-600 flex items-center justify-center text-white shadow-md shadow-purple-500/25">
-            <Shield className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-base tracking-tight text-light-text dark:text-white">
-                CodeVerse <span className="text-gradient-purple">Executive CMS</span>
-              </span>
-              <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded-full bg-purple-500/10 text-electric-purple dark:text-lavender-glow border border-purple-500/20">
-                v2.6 Enterprise
-              </span>
-            </div>
-            <p className="text-[11px] text-light-subtext dark:text-muted-gray hidden md:block">
-              Centralized Content & Database Operations
-            </p>
-          </div>
+        <div 
+          onClick={onClose}
+          className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none"
+          title="Return to Website"
+        >
+          <img
+            src="/hero-ribbon.png"
+            alt="CodeVerse"
+            className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-[0_2px_10px_rgba(124,44,245,0.35)] transition-transform duration-200 group-hover:scale-105"
+          />
+          <span className="text-xl sm:text-2xl font-black bg-gradient-to-r from-light-text via-electric-purple to-deep-violet dark:from-white dark:via-lavender-light dark:to-electric-light bg-clip-text text-transparent tracking-tight whitespace-nowrap">
+            CodeVerse
+          </span>
         </div>
 
-        {/* Database Status Pill & Actions */}
+        {/* Header Right Actions */}
         <div className="flex items-center gap-2.5 sm:gap-3">
-          <div 
-            onClick={fetchDbStatus}
-            className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono border cursor-pointer transition-all ${
-              dbStatus.connected 
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20' 
-                : 'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20'
-            }`}
-            title="Click to re-ping database"
-          >
-            <Database className="w-3.5 h-3.5" />
-            <span className="font-semibold">{dbStatus.provider}</span>
-            <span className={`w-2 h-2 rounded-full ${dbStatus.connected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-            {isCheckingDb && <RefreshCw className="w-3 h-3 animate-spin ml-1" />}
-          </div>
-
           {/* Theme toggle */}
           {onToggleTheme && (
             <button
@@ -852,10 +832,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
         {/* Navigation Sidebar */}
         <aside className="w-64 lg:w-72 border-r border-light-border dark:border-midnight-border/80 bg-white/70 dark:bg-midnight-900/60 flex flex-col flex-shrink-0 overflow-y-auto">
           <div className="p-4 space-y-1">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-light-subtext dark:text-muted-gray px-3 py-1.5">
-              Live Data Feeds
-            </div>
-
             <button
               onClick={() => setActiveTab('overview')}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
@@ -904,10 +880,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                 {registrations.length}
               </span>
             </button>
-
-            <div className="text-[10px] font-mono uppercase tracking-wider text-light-subtext dark:text-muted-gray px-3 pt-5 pb-1.5">
-              Section Content Controllers
-            </div>
 
             <button
               onClick={() => setActiveTab('hero')}
@@ -1040,10 +1012,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
               <div className="space-y-6">
                 <div>
                   <h1 className="text-2xl font-bold tracking-tight text-light-text dark:text-white">
-                    Executive Command Center
+                    Command Overview
                   </h1>
                   <p className="text-xs text-light-subtext dark:text-muted-gray">
-                    Live database synchronization with MongoDB Atlas & real-time front-end controller.
+                    Manage and control all content, inquiries, and plans across the website.
                   </p>
                 </div>
 
@@ -1098,53 +1070,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     </div>
                     <div className="text-[11px] text-light-subtext dark:text-muted-gray mt-1">
                       Showcased in portfolio
-                    </div>
-                  </div>
-                </div>
-
-                {/* MongoDB Atlas Connectivity Panel */}
-                <div className="p-6 rounded-3xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-500">
-                        <Database className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h2 className="text-sm font-bold text-light-text dark:text-white">
-                          MongoDB Atlas Operational Status
-                        </h2>
-                        <p className="text-xs text-light-subtext dark:text-muted-gray">
-                          Connection String: mongodb+srv://Lakshay:***@ourcompany.fwhyx65.mongodb.net
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={fetchDbStatus}
-                      className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs font-medium hover:bg-purple-50 dark:hover:bg-white/5 transition-all flex items-center gap-1.5"
-                    >
-                      <RefreshCw className={`w-3.5 h-3.5 ${isCheckingDb ? 'animate-spin' : ''}`} />
-                      <span>Ping Atlas</span>
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-light-border dark:border-midnight-border/60 text-xs">
-                    <div>
-                      <span className="text-light-subtext dark:text-muted-gray">Connection State:</span>
-                      <p className="font-semibold text-emerald-500 mt-0.5">
-                        {dbStatus.connected ? 'Connected & Synchronized' : 'Reconnecting...'}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-light-subtext dark:text-muted-gray">Database Name:</span>
-                      <p className="font-semibold text-light-text dark:text-white mt-0.5">
-                        {dbStatus.database || 'codeverse'}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-light-subtext dark:text-muted-gray">Primary Host:</span>
-                      <p className="font-mono text-light-text dark:text-white mt-0.5 truncate">
-                        {dbStatus.host}
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -1329,7 +1254,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
                 {registrations.length === 0 ? (
                   <div className="p-12 text-center bg-white dark:bg-midnight-800 rounded-3xl border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray text-xs">
-                    No plan registrations yet. When clients register for a package on /plan, their submissions will be recorded here in MongoDB Atlas.
+                    No plan registrations yet. When clients register for a package on /plan, their submissions will be recorded here.
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -1870,7 +1795,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                         onClick={handleCreateProduct}
                         className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90"
                       >
-                        Save Project to Atlas
+                        Save Project to Database
                       </button>
                     </div>
                   </div>
@@ -2047,7 +1972,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-electric-purple to-purple-600 text-white font-semibold text-xs tracking-wide shadow-md shadow-purple-600/30 hover:opacity-95 transition-all flex items-center gap-2"
                     >
                       <Save className="w-4 h-4" />
-                      <span>Save Stages to Atlas</span>
+                      <span>Save Stages to Database</span>
                     </button>
                   </div>
                 </div>
@@ -2354,7 +2279,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                         onClick={handleCreatePlan}
                         className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90"
                       >
-                        Publish Plan to Atlas
+                        Publish Plan to Database
                       </button>
                     </div>
                   </div>
@@ -2527,7 +2452,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-electric-purple to-purple-600 text-white font-semibold text-xs tracking-wide shadow-md shadow-purple-600/30 hover:opacity-95 transition-all flex items-center gap-2"
                     >
                       <Save className="w-4 h-4" />
-                      <span>Save Global Vision to Atlas</span>
+                      <span>Save Global Vision to Database</span>
                     </button>
                   </div>
                 </div>
@@ -2613,7 +2538,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-electric-purple to-purple-600 text-white font-semibold text-xs tracking-wide shadow-md shadow-purple-600/30 hover:opacity-95 transition-all flex items-center gap-2"
                     >
                       <Save className="w-4 h-4" />
-                      <span>Save Site Settings to Atlas</span>
+                      <span>Save Site Settings to Database</span>
                     </button>
                   </div>
                 </div>

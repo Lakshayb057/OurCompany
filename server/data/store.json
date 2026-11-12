@@ -1,6 +1,21 @@
 {
   "inquiries": [
     {
+      "id": "inq-1794495328737",
+      "fullName": "Lakshay Bansal",
+      "contact": "+918295886832",
+      "email": "lakshayb057@gmail.com",
+      "company": "",
+      "country": "Global / Remote",
+      "projectType": "AI, Intelligent Agents & OCR",
+      "budgetRange": "$25,000 - $50,000",
+      "timeline": "Flexible",
+      "preferredContact": "Phone / Email",
+      "description": "cvhbeskrjhsbfjceskrzhbfvkesurhfbseukzhsj",
+      "status": "New",
+      "createdAt": "2026-11-12T14:55:28.739Z"
+    },
+    {
       "id": "inq-1793725438123",
       "fullName": "Test Enterprise Lead",
       "email": "lead@enterprise.com",
@@ -580,5 +595,123 @@
       "notes": "Razorpay UPI + WhatsApp direct-to-farm platform."
     }
   ],
-  "planRegistrations": []
+  "planRegistrations": [],
+  "plans": [],
+  "siteContent": {
+    "hero": {
+      "line1": "CODEVERSE",
+      "line2": "TURNING IDEAS INTO",
+      "line3": "TECHNOLOGY",
+      "badge1": "Production-Grade Distributed Cloud Systems",
+      "badge2": "Zero-Downtime Mission-Critical Deployments",
+      "statCode": "100% Type-Safe Architecture"
+    },
+    "story": {
+      "heading": "Engineered for Performance. Built for Reliability.",
+      "subheading": "We build mission-critical digital systems with architectural precision.",
+      "paragraph1": "Founded by engineers with deep passion for distributed computing, CodeVerse designs, architects, and scales resilient full-stack systems. We eliminate technical debt at the design phase.",
+      "paragraph2": "From real-time campus dining ecosystems to intelligent OCR pipeline fleets, our software powers operations with sub-100ms response times and zero-downtime reliability.",
+      "stats": [
+        {
+          "label": "Clean Codebase",
+          "value": "100%"
+        },
+        {
+          "label": "API Latency",
+          "value": "<200ms"
+        },
+        {
+          "label": "Architecture",
+          "value": "ACID"
+        },
+        {
+          "label": "Sprint Delivery",
+          "value": "30 Days"
+        }
+      ]
+    },
+    "process": [
+      {
+        "num": "01",
+        "title": "Discovery & System Design",
+        "shortTitle": "System Discovery",
+        "image": "/process/step-01-discovery.jpg",
+        "deliverables": [
+          "SRS & Architectural Blueprint",
+          "Entity Relationship Diagram",
+          "API Contract Specification"
+        ]
+      },
+      {
+        "num": "02",
+        "title": "Rapid Prototyping & Validation",
+        "shortTitle": "Interactive Prototyping",
+        "image": "/process/step-02-prototyping.jpg",
+        "deliverables": [
+          "Figma Design System",
+          "Key Interaction Proof-of-Concept",
+          "Database Schema Validation"
+        ]
+      },
+      {
+        "num": "03",
+        "title": "Production Engineering",
+        "shortTitle": "Full-Stack Engineering",
+        "image": "/process/step-03-engineering.jpg",
+        "deliverables": [
+          "Type-Safe Clean Codebase",
+          "REST / WebSocket Microservices",
+          "ACID Data Persistence"
+        ]
+      },
+      {
+        "num": "04",
+        "title": "QA, Security & Hardening",
+        "shortTitle": "Security & QA",
+        "image": "/process/step-04-qa-security.jpg",
+        "deliverables": [
+          "Unit & Integration Testing",
+          "Security & RBAC Auditing",
+          "Sub-200ms Latency Tuning"
+        ]
+      },
+      {
+        "num": "05",
+        "title": "Deployment & Observability",
+        "shortTitle": "CI/CD & Live Telemetry",
+        "image": "/process/step-05-deployment.jpg",
+        "deliverables": [
+          "Zero-Downtime CI/CD Handover",
+          "Structured Logs & Telemetry",
+          "Full IP & Source Transfer"
+        ]
+      }
+    ],
+    "globalVision": {
+      "headline": "Engineered Locally. Deployed Globally.",
+      "subheading": "Headquartered in India, building scalable cloud platforms for global high-growth businesses and enterprises.",
+      "metrics": [
+        {
+          "label": "Global Delivery",
+          "value": "24/7"
+        },
+        {
+          "label": "Average Uptime",
+          "value": "99.98%"
+        },
+        {
+          "label": "Source Code IP",
+          "value": "100% Client Owned"
+        }
+      ]
+    },
+    "siteSettings": {
+      "companyName": "Codeverse",
+      "legalHeadquarters": "Corporate Headquarters: India • Global Remote Delivery",
+      "contactEmail": "lakshayb057@gmail.com",
+      "contactPhone": "+91 99999 99999",
+      "copyrightNotice": "© 2026 CodeVerse. All rights reserved."
+    },
+    "updatedAt": "2026-11-12T14:54:54.859Z"
+  }
 }
