@@ -1,17 +1,152 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   X, Lock, Shield, LayoutDashboard, Inbox, FolderKanban, 
   FileText, CheckCircle2, AlertTriangle, Search, 
   ExternalLink, Download, RefreshCw, LogOut, Check, Layers,
   Database, Users, Sparkles, Plus, Trash2, Edit3, Save, Globe,
   Briefcase, Activity, CheckCircle, ArrowLeft, Sun, Moon, ChevronRight,
-  Phone, Mail, MapPin, Code, Cpu, Eye
+  Phone, Mail, MapPin, Code, Cpu, Eye, Upload, Image as ImageIcon, Cloud, Loader2
 } from 'lucide-react';
 import { 
   Inquiry, Product, Service, TeamMember, 
   PlanRegistrationItem, SiteContent, ProcessStage 
 } from '../types';
 import { PlanPackage } from '../data/plansData';
+
+interface CloudinaryUploaderProps {
+  label: string;
+  value?: string;
+  onChange: (url: string) => void;
+  folder?: string;
+  isUploading: boolean;
+  setIsUploading: (val: boolean) => void;
+  showToast: (msg: string) => void;
+  placeholder?: string;
+}
+
+const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
+  label,
+  value,
+  onChange,
+  folder = 'codeverse',
+  isUploading,
+  setIsUploading,
+  showToast,
+  placeholder = 'https://res.cloudinary.com/... or paste image URL'
+}) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert('Image file size exceeds 8MB. Please select an image under 8MB.');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const base64Data = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const res = await fetch('/api/v1/admin/upload-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64Data, folder })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success && data.data?.url) {
+        onChange(data.data.url);
+        showToast('Image uploaded to Cloudinary CDN successfully!');
+      } else {
+        alert(data.message || 'Image upload failed. Ensure Cloudinary credentials are set in .env / Vercel.');
+      }
+    } catch (err: any) {
+      console.error('Cloudinary upload error:', err);
+      alert('Network or server error during image upload. You can also paste an image URL directly.');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between">
+        <label className="block font-mono text-light-subtext text-[11px] font-semibold">{label}</label>
+        <span className="text-[10px] text-electric-purple font-mono flex items-center gap-1">
+          <Cloud className="w-3 h-3" /> Cloudinary CDN
+        </span>
+      </div>
+
+      <div className="flex items-center gap-3">
+        {value ? (
+          <div className="relative group w-14 h-14 rounded-xl overflow-hidden border border-purple-300 dark:border-white/20 bg-black/10 flex-shrink-0">
+            <img src={value} alt="Preview" className="w-full h-full object-cover" />
+            <button
+              type="button"
+              onClick={() => onChange('')}
+              title="Remove image"
+              className="absolute inset-0 bg-red-600/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <div className="w-14 h-14 rounded-xl border border-dashed border-light-border dark:border-midnight-border bg-purple-50/30 dark:bg-white/5 flex items-center justify-center text-light-subtext flex-shrink-0">
+            <ImageIcon className="w-5 h-5 opacity-40" />
+          </div>
+        )}
+
+        <div className="flex-1 space-y-1.5">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={value || ''}
+              onChange={(e) => onChange(e.target.value)}
+              placeholder={placeholder}
+              className="flex-1 px-3 py-1.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs focus:border-electric-purple focus:outline-none"
+            />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <button
+              type="button"
+              disabled={isUploading}
+              onClick={() => fileInputRef.current?.click()}
+              className="px-3 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 flex-shrink-0 disabled:opacity-50 transition-all cursor-pointer shadow-sm"
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Uploading...</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Upload</span>
+                </>
+              )}
+            </button>
+          </div>
+          <p className="text-[10px] text-light-subtext font-mono">
+            Click Upload to upload from device to Cloudinary, or paste an HTTPS image URL.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 interface AdminPortalProps {
   isOpen: boolean;
@@ -106,6 +241,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     database: 'codeverse',
   });
   const [isCheckingDb, setIsCheckingDb] = useState(false);
+
+  // Cloudinary media status & upload state
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [cloudinaryStatus, setCloudinaryStatus] = useState<{
+    isConfigured: boolean;
+    cloudName?: string;
+  } | null>(null);
 
   // Inquiries & Registrations State
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
@@ -222,13 +364,28 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     }
   }, []);
 
+  const fetchCloudinaryStatus = useCallback(async () => {
+    try {
+      const res = await fetch('/api/v1/admin/cloudinary-status');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          setCloudinaryStatus(json.data);
+        }
+      }
+    } catch (e) {
+      console.warn('Cloudinary status check error', e);
+    }
+  }, []);
+
   useEffect(() => {
     if (isOpen && isAuthenticated) {
       fetchDbStatus();
       fetchInquiries();
       fetchRegistrations();
+      fetchCloudinaryStatus();
     }
-  }, [isOpen, isAuthenticated, fetchDbStatus, fetchInquiries, fetchRegistrations]);
+  }, [isOpen, isAuthenticated, fetchDbStatus, fetchInquiries, fetchRegistrations, fetchCloudinaryStatus]);
 
   // Handle Login
   const handleLogin = async (e: React.FormEvent) => {
@@ -401,6 +558,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       techStack: newProduct.techStack || ['React', 'TypeScript', 'Node.js'],
       architecture: newProduct.architecture || 'Distributed Microservices',
       previewUrl: newProduct.previewUrl || 'https://codeverse.tech',
+      image: newProduct.image || newProduct.previewUrl,
       githubUrl: newProduct.githubUrl || 'https://github.com/codeverse-technologies',
       badge: newProduct.badge || 'PRODUCTION'
     };
@@ -427,6 +585,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       techStack: ['React 19', 'TypeScript', 'Node.js', 'MongoDB'],
       architecture: 'Microservices & Event-Driven Pipeline',
       previewUrl: 'https://codeverse.tech',
+      image: '',
       githubUrl: 'https://github.com/codeverse-technologies',
       badge: 'LIVE PRODUCTION'
     });
@@ -467,7 +626,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     role: 'Principal Engineer',
     initials: 'CE',
     bio: 'Architecting distributed systems and reactive client architectures.',
-    linkedin: 'https://linkedin.com'
+    linkedin: 'https://linkedin.com',
+    photo: ''
   });
 
   const handleCreateTeamMember = async () => {
@@ -1071,6 +1231,49 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     <div className="text-[11px] text-light-subtext dark:text-muted-gray mt-1">
                       Showcased in portfolio
                     </div>
+                  </div>
+                </div>
+
+                {/* Cloudinary Media Assets CDN Status */}
+                <div className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                      cloudinaryStatus?.isConfigured 
+                        ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' 
+                        : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                    }`}>
+                      <Cloud className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-sm text-light-text dark:text-white">
+                          Cloudinary Media CDN Engine
+                        </h3>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${
+                          cloudinaryStatus?.isConfigured
+                            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                            : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                        }`}>
+                          {cloudinaryStatus?.isConfigured ? 'Active & Ready' : 'Configuration Pending'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-light-subtext dark:text-muted-gray mt-0.5">
+                        {cloudinaryStatus?.isConfigured 
+                          ? `Connected to Cloudinary account (${cloudinaryStatus.cloudName}). Direct image uploads and auto-optimization active for Leaders, Projects, and Stages.`
+                          : 'Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in .env and Vercel Environment Variables.'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={fetchCloudinaryStatus}
+                      className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs font-medium hover:bg-purple-50 dark:hover:bg-white/5 flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>Ping Cloudinary</span>
+                    </button>
                   </div>
                 </div>
 
@@ -1774,6 +1977,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     </div>
 
                     <div>
+                      <CloudinaryUploader
+                        label="Project Showcase Image / Banner"
+                        value={newProduct.previewUrl || (newProduct as any).image || ''}
+                        folder="codeverse/projects"
+                        isUploading={isUploadingImage}
+                        setIsUploading={setIsUploadingImage}
+                        showToast={showToast}
+                        placeholder="https://res.cloudinary.com/... or click Upload"
+                        onChange={(url) => setNewProduct({ ...newProduct, previewUrl: url, image: url } as any)}
+                      />
+                    </div>
+
+                    <div>
                       <label className="block text-xs font-mono text-light-subtext mb-1">Subtitle / Summary</label>
                       <textarea
                         rows={2}
@@ -1808,27 +2024,38 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       key={prod.id}
                       className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                     >
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-sm text-light-text dark:text-white">{prod.name}</h3>
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-purple-500/10 text-electric-purple dark:text-lavender-glow border border-purple-500/20">
-                            {prod.category}
-                          </span>
-                          {prod.metric && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                              {prod.metric}
+                      <div className="flex items-start gap-4">
+                        {((prod as any).image || prod.previewUrl) ? (
+                          <div className="w-16 h-14 rounded-xl overflow-hidden border border-purple-200 dark:border-white/10 bg-black flex-shrink-0">
+                            <img src={(prod as any).image || prod.previewUrl} alt={prod.name} className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="w-14 h-14 rounded-xl bg-purple-50 dark:bg-midnight-900 border border-light-border dark:border-midnight-border flex items-center justify-center flex-shrink-0 text-electric-purple">
+                            <FolderKanban className="w-6 h-6 opacity-60" />
+                          </div>
+                        )}
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-sm text-light-text dark:text-white">{prod.name}</h3>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-purple-500/10 text-electric-purple dark:text-lavender-glow border border-purple-500/20">
+                              {prod.category}
                             </span>
-                          )}
-                        </div>
-                        <p className="text-xs text-light-subtext dark:text-muted-gray line-clamp-2">
-                          {prod.subtitle || prod.tagline}
-                        </p>
-                        <div className="flex flex-wrap gap-1.5 pt-1">
-                          {prod.techStack?.slice(0, 4).map((tech, idx) => (
-                            <span key={idx} className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-purple-50 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray">
-                              {tech}
-                            </span>
-                          ))}
+                            {prod.metric && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                                {prod.metric}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-light-subtext dark:text-muted-gray line-clamp-2">
+                            {prod.subtitle || prod.tagline}
+                          </p>
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {prod.techStack?.slice(0, 4).map((tech, idx) => (
+                              <span key={idx} className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-purple-50 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray">
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
 
@@ -1892,6 +2119,18 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                           />
                         </div>
                         <div>
+                          <CloudinaryUploader
+                            label="Project Showcase Image / Banner"
+                            value={(editingProduct as any).image || editingProduct.previewUrl || ''}
+                            folder="codeverse/projects"
+                            isUploading={isUploadingImage}
+                            setIsUploading={setIsUploadingImage}
+                            showToast={showToast}
+                            placeholder="https://res.cloudinary.com/... or click Upload"
+                            onChange={(url) => setEditingProduct({ ...editingProduct, previewUrl: url, image: url } as any)}
+                          />
+                        </div>
+                        <div>
                           <label className="block font-mono text-light-subtext mb-1">Subtitle</label>
                           <textarea
                             rows={3}
@@ -1950,19 +2189,42 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                           type="text"
                           value={stage.title}
                           onChange={(e) => {
-                            const updated = [...(localProcess.length > 0 ? localProcess : [
+                            const base = localProcess.length > 0 ? localProcess : [
                               { num: '01', title: 'Discovery & System Design', shortTitle: 'System Discovery', image: '/process/step-01-discovery.jpg', deliverables: ['SRS & Blueprint'] },
                               { num: '02', title: 'Rapid Prototyping & Validation', shortTitle: 'Interactive Prototyping', image: '/process/step-02-prototyping.jpg', deliverables: ['Figma System'] },
                               { num: '03', title: 'Production Engineering', shortTitle: 'Full-Stack Engineering', image: '/process/step-03-engineering.jpg', deliverables: ['Clean Codebase'] },
                               { num: '04', title: 'QA, Security & Hardening', shortTitle: 'Security & QA', image: '/process/step-04-qa-security.jpg', deliverables: ['Pen Testing'] },
                               { num: '05', title: 'Deployment & Observability', shortTitle: 'CI/CD & Live Telemetry', image: '/process/step-05-deployment.jpg', deliverables: ['Zero Downtime'] },
-                            ])];
-                            updated[idx].title = e.target.value;
+                            ];
+                            const updated = [...base];
+                            updated[idx] = { ...updated[idx], title: e.target.value };
                             setLocalProcess(updated);
                           }}
                           className="flex-1 px-3 py-1.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border text-xs font-semibold"
                         />
                       </div>
+
+                      <CloudinaryUploader
+                        label={`Stage ${stage.num} Card Artwork / Background Image`}
+                        value={stage.image || ''}
+                        folder="codeverse/process"
+                        isUploading={isUploadingImage}
+                        setIsUploading={setIsUploadingImage}
+                        showToast={showToast}
+                        placeholder="/process/step-01-discovery.jpg or Cloudinary URL"
+                        onChange={(url) => {
+                          const base = localProcess.length > 0 ? localProcess : [
+                            { num: '01', title: 'Discovery & System Design', shortTitle: 'System Discovery', image: '/process/step-01-discovery.jpg', deliverables: ['SRS & Blueprint'] },
+                            { num: '02', title: 'Rapid Prototyping & Validation', shortTitle: 'Interactive Prototyping', image: '/process/step-02-prototyping.jpg', deliverables: ['Figma System'] },
+                            { num: '03', title: 'Production Engineering', shortTitle: 'Full-Stack Engineering', image: '/process/step-03-engineering.jpg', deliverables: ['Clean Codebase'] },
+                            { num: '04', title: 'QA, Security & Hardening', shortTitle: 'Security & QA', image: '/process/step-04-qa-security.jpg', deliverables: ['Pen Testing'] },
+                            { num: '05', title: 'Deployment & Observability', shortTitle: 'CI/CD & Live Telemetry', image: '/process/step-05-deployment.jpg', deliverables: ['Zero Downtime'] },
+                          ];
+                          const updated = [...base];
+                          updated[idx] = { ...updated[idx], image: url };
+                          setLocalProcess(updated);
+                        }}
+                      />
                     </div>
                   ))}
 
@@ -2056,6 +2318,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     </div>
 
                     <div>
+                      <CloudinaryUploader
+                        label="Leader Headshot / Photograph"
+                        value={newTeamMember.photo || ''}
+                        folder="codeverse/leadership"
+                        isUploading={isUploadingImage}
+                        setIsUploading={setIsUploadingImage}
+                        showToast={showToast}
+                        placeholder="https://res.cloudinary.com/... or click Upload"
+                        onChange={(url) => setNewTeamMember({ ...newTeamMember, photo: url })}
+                      />
+                    </div>
+
+                    <div>
                       <label className="block text-xs font-mono text-light-subtext mb-1">Bio / Background</label>
                       <textarea
                         rows={2}
@@ -2091,9 +2366,17 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm flex items-start justify-between gap-3"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-electric-purple to-purple-600 text-white font-bold flex items-center justify-center text-sm shadow-md flex-shrink-0">
-                          {member.initials}
-                        </div>
+                        {member.photo ? (
+                          <img 
+                            src={member.photo} 
+                            alt={member.name} 
+                            className="w-10 h-10 rounded-xl object-cover shadow-md flex-shrink-0 border border-purple-200 dark:border-white/10" 
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-electric-purple to-purple-600 text-white font-bold flex items-center justify-center text-sm shadow-md flex-shrink-0">
+                            {member.initials}
+                          </div>
+                        )}
                         <div>
                           <h3 className="font-bold text-sm text-light-text dark:text-white">{member.name}</h3>
                           <p className="text-xs text-electric-purple dark:text-lavender-glow">{member.role}</p>
@@ -2147,6 +2430,18 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                             value={editingTeamMember.role}
                             onChange={(e) => setEditingTeamMember({ ...editingTeamMember, role: e.target.value })}
                             className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                          />
+                        </div>
+                        <div>
+                          <CloudinaryUploader
+                            label="Leader Headshot / Photograph"
+                            value={editingTeamMember.photo || ''}
+                            folder="codeverse/leadership"
+                            isUploading={isUploadingImage}
+                            setIsUploading={setIsUploadingImage}
+                            showToast={showToast}
+                            placeholder="https://res.cloudinary.com/... or click Upload"
+                            onChange={(url) => setEditingTeamMember({ ...editingTeamMember, photo: url })}
                           />
                         </div>
                         <div>

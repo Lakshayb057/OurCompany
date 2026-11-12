@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import { v2 as cloudinary } from 'cloudinary';
 import { 
   connectDB, isConnected, 
   Inquiry, PlanRegistration, ServiceModel, ProductModel, TeamModel, PlanModel, SiteContentModel 
@@ -20,8 +21,17 @@ const DATA_FILE = path.join(__dirname, 'data', 'store.json');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
+
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serverless-ready MongoDB Atlas connection middleware
 // Ensures online Atlas DB is connected before resolving any API endpoint on Vercel or local
@@ -862,6 +872,80 @@ app.delete('/api/v1/admin/plan-registrations/:id', async (req, res) => {
   }
 
   res.json({ success: true, message: 'Plan registration deleted.' });
+});
+
+// -------------------------------------------------------------
+// CLOUDINARY MEDIA ASSETS CONTROLLERS
+// -------------------------------------------------------------
+
+// Check Cloudinary Status
+app.get('/api/v1/admin/cloudinary-status', (req, res) => {
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const isConfigured = Boolean(cloudName && apiKey && process.env.CLOUDINARY_API_SECRET);
+  res.json({
+    success: true,
+    data: {
+      configured: isConfigured,
+      cloudName: cloudName || null,
+    }
+  });
+});
+
+// Upload image to Cloudinary (Folder-based: leadership, projects, process)
+app.post('/api/v1/admin/upload-image', async (req, res) => {
+  const { image, folder = 'codeverse' } = req.body;
+  if (!image) {
+    return res.status(400).json({ success: false, message: 'No image data provided.' });
+  }
+
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+  if (!cloudName || !apiKey || !apiSecret) {
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Cloudinary credentials missing. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in your .env / Vercel Environment Variables.' 
+    });
+  }
+
+  try {
+    const uploadRes = await cloudinary.uploader.upload(image, {
+      folder: folder,
+      resource_type: 'image',
+      transformation: [
+        { quality: 'auto', fetch_format: 'auto' }
+      ]
+    });
+
+    return res.json({
+      success: true,
+      url: uploadRes.secure_url,
+      publicId: uploadRes.public_id,
+      format: uploadRes.format,
+      width: uploadRes.width,
+      height: uploadRes.height,
+    });
+  } catch (err) {
+    console.error('[Cloudinary] Upload error:', err);
+    return res.status(500).json({ 
+      success: false, 
+      message: err.message || 'Image upload to Cloudinary failed.' 
+    });
+  }
+});
+
+// Delete image from Cloudinary by public ID
+app.delete('/api/v1/admin/delete-image', async (req, res) => {
+  const { publicId } = req.body;
+  if (!publicId) return res.status(400).json({ success: false, message: 'publicId required.' });
+  try {
+    const delRes = await cloudinary.uploader.destroy(publicId);
+    res.json({ success: true, result: delRes });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 // Admin Analytics Overview

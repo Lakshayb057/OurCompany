@@ -63,7 +63,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto items-stretch">
           {displayProducts.map((prod) => {
             const isUniverse = prod.slug === 'universe' || prod.id === 'prod-01' || prod.name.toLowerCase().includes('universe');
-            const imgSrc = PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || '/services/crm-automation.jpg';
+            const imgSrc = (prod as any).image || (prod as any).previewUrl || PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || '/services/crm-automation.jpg';
 
             return (
               <div

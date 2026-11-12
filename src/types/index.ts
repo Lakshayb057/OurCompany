@@ -33,16 +33,23 @@ export interface ProductMetric {
 
 export interface Product {
   id: string;
-  slug: string;
+  slug?: string;
   name: string;
   subtitle: string;
   badge: string;
-  status: 'Live' | 'Beta' | 'Development' | 'Concept';
-  tagline: string;
-  lead: string;
-  technologies: string[];
-  metrics: ProductMetric[];
-  highlights: string[];
+  status?: 'Live' | 'Beta' | 'Development' | 'Concept' | string;
+  tagline?: string;
+  lead?: string;
+  category?: string;
+  technologies?: string[];
+  techStack?: string[];
+  metrics?: ProductMetric[];
+  metric?: string;
+  impact?: string;
+  highlights?: string[];
+  architecture?: string;
+  image?: string;
+  previewUrl?: string;
   liveUrl?: string;
   githubUrl?: string;
 }
@@ -50,11 +57,13 @@ export interface Product {
 export interface TeamMember {
   id: string;
   name: string;
-  designation: string;
+  designation?: string;
   role: string;
-  primaryResponsibility: string;
+  primaryResponsibility?: string;
   bio: string;
   avatar?: string;
+  photo?: string;
+  initials?: string;
   linkedin?: string;
 }
 

@@ -193,9 +193,9 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
               >
                 {/* 1. Full Container Background Image Layer - 100% Visible & Crisp */}
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                  {member.avatar && !imgErrors[member.id] ? (
+                  {(member.avatar || (member as any).photo) && !imgErrors[member.id] ? (
                     <img
-                      src={member.avatar}
+                      src={member.avatar || (member as any).photo}
                       alt={member.name}
                       className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
                       onError={() => setImgErrors((prev) => ({ ...prev, [member.id]: true }))}
