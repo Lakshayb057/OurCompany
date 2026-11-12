@@ -680,11 +680,6 @@ app.delete('/api/v1/admin/products/:id', async (req, res) => {
   broadcastSync('products', 'delete', { id });
   res.json({ success: true, message: 'Project deleted successfully.' });
 });
-    }
-  }
-
-  res.json({ success: true, message: 'Project deleted successfully.' });
-});
 
 // -------------------------------------------------------------
 // TEAM MEMBERS CRUD (Add, Update, Delete)
