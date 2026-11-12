@@ -76,8 +76,10 @@ const productSchema = new mongoose.Schema({
   liveUrl: { type: String, default: '' },
   githubUrl: { type: String, default: '' },
   coverImage: { type: String, default: '' },
+  image: { type: String, default: '' },
+  previewUrl: { type: String, default: '' },
   updatedAt: { type: Date, default: Date.now }
-});
+}, { strict: false });
 
 // 5. Team Member Schema
 const teamMemberSchema = new mongoose.Schema({
@@ -88,9 +90,11 @@ const teamMemberSchema = new mongoose.Schema({
   primaryResponsibility: { type: String, default: '' },
   bio: { type: String, default: '' },
   avatar: { type: String, default: '' },
+  photo: { type: String, default: '' },
+  initials: { type: String, default: '' },
   linkedin: { type: String, default: '' },
   updatedAt: { type: Date, default: Date.now }
-});
+}, { strict: false });
 
 // 6. Plan Package Schema
 const planSchema = new mongoose.Schema({

@@ -2,9 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
+import http from 'http';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
+import { Server as SocketIOServer } from 'socket.io';
 import { 
   connectDB, isConnected, 
   Inquiry, PlanRegistration, ServiceModel, ProductModel, TeamModel, PlanModel, SiteContentModel 
@@ -20,6 +22,21 @@ const DATA_FILE = path.join(__dirname, 'data', 'store.json');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Real-time synchronization state
+let io = null;
+let lastSyncTimestamp = Date.now();
+
+export function broadcastSync(type, action, data) {
+  lastSyncTimestamp = Date.now();
+  if (io) {
+    try {
+      io.emit('codeverse:sync', { type, action, data, timestamp: lastSyncTimestamp });
+    } catch (err) {
+      console.warn('[Socket.io] Broadcast warning:', err.message);
+    }
+  }
+}
 
 // Production fallback credentials for Cloudinary CDN
 const DEFAULT_CLOUD_NAME = 'gymcfo5j';
@@ -269,18 +286,48 @@ app.get('/api/v1/products', async (req, res) => {
   res.json({ success: true, data: data.products || [] });
 });
 
+// Real-Time Sync Status Check
+app.get('/api/v1/sync/status', (req, res) => {
+  res.json({ success: true, timestamp: lastSyncTimestamp });
+});
+
 // Team / Leadership
 app.get('/api/v1/team', async (req, res) => {
+  let list = [];
   if (isConnected()) {
     try {
       const team = await TeamModel.find().lean();
-      if (team && team.length) return res.json({ success: true, data: team });
+      if (team && team.length) list = team;
     } catch (e) {
       console.warn('Error fetching team from Atlas:', e.message);
     }
   }
-  const data = readData();
-  res.json({ success: true, data: data.team || [] });
+  if (!list.length) {
+    const data = readData();
+    list = data.team || [];
+  }
+
+  const normalized = list.map(m => {
+    const avatar = m.photo || m.avatar || '';
+    const photo = avatar;
+    const role = m.role || m.designation || 'Principal Engineer';
+    const designation = m.designation || m.role || role;
+    const bio = m.bio || m.primaryResponsibility || 'Architecting distributed systems and reactive client architectures.';
+    const primaryResponsibility = m.primaryResponsibility || m.bio || bio;
+    const initials = m.initials || (m.name ? m.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'CE');
+    return {
+      ...m,
+      avatar,
+      photo,
+      role,
+      designation,
+      bio,
+      primaryResponsibility,
+      initials
+    };
+  });
+
+  res.json({ success: true, data: normalized });
 });
 
 // Plans
@@ -488,6 +535,7 @@ app.put('/api/v1/admin/content/:section', async (req, res) => {
     }
   }
 
+  broadcastSync('content', 'update', { section, data: updatePayload });
   res.json({ 
     success: true, 
     message: `${section.toUpperCase()} section updated successfully.`, 
@@ -517,6 +565,7 @@ app.post('/api/v1/admin/services', async (req, res) => {
     }
   }
 
+  broadcastSync('services', 'create', newService);
   res.status(201).json({ success: true, message: 'Service added successfully.', data: newService });
 });
 
@@ -541,6 +590,7 @@ app.put('/api/v1/admin/services/:id', async (req, res) => {
     }
   }
 
+  broadcastSync('services', 'update', updatedService);
   res.json({ success: true, message: 'Service updated successfully.', data: updatedService });
 });
 
@@ -558,6 +608,7 @@ app.delete('/api/v1/admin/services/:id', async (req, res) => {
     }
   }
 
+  broadcastSync('services', 'delete', { id });
   res.json({ success: true, message: 'Service deleted successfully.' });
 });
 
@@ -583,6 +634,7 @@ app.post('/api/v1/admin/products', async (req, res) => {
     }
   }
 
+  broadcastSync('products', 'create', newProduct);
   res.status(201).json({ success: true, message: 'Project added successfully.', data: newProduct });
 });
 
@@ -607,6 +659,7 @@ app.put('/api/v1/admin/products/:id', async (req, res) => {
     }
   }
 
+  broadcastSync('products', 'update', updatedProduct);
   res.json({ success: true, message: 'Project updated successfully.', data: updatedProduct });
 });
 
@@ -624,6 +677,12 @@ app.delete('/api/v1/admin/products/:id', async (req, res) => {
     }
   }
 
+  broadcastSync('products', 'delete', { id });
+  res.json({ success: true, message: 'Project deleted successfully.' });
+});
+    }
+  }
+
   res.json({ success: true, message: 'Project deleted successfully.' });
 });
 
@@ -632,9 +691,25 @@ app.delete('/api/v1/admin/products/:id', async (req, res) => {
 // -------------------------------------------------------------
 
 app.post('/api/v1/admin/team', async (req, res) => {
+  const avatar = req.body.photo || req.body.avatar || '';
+  const photo = avatar;
+  const role = req.body.role || req.body.designation || 'Principal Engineer';
+  const designation = req.body.designation || req.body.role || role;
+  const bio = req.body.bio || req.body.primaryResponsibility || 'Architecting distributed systems and reactive client architectures.';
+  const primaryResponsibility = req.body.primaryResponsibility || req.body.bio || bio;
+  const initials = req.body.initials || (req.body.name ? req.body.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'CE');
+
   const newMember = {
     ...req.body,
-    id: req.body.id || `team-${Date.now()}`
+    id: req.body.id || `team-${Date.now()}`,
+    avatar,
+    photo,
+    role,
+    designation,
+    bio,
+    primaryResponsibility,
+    initials,
+    updatedAt: new Date()
   };
   const store = readData();
   store.team = store.team || [];
@@ -649,12 +724,32 @@ app.post('/api/v1/admin/team', async (req, res) => {
     }
   }
 
+  broadcastSync('team', 'create', newMember);
   res.status(201).json({ success: true, message: 'Team member added successfully.', data: newMember });
 });
 
 app.put('/api/v1/admin/team/:id', async (req, res) => {
   const { id } = req.params;
-  const updatedMember = req.body;
+  const avatar = req.body.photo || req.body.avatar || '';
+  const photo = avatar;
+  const role = req.body.role || req.body.designation || 'Principal Engineer';
+  const designation = req.body.designation || req.body.role || role;
+  const bio = req.body.bio || req.body.primaryResponsibility || 'Architecting distributed systems and reactive client architectures.';
+  const primaryResponsibility = req.body.primaryResponsibility || req.body.bio || bio;
+  const initials = req.body.initials || (req.body.name ? req.body.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'CE');
+
+  const updatedMember = {
+    ...req.body,
+    avatar,
+    photo,
+    role,
+    designation,
+    bio,
+    primaryResponsibility,
+    initials,
+    updatedAt: new Date()
+  };
+
   const store = readData();
   store.team = store.team || [];
   const idx = store.team.findIndex(t => t.id === id);
@@ -673,6 +768,7 @@ app.put('/api/v1/admin/team/:id', async (req, res) => {
     }
   }
 
+  broadcastSync('team', 'update', updatedMember);
   res.json({ success: true, message: 'Team member updated successfully.', data: updatedMember });
 });
 
@@ -690,6 +786,7 @@ app.delete('/api/v1/admin/team/:id', async (req, res) => {
     }
   }
 
+  broadcastSync('team', 'delete', { id });
   res.json({ success: true, message: 'Team member deleted successfully.' });
 });
 
@@ -715,6 +812,7 @@ app.post('/api/v1/admin/plans', async (req, res) => {
     }
   }
 
+  broadcastSync('plans', 'create', newPlan);
   res.status(201).json({ success: true, message: 'Plan added successfully.', data: newPlan });
 });
 
@@ -739,6 +837,7 @@ app.put('/api/v1/admin/plans/:id', async (req, res) => {
     }
   }
 
+  broadcastSync('plans', 'update', updatedPlan);
   res.json({ success: true, message: 'Plan updated successfully.', data: updatedPlan });
 });
 
@@ -755,6 +854,8 @@ app.delete('/api/v1/admin/plans/:id', async (req, res) => {
       console.warn('Atlas plan delete error:', e.message);
     }
   }
+
+  broadcastSync('plans', 'delete', { id });
 
   res.json({ success: true, message: 'Plan deleted successfully.' });
 });
@@ -1016,7 +1117,19 @@ if (fs.existsSync(DIST_PATH)) {
 export default app;
 
 if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
-    console.log(`CodeVerse Backend running on port ${PORT}`);
+  const httpServer = http.createServer(app);
+  io = new SocketIOServer(httpServer, {
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST', 'PUT', 'DELETE']
+    }
+  });
+
+  io.on('connection', (socket) => {
+    socket.emit('codeverse:connected', { time: Date.now() });
+  });
+
+  httpServer.listen(PORT, () => {
+    console.log(`CodeVerse Backend with Socket.io running on port ${PORT}`);
   });
 }

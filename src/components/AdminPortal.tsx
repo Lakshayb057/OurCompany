@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { 
-  X, Lock, Shield, LayoutDashboard, Inbox, FolderKanban, 
-  FileText, CheckCircle2, AlertTriangle, Search, 
+import {
+  X, Lock, Shield, LayoutDashboard, Inbox, FolderKanban,
+  FileText, CheckCircle2, AlertTriangle, Search,
   ExternalLink, Download, RefreshCw, LogOut, Check, Layers,
   Database, Users, Sparkles, Plus, Trash2, Edit3, Save, Globe,
   Briefcase, Activity, CheckCircle, ArrowLeft, Sun, Moon, ChevronRight,
   Phone, Mail, MapPin, Code, Cpu, Eye, Upload, Image as ImageIcon, Cloud, Loader2
 } from 'lucide-react';
-import { 
-  Inquiry, Product, Service, TeamMember, 
-  PlanRegistrationItem, SiteContent, ProcessStage 
+import {
+  Inquiry, Product, Service, TeamMember,
+  PlanRegistrationItem, SiteContent, ProcessStage
 } from '../types';
 import { PlanPackage } from '../data/plansData';
 
@@ -173,24 +173,24 @@ interface AdminPortalProps {
   onToggleTheme?: () => void;
 }
 
-type AdminTab = 
-  | 'overview' 
-  | 'inquiries' 
-  | 'registrations' 
-  | 'hero' 
-  | 'story' 
-  | 'services' 
-  | 'portfolio' 
-  | 'process' 
-  | 'team' 
-  | 'plans' 
-  | 'globalVision' 
+type AdminTab =
+  | 'overview'
+  | 'inquiries'
+  | 'registrations'
+  | 'hero'
+  | 'story'
+  | 'services'
+  | 'portfolio'
+  | 'process'
+  | 'team'
+  | 'plans'
+  | 'globalVision'
   | 'settings';
 
-export const AdminPortal: React.FC<AdminPortalProps> = ({ 
-  isOpen, 
-  onClose, 
-  products, 
+export const AdminPortal: React.FC<AdminPortalProps> = ({
+  isOpen,
+  onClose,
+  products,
   onUpdateProduct,
   onDeleteProduct,
   onAddProduct,
@@ -404,7 +404,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
         setIsAuthenticated(true);
         try {
           sessionStorage.setItem('cv_admin_auth', 'true');
-        } catch {}
+        } catch { }
       } else {
         setLoginError(data.message || 'Invalid administrative credentials');
       }
@@ -414,7 +414,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
         setIsAuthenticated(true);
         try {
           sessionStorage.setItem('cv_admin_auth', 'true');
-        } catch {}
+        } catch { }
       } else {
         setLoginError('Invalid credentials. Use admin@codeverse.tech / CodeVerse@2026');
       }
@@ -427,7 +427,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     setIsAuthenticated(false);
     try {
       sessionStorage.removeItem('cv_admin_auth');
-    } catch {}
+    } catch { }
   };
 
   // Section Save Handlers (Dual writes to Database & React state)
@@ -640,13 +640,20 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       alert('Please enter a team member name.');
       return;
     }
+    const img = newTeamMember.photo || (newTeamMember as any).avatar || '';
+    const desig = newTeamMember.role || (newTeamMember as any).designation || 'Principal Engineer';
+    const responsibility = newTeamMember.bio || (newTeamMember as any).primaryResponsibility || 'Architecting distributed systems and reactive client architectures.';
+
     const created: TeamMember = {
       id: `team-${Date.now()}`,
       name: newTeamMember.name.trim(),
-      role: newTeamMember.role || 'Staff Engineer',
+      role: desig,
+      designation: desig,
       initials: newTeamMember.initials || newTeamMember.name.slice(0, 2).toUpperCase(),
-      photo: newTeamMember.photo,
-      bio: newTeamMember.bio || '',
+      photo: img,
+      avatar: img,
+      bio: responsibility,
+      primaryResponsibility: responsibility,
       linkedin: newTeamMember.linkedin || 'https://linkedin.com'
     };
 
@@ -667,22 +674,36 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       role: 'Principal Engineer',
       initials: 'CE',
       bio: '',
-      linkedin: 'https://linkedin.com'
+      linkedin: 'https://linkedin.com',
+      photo: ''
     });
     showToast(`Team member "${created.name}" added & saved.`);
   };
 
   const handleSaveExistingTeamMember = async (member: TeamMember) => {
+    const img = member.photo || (member as any).avatar || '';
+    const desig = member.role || (member as any).designation || 'Principal Engineer';
+    const responsibility = member.bio || (member as any).primaryResponsibility || 'Architecting distributed systems and reactive client architectures.';
+    const normalizedMember: TeamMember = {
+      ...member,
+      photo: img,
+      avatar: img,
+      role: desig,
+      designation: desig,
+      bio: responsibility,
+      primaryResponsibility: responsibility
+    };
+
     try {
       await fetch(`/api/v1/admin/team/${member.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(member)
+        body: JSON.stringify(normalizedMember)
       });
     } catch (e) {
       console.warn('Atlas update team error:', e);
     }
-    if (onUpdateTeamMember) onUpdateTeamMember(member);
+    if (onUpdateTeamMember) onUpdateTeamMember(normalizedMember);
     setEditingTeamMember(null);
     showToast(`Team member "${member.name}" updated.`);
   };
@@ -937,7 +958,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   // -------------------------------------------------------------
   return (
     <div className="fixed inset-0 z-[100] bg-light dark:bg-midnight text-light-text dark:text-white flex flex-col overflow-hidden transition-colors">
-      
+
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed top-5 right-5 z-[150] bg-electric-purple text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-fade-in text-sm font-medium border border-purple-400/40">
@@ -948,7 +969,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
       {/* Top Header Bar */}
       <header className="h-16 px-4 sm:px-6 lg:px-8 border-b border-light-border dark:border-midnight-border/80 bg-white/90 dark:bg-midnight-900/90 backdrop-blur-xl flex items-center justify-between flex-shrink-0 z-20">
-        <div 
+        <div
           onClick={onClose}
           className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none"
           title="Return to Website"
@@ -998,17 +1019,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
       {/* Main Layout Body */}
       <div className="flex-1 flex overflow-hidden">
-        
+
         {/* Navigation Sidebar */}
         <aside className="w-64 lg:w-72 border-r border-light-border dark:border-midnight-border/80 bg-white/70 dark:bg-midnight-900/60 flex flex-col flex-shrink-0 overflow-y-auto">
           <div className="p-4 space-y-1">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'overview'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'overview'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <div className="flex items-center gap-2.5">
                 <LayoutDashboard className="w-4 h-4" />
@@ -1019,11 +1039,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('inquiries')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'inquiries'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'inquiries'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <div className="flex items-center gap-2.5">
                 <Inbox className="w-4 h-4" />
@@ -1036,11 +1055,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('registrations')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'registrations'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'registrations'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <div className="flex items-center gap-2.5">
                 <FileText className="w-4 h-4" />
@@ -1053,11 +1071,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('hero')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'hero'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'hero'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <Sparkles className="w-4 h-4" />
               <span>Hero Section</span>
@@ -1065,11 +1082,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('story')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'story'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'story'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <Cpu className="w-4 h-4" />
               <span>Our Story & Philosophy</span>
@@ -1077,11 +1093,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('services')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'services'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'services'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <div className="flex items-center gap-2.5">
                 <Layers className="w-4 h-4" />
@@ -1092,11 +1107,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('portfolio')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'portfolio'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'portfolio'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <div className="flex items-center gap-2.5">
                 <FolderKanban className="w-4 h-4" />
@@ -1107,11 +1121,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('process')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'process'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'process'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <Activity className="w-4 h-4" />
               <span>Process (5 Stages)</span>
@@ -1119,11 +1132,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('team')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'team'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'team'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <div className="flex items-center gap-2.5">
                 <Users className="w-4 h-4" />
@@ -1134,11 +1146,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('plans')}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'plans'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'plans'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <div className="flex items-center gap-2.5">
                 <Briefcase className="w-4 h-4" />
@@ -1149,11 +1160,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('globalVision')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'globalVision'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'globalVision'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <Globe className="w-4 h-4" />
               <span>Global Vision</span>
@@ -1161,11 +1171,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
             <button
               onClick={() => setActiveTab('settings')}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                activeTab === 'settings'
-                  ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
-                  : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'settings'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
             >
               <MapPin className="w-4 h-4" />
               <span>Site Info & Footer</span>
@@ -1247,11 +1256,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                 {/* Cloudinary Media Assets CDN Status */}
                 <div className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                      cloudinaryStatus?.isConfigured 
-                        ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' 
-                        : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
-                    }`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${cloudinaryStatus?.isConfigured
+                      ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                      : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                      }`}>
                       <Cloud className="w-5 h-5" />
                     </div>
                     <div>
@@ -1259,16 +1267,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                         <h3 className="font-bold text-sm text-light-text dark:text-white">
                           Cloudinary Media CDN Engine
                         </h3>
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${
-                          cloudinaryStatus?.isConfigured
-                            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
-                            : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
-                        }`}>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${cloudinaryStatus?.isConfigured
+                          ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                          : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                          }`}>
                           {cloudinaryStatus?.isConfigured ? 'Active & Ready' : 'Configuration Pending'}
                         </span>
                       </div>
                       <p className="text-xs text-light-subtext dark:text-muted-gray mt-0.5">
-                        {cloudinaryStatus?.isConfigured 
+                        {cloudinaryStatus?.isConfigured
                           ? `Connected to Cloudinary account (${cloudinaryStatus.cloudName}). Direct image uploads and auto-optimization active for Leaders, Projects, and Stages.`
                           : 'Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in .env and Vercel Environment Variables.'}
                       </p>
@@ -1289,7 +1296,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
                 {/* Quick Shortcuts */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div 
+                  <div
                     onClick={() => setActiveTab('inquiries')}
                     className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border hover:border-purple-500/40 cursor-pointer transition-all space-y-2 group"
                   >
@@ -1304,7 +1311,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     </p>
                   </div>
 
-                  <div 
+                  <div
                     onClick={() => setActiveTab('plans')}
                     className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border hover:border-purple-500/40 cursor-pointer transition-all space-y-2 group"
                   >
@@ -2376,11 +2383,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm flex items-start justify-between gap-3"
                     >
                       <div className="flex items-start gap-3">
-                        {member.photo ? (
-                          <img 
-                            src={member.photo} 
-                            alt={member.name} 
-                            className="w-10 h-10 rounded-xl object-cover shadow-md flex-shrink-0 border border-purple-200 dark:border-white/10" 
+                        {member.photo || member.avatar ? (
+                          <img
+                            src={member.photo || member.avatar}
+                            alt={member.name}
+                            className="w-10 h-10 rounded-xl object-cover shadow-md flex-shrink-0 border border-purple-200 dark:border-white/10"
                           />
                         ) : (
                           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-electric-purple to-purple-600 text-white font-bold flex items-center justify-center text-sm shadow-md flex-shrink-0">
@@ -2445,13 +2452,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                         <div>
                           <CloudinaryUploader
                             label="Leader Headshot / Photograph"
-                            value={editingTeamMember.photo || ''}
+                            value={editingTeamMember.photo || editingTeamMember.avatar || ''}
                             folder="codeverse/leadership"
                             isUploading={isUploadingImage}
                             setIsUploading={setIsUploadingImage}
                             showToast={showToast}
                             placeholder="https://res.cloudinary.com/... or click Upload"
-                            onChange={(url) => setEditingTeamMember({ ...editingTeamMember, photo: url })}
+                            onChange={(url) => setEditingTeamMember({ ...editingTeamMember, photo: url, avatar: url })}
                           />
                         </div>
                         <div>

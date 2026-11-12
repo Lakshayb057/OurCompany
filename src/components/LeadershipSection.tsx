@@ -203,7 +203,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-lavender-soft via-white to-purple-100 dark:from-midnight-950 dark:via-midnight-900 dark:to-deep-violet flex items-center justify-center">
                       <span className="text-8xl font-black font-mono text-electric-purple/20 select-none">
-                        {member.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
+                        {(member.initials || member.name.split(' ').map((n) => n[0]).join('')).slice(0, 2)}
                       </span>
                     </div>
                   )}
@@ -223,7 +223,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                 {/* 2. Top Bar: Floating Stream Tag & LinkedIn (Over Background) */}
                 <div className="relative z-10 p-5 sm:p-6 flex items-center justify-between gap-3">
                   <span className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-black/75 backdrop-blur-md border border-purple-200/90 dark:border-white/20 text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow shadow-md">
-                    {getRoleTag(member.role)}
+                    {getRoleTag(member.role || member.designation)}
                   </span>
 
                   {member.linkedin && (
@@ -250,7 +250,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                         {member.name}
                       </h3>
                       <div className="text-xs font-mono font-bold text-electric-purple dark:text-lavender-glow mt-0.5">
-                        {member.designation}
+                        {member.designation || member.role || 'Principal Engineer'}
                       </div>
                     </div>
 
@@ -264,7 +264,7 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                         <span>Primary Responsibility</span>
                       </div>
                       <p className="text-xs sm:text-[13px] text-light-text dark:text-gray-200 font-medium leading-snug">
-                        {member.primaryResponsibility}
+                        {member.primaryResponsibility || (member as any).bio || 'Distributed cloud architecture and full-stack system delivery.'}
                       </p>
                     </div>
 

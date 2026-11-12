@@ -22,6 +22,7 @@ import { AdminPortal } from './components/AdminPortal';
 import { CookieConsent } from './components/CookieConsent';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import { getStoredTheme, saveStoredTheme } from './utils/session';
+import { realtimeSync } from './utils/realtime';
 
 import { INITIAL_SERVICES, INITIAL_PRODUCTS, INITIAL_TEAM } from './data/mockData';
 import { Service, Product, TeamMember, SiteContent } from './types';
@@ -192,40 +193,49 @@ export const App: React.FC = () => {
     });
   };
 
-  // Load latest data from backend if reachable
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [srvRes, prodRes, teamRes, plansRes, contentRes] = await Promise.allSettled([
-          fetch('/api/v1/services').then(r => r.json()),
-          fetch('/api/v1/products').then(r => r.json()),
-          fetch('/api/v1/team').then(r => r.json()),
-          fetch('/api/v1/plans').then(r => r.json()),
-          fetch('/api/v1/content').then(r => r.json()),
-        ]);
+  // Load latest data from backend with real-time sync
+  const fetchData = useCallback(async () => {
+    try {
+      const [srvRes, prodRes, teamRes, plansRes, contentRes] = await Promise.allSettled([
+        fetch('/api/v1/services', { cache: 'no-store' }).then(r => r.json()),
+        fetch('/api/v1/products', { cache: 'no-store' }).then(r => r.json()),
+        fetch('/api/v1/team', { cache: 'no-store' }).then(r => r.json()),
+        fetch('/api/v1/plans', { cache: 'no-store' }).then(r => r.json()),
+        fetch('/api/v1/content', { cache: 'no-store' }).then(r => r.json()),
+      ]);
 
-        if (srvRes.status === 'fulfilled' && srvRes.value.success && srvRes.value.data?.length) {
-          setServices(srvRes.value.data);
-        }
-        if (prodRes.status === 'fulfilled' && prodRes.value.success && prodRes.value.data?.length) {
-          setProducts(prodRes.value.data);
-        }
-        if (teamRes.status === 'fulfilled' && teamRes.value.success && teamRes.value.data?.length) {
-          setTeam(teamRes.value.data);
-        }
-        if (plansRes.status === 'fulfilled' && plansRes.value.success && plansRes.value.data?.length) {
-          setPlans(plansRes.value.data);
-        }
-        if (contentRes.status === 'fulfilled' && contentRes.value.success && contentRes.value.data) {
-          setSiteContent(contentRes.value.data);
-        }
-      } catch (err) {
-        console.log('Using optimized built-in data:', err);
+      if (srvRes.status === 'fulfilled' && srvRes.value?.success && srvRes.value.data?.length) {
+        setServices(srvRes.value.data);
       }
-    };
-
-    fetchData();
+      if (prodRes.status === 'fulfilled' && prodRes.value?.success && prodRes.value.data?.length) {
+        setProducts(prodRes.value.data);
+      }
+      if (teamRes.status === 'fulfilled' && teamRes.value?.success && teamRes.value.data?.length) {
+        setTeam(teamRes.value.data);
+      }
+      if (plansRes.status === 'fulfilled' && plansRes.value?.success && plansRes.value.data?.length) {
+        setPlans(plansRes.value.data);
+      }
+      if (contentRes.status === 'fulfilled' && contentRes.value?.success && contentRes.value.data) {
+        setSiteContent(contentRes.value.data);
+      }
+    } catch (err) {
+      console.log('Using optimized built-in data:', err);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchData();
+
+    // Real-time synchronization subscription (Socket.io + BroadcastChannel + Polling)
+    const unsubscribe = realtimeSync.subscribe(() => {
+      fetchData();
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [fetchData]);
 
   const scrollToSection = (sectionId: string) => {
     const el = document.getElementById(sectionId);
@@ -246,53 +256,66 @@ export const App: React.FC = () => {
 
   const handleUpdateProduct = async (updated: Product) => {
     setProducts(prev => prev.map(p => p.id === updated.id ? updated : p));
+    realtimeSync.broadcastChange('products', 'update', updated);
   };
 
   const handleAddProduct = (newProd: Product) => {
     setProducts(prev => [newProd, ...prev]);
+    realtimeSync.broadcastChange('products', 'create', newProd);
   };
 
   const handleDeleteProduct = (id: string) => {
     setProducts(prev => prev.filter(p => p.id !== id));
+    realtimeSync.broadcastChange('products', 'delete', { id });
   };
 
   const handleUpdateService = async (updated: Service) => {
     setServices(prev => prev.map(s => s.id === updated.id ? updated : s));
+    realtimeSync.broadcastChange('services', 'update', updated);
   };
 
   const handleAddService = (newSrv: Service) => {
     setServices(prev => [newSrv, ...prev]);
+    realtimeSync.broadcastChange('services', 'create', newSrv);
   };
 
   const handleDeleteService = (id: string) => {
     setServices(prev => prev.filter(s => s.id !== id));
+    realtimeSync.broadcastChange('services', 'delete', { id });
   };
 
   const handleUpdateTeamMember = (updated: TeamMember) => {
     setTeam(prev => prev.map(t => t.id === updated.id ? updated : t));
+    realtimeSync.broadcastChange('team', 'update', updated);
   };
 
   const handleAddTeamMember = (newMember: TeamMember) => {
     setTeam(prev => [...prev, newMember]);
+    realtimeSync.broadcastChange('team', 'create', newMember);
   };
 
   const handleDeleteTeamMember = (id: string) => {
     setTeam(prev => prev.filter(t => t.id !== id));
+    realtimeSync.broadcastChange('team', 'delete', { id });
   };
 
   const handleUpdatePlan = (updated: PlanPackage) => {
     setPlans(prev => prev.map(p => p.id === updated.id ? updated : p));
+    realtimeSync.broadcastChange('plans', 'update', updated);
   };
 
   const handleAddPlan = (newPlan: PlanPackage) => {
     setPlans(prev => [...prev, newPlan]);
+    realtimeSync.broadcastChange('plans', 'create', newPlan);
   };
 
   const handleDeletePlan = (id: string) => {
     setPlans(prev => prev.filter(p => p.id !== id));
+    realtimeSync.broadcastChange('plans', 'delete', { id });
   };
 
   const handleUpdateSiteContent = (section: keyof SiteContent, data: any) => {
+    realtimeSync.broadcastChange('content', 'update', { section, data });
     setSiteContent(prev => {
       const current = prev || {
         hero: { line1: '', line2: '', line3: '', badge1: '', badge2: '', statCode: '' },
