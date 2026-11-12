@@ -160,11 +160,7 @@ export const App: React.FC = () => {
     } else if (target === 'services') {
       navigateToServices();
     } else if (target === 'plans') {
-      if (currentRoute === 'home') {
-        scrollToSection('plans');
-      } else {
-        navigateToPlans();
-      }
+      navigateToPlans();
     } else if (currentRoute !== 'home') {
       navigateToHome(target);
     } else {
