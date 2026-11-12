@@ -280,15 +280,10 @@ export const ProcessSection: React.FC = () => {
                         <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/85 via-black/45 to-transparent pointer-events-none rounded-t-[inherit]" />
                         <div className="absolute inset-x-0 bottom-0 h-44 sm:h-52 bg-gradient-to-t from-black/95 via-black/80 to-transparent pointer-events-none rounded-b-[inherit]" />
 
-                        {/* Top Stage Header Overlay - Visible even when partially overlapped by card above */}
-                        <div className="absolute top-3 sm:top-5 left-3 sm:left-5 right-3 sm:right-5 flex items-center justify-between pointer-events-none z-10">
-                          <div className="flex items-center gap-2">
-                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-electric-purple text-white font-mono font-black text-xs sm:text-sm flex items-center justify-center shadow-lg border border-white/25">
-                              {step.num}
-                            </div>
-                            <span className="text-white/95 text-[11px] sm:text-xs font-mono font-bold tracking-tight bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/15">
-                              Stage {step.num}
-                            </span>
+                        {/* Top Stage Header Overlay - Sleek Stage Number in Corner */}
+                        <div className="absolute top-3 sm:top-5 right-3 sm:right-5 pointer-events-none z-10">
+                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-electric-purple text-white font-mono font-black text-xs sm:text-sm flex items-center justify-center shadow-lg border border-white/25">
+                            {step.num}
                           </div>
                         </div>
 
