@@ -21,11 +21,16 @@ const DATA_FILE = path.join(__dirname, 'data', 'store.json');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Production fallback credentials for Cloudinary CDN
+const DEFAULT_CLOUD_NAME = 'gymcfo5j';
+const DEFAULT_API_KEY = '562398213255798';
+const DEFAULT_API_SECRET = 'Tc3PqC0KnNq7UpxnvS4Ff4yZT2A';
+
 // Configure Cloudinary
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME || DEFAULT_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY || DEFAULT_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET || DEFAULT_API_SECRET,
   secure: true,
 });
 
@@ -416,6 +421,13 @@ app.post('/api/v1/auth/login', (req, res) => {
 
 // Admin System / Database Connectivity Status
 app.get('/api/v1/admin/status', async (req, res) => {
+  if (!isConnected()) {
+    try {
+      await connectDB();
+    } catch (e) {
+      console.warn('Atlas reconnect attempt in status endpoint:', e.message);
+    }
+  }
   const store = readData();
   const connected = isConnected();
   let dbInfo = {
@@ -880,12 +892,14 @@ app.delete('/api/v1/admin/plan-registrations/:id', async (req, res) => {
 
 // Check Cloudinary Status
 app.get('/api/v1/admin/cloudinary-status', (req, res) => {
-  const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME;
-  const apiKey = process.env.CLOUDINARY_API_KEY;
-  const isConfigured = Boolean(cloudName && apiKey && process.env.CLOUDINARY_API_SECRET);
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME || DEFAULT_CLOUD_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY || DEFAULT_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET || DEFAULT_API_SECRET;
+  const isConfigured = Boolean(cloudName && apiKey && apiSecret);
   res.json({
     success: true,
     data: {
+      isConfigured: isConfigured,
       configured: isConfigured,
       cloudName: cloudName || null,
     }
@@ -899,9 +913,9 @@ app.post('/api/v1/admin/upload-image', async (req, res) => {
     return res.status(400).json({ success: false, message: 'No image data provided.' });
   }
 
-  const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME;
-  const apiKey = process.env.CLOUDINARY_API_KEY;
-  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME || DEFAULT_CLOUD_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY || DEFAULT_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET || DEFAULT_API_SECRET;
 
   if (!cloudName || !apiKey || !apiSecret) {
     return res.status(500).json({ 
@@ -917,6 +931,18 @@ app.post('/api/v1/admin/upload-image', async (req, res) => {
       transformation: [
         { quality: 'auto', fetch_format: 'auto' }
       ]
+    });
+
+    return res.json({
+      success: true,
+      url: uploadRes.secure_url,
+      data: {
+        url: uploadRes.secure_url,
+        publicId: uploadRes.public_id,
+        format: uploadRes.format,
+        width: uploadRes.width,
+        height: uploadRes.height,
+      }
     });
 
     return res.json({
