@@ -117,53 +117,14 @@ export const ProcessSection: React.FC = () => {
     });
   };
 
-  // Touch swipe support on mobile cards deck
-  const touchStartXRef = useRef<number | null>(null);
-  const touchStartYRef = useRef<number | null>(null);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartXRef.current = e.touches[0].clientX;
-    touchStartYRef.current = e.touches[0].clientY;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
-    const deltaX = touchStartXRef.current - e.changedTouches[0].clientX;
-    const deltaY = touchStartYRef.current - e.changedTouches[0].clientY;
-
-    if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY) * 0.7) {
-      if (deltaX > 0) {
-        // Swiped left -> next step
-        if (activeStep < steps.length - 1) {
-          handleStepClick(activeStep + 1);
-        } else {
-          // Completed all 5 steps -> move immediately to Engineered Locally. Deployed Globally.
-          const globalEl = document.getElementById('global');
-          globalEl?.scrollIntoView({ behavior: 'smooth' });
-        }
-      } else {
-        // Swiped right -> previous step
-        if (activeStep > 0) {
-          handleStepClick(activeStep - 1);
-        }
-      }
-    }
-    touchStartXRef.current = null;
-    touchStartYRef.current = null;
-  };
-
   // Continuous scrub factor from 0.0 to 4.0
-  // On mobile, normalized buffer ensures Step 01 is rock-solid on entry and Step 05 is stable before exit
-  const mobileNormalized = Math.min(Math.max((progress - 0.03) / 0.94, 0), 1);
-  const scrubValue = isMobile
-    ? mobileNormalized * (steps.length - 1)
-    : progress * (steps.length - 1);
+  const scrubValue = progress * (steps.length - 1);
 
   return (
     <section
       ref={sectionRef}
       id="process"
-      className="relative h-[220vh] sm:h-[260vh] lg:h-[380vh] bg-light-100/70 dark:bg-midnight-900/70 border-t border-b border-light-border dark:border-midnight-border/50"
+      className="relative h-[280vh] sm:h-[320vh] lg:h-[380vh] bg-light-100/70 dark:bg-midnight-900/70 border-t border-b border-light-border dark:border-midnight-border/50"
     >
       {/* Ambient background glows */}
       <div className="absolute top-1/4 left-10 w-[500px] h-[500px] bg-electric-purple/5 dark:bg-electric-purple/10 blur-[130px] rounded-full pointer-events-none" />
@@ -183,8 +144,33 @@ export const ProcessSection: React.FC = () => {
             </p>
           </div>
 
+          {/* Mobile Stage Progress Pill Track - Quick jump & stage indicator */}
+          <div className="lg:hidden flex items-center justify-center gap-1.5 w-full max-w-md mx-auto px-1 py-1 mb-1 flex-shrink-0">
+            {steps.map((step, idx) => {
+              const isActive = activeStep === idx;
+              return (
+                <button
+                  key={step.num}
+                  type="button"
+                  onClick={() => handleStepClick(idx)}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold transition-all duration-300 ${
+                    isActive
+                      ? 'bg-electric-purple text-white shadow-md shadow-purple-600/30 scale-105 ring-1 ring-purple-300'
+                      : 'bg-white/80 dark:bg-white/5 border border-purple-200/60 dark:border-white/10 text-light-subtext dark:text-gray-400 hover:text-electric-purple'
+                  }`}
+                >
+                  <span>{step.num}</span>
+                  {isActive && (
+                    <span className="font-sans font-medium truncate max-w-[80px] sm:max-w-none">
+                      {step.shortTitle}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
 
-          {/* Main Layout: Desktop 2-Column Split (Left list + Right deck) | Mobile: Full-width Horizontal Deck */}
+          {/* Main Layout: Desktop 2-Column Split (Left list + Right deck) | Mobile: Full-width Vertical Stacking Cards Deck */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-10 items-center flex-1 min-h-0 pb-1 sm:pb-2 w-full">
             
             {/* Left Column: ALL 5 STEPS - Visible on Desktop only */}
@@ -242,12 +228,10 @@ export const ProcessSection: React.FC = () => {
               })}
             </div>
 
-            {/* Right Column / Mobile Full Width: Images Deck - Fills available vertical height with zero excess gaps */}
+            {/* Right Column / Mobile Full Width: Premium Vertical Card Partial Overlap Deck */}
             <div className="w-full lg:col-span-7 flex flex-col justify-center items-center flex-1 h-full min-h-0 py-1 sm:py-2">
               <div 
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-                className="relative w-full h-full max-h-[calc(100dvh-170px)] sm:max-h-[68vh] lg:h-[570px] max-w-sm sm:max-w-md lg:max-w-none mx-auto flex items-center justify-center overflow-hidden touch-pan-y"
+                className="relative w-full h-full max-h-[calc(100dvh-185px)] sm:max-h-[68vh] lg:h-[570px] max-w-sm sm:max-w-md lg:max-w-none mx-auto flex items-center justify-center overflow-hidden"
               >
                 
                 {steps.map((step, idx) => {
@@ -256,60 +240,44 @@ export const ProcessSection: React.FC = () => {
                   let scale = 1;
                   let brightness = 1;
                   let shadowClass = 'shadow-2xl';
-                  let cardZIndex = (idx + 1) * 10;
+                  const cardZIndex = (idx + 1) * 10;
                   let isClickable = true;
 
-                  if (isMobile) {
-                    // Mobile: Moving from right to left as user scrolls down (scrubValue goes 0 -> 4)
-                    const offset = idx - scrubValue;
-                    const absOffset = Math.abs(offset);
+                  const enterProgress = Math.min(Math.max(scrubValue - (idx - 1), 0), 1);
+                  const depth = Math.max(0, scrubValue - idx);
+                  const overlapShift = isMobile ? 16 : 28;
 
-                    // Offset = 0 is centered, > 0 is to the right, < 0 is to the left
-                    const translateX = offset * 104;
-                    scale = 1; // Perfectly flush scale so corners never pull away or misalign
-                    opacity = absOffset > 1.2 ? 0 : Math.max(0, 1 - absOffset * 0.4);
-                    brightness = Math.max(0.85, 1 - absOffset * 0.15);
-                    transform = `translate3d(${translateX}%, 0, 0)`;
-                    cardZIndex = 25 - Math.round(absOffset * 4);
-                    isClickable = absOffset < 0.6;
-                    shadowClass = absOffset < 0.5
-                      ? 'shadow-[0_16px_40px_rgba(0,0,0,0.65)]'
-                      : 'shadow-lg';
+                  if (idx === 0) {
+                    // First card stays visible at top of stack, shifting up slightly as newer cards overlay it
+                    opacity = 1;
+                    const shiftY = Math.min(depth * overlapShift, isMobile ? 56 : 96);
+                    scale = 1 - Math.min(depth * (isMobile ? 0.024 : 0.018), 0.08);
+                    brightness = 1 - Math.min(depth * 0.07, 0.24);
+                    shadowClass = depth > 0 ? 'shadow-xl' : 'shadow-2xl';
+                    transform = `translate3d(0, ${-shiftY}px, 0) scale(${scale})`;
+                  } else if (enterProgress <= 0) {
+                    // Card waiting below viewport
+                    opacity = 0;
+                    transform = `translate3d(0, 105%, 0) scale(0.96)`;
+                    isClickable = false;
+                  } else if (enterProgress < 1) {
+                    // Card smoothly sliding up from below over the previous stacked card with partial overlap
+                    const currentY = (1 - enterProgress) * 105;
+                    opacity = Math.min(enterProgress * 2.5, 1);
+                    scale = 0.96 + enterProgress * 0.04;
+                    brightness = 1;
+                    shadowClass = 'shadow-[0_-16px_40px_rgba(0,0,0,0.7),0_25px_50px_rgba(0,0,0,0.85)]';
+                    transform = `translate3d(0, ${currentY}%, 0) scale(${scale})`;
+                    isClickable = true;
                   } else {
-                    // Desktop: Vertical stacking files deck
-                    cardZIndex = (idx + 1) * 10;
-                    let translateY = '105%';
-
-                    if (idx === 0) {
-                      opacity = 1;
-                      const depth = Math.max(0, scrubValue);
-                      const shiftY = Math.min(depth * 10, 40);
-                      translateY = `${-shiftY}px`;
-                      scale = 1 - Math.min(depth * 0.015, 0.06);
-                      brightness = 1 - Math.min(depth * 0.06, 0.24);
-                      shadowClass = 'shadow-2xl';
-                    } else {
-                      const enterProgress = Math.min(Math.max(scrubValue - (idx - 1), 0), 1);
-                      if (enterProgress <= 0) {
-                        translateY = '105%';
-                        opacity = 0;
-                      } else if (enterProgress < 1) {
-                        const currentY = (1 - enterProgress) * 105;
-                        translateY = `${currentY}%`;
-                        opacity = Math.min(enterProgress * 2.5, 1);
-                        scale = 0.98 + enterProgress * 0.02;
-                        shadowClass = 'shadow-[0_-12px_35px_rgba(0,0,0,0.65),0_25px_50px_rgba(0,0,0,0.85)]';
-                      } else {
-                        opacity = 1;
-                        const depth = Math.max(0, scrubValue - idx);
-                        const shiftY = Math.min(depth * 10, (4 - idx) * 10);
-                        translateY = `${-shiftY}px`;
-                        scale = 1 - Math.min(depth * 0.015, 0.06);
-                        brightness = 1 - Math.min(depth * 0.06, 0.24);
-                        shadowClass = 'shadow-[0_-8px_30px_rgba(0,0,0,0.55),0_20px_45px_rgba(0,0,0,0.75)]';
-                      }
-                    }
-                    transform = `translate3d(0, ${translateY}, 0) scale(${scale})`;
+                    // Card has fully entered, sits at rest or shifts up as subsequent cards overlap
+                    opacity = 1;
+                    const shiftY = Math.min(depth * overlapShift, (4 - idx) * overlapShift);
+                    scale = 1 - Math.min(depth * (isMobile ? 0.024 : 0.018), 0.08);
+                    brightness = 1 - Math.min(depth * 0.07, 0.24);
+                    shadowClass = 'shadow-[0_-10px_30px_rgba(0,0,0,0.6),0_20px_45px_rgba(0,0,0,0.8)]';
+                    transform = `translate3d(0, ${-shiftY}px, 0) scale(${scale})`;
+                    isClickable = true;
                   }
 
                   return (
@@ -322,9 +290,7 @@ export const ProcessSection: React.FC = () => {
                         filter: `brightness(${brightness})`,
                         pointerEvents: isClickable ? 'auto' : 'none',
                         WebkitMaskImage: '-webkit-radial-gradient(white, black)',
-                        transition: isMobile
-                          ? 'transform 0.08s ease-out, opacity 0.1s ease-out'
-                          : 'transform 0.12s ease-out, opacity 0.15s ease-out, filter 0.15s ease-out'
+                        transition: 'transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.16s ease-out, filter 0.16s ease-out'
                       }}
                       className={`absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border-2 border-purple-200/90 dark:border-electric-purple/60 ${shadowClass} will-change-transform isolate`}
                     >
@@ -340,10 +306,15 @@ export const ProcessSection: React.FC = () => {
                         <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/85 via-black/45 to-transparent pointer-events-none rounded-t-[inherit]" />
                         <div className="absolute inset-x-0 bottom-0 h-44 sm:h-52 bg-gradient-to-t from-black/95 via-black/80 to-transparent pointer-events-none rounded-b-[inherit]" />
 
-                        {/* Top Stage Header Overlay - Sleek Stage Number in Corner */}
-                        <div className="absolute top-3.5 sm:top-5 right-3.5 sm:right-5 pointer-events-none z-10">
-                          <div className="w-8 h-8 rounded-full bg-electric-purple text-white font-mono font-black text-xs sm:text-sm flex items-center justify-center shadow-lg border border-white/25">
-                            {step.num}
+                        {/* Top Stage Header Overlay - Visible even when partially overlapped by card above */}
+                        <div className="absolute top-3 sm:top-5 left-3 sm:left-5 right-3 sm:right-5 flex items-center justify-between pointer-events-none z-10">
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-electric-purple text-white font-mono font-black text-xs sm:text-sm flex items-center justify-center shadow-lg border border-white/25">
+                              {step.num}
+                            </div>
+                            <span className="text-white/95 text-[11px] sm:text-xs font-mono font-bold tracking-tight bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/15">
+                              Stage {step.num}
+                            </span>
                           </div>
                         </div>
 

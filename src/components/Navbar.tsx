@@ -86,19 +86,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      {/* Unified Master Glass Effect Background for the Entire Navbar (Logo, Wordmark, Nav Links, Both Buttons) */}
-      <div 
-        style={{
-          opacity: glassOpacity,
-          backdropFilter: 'blur(24px) saturate(190%)',
-          WebkitBackdropFilter: 'blur(24px) saturate(190%)',
-        }}
-        className="fixed top-0 left-0 right-0 h-16 sm:h-[72px] lg:h-[88px] z-40 bg-white/30 dark:bg-black/75 border-b border-purple-200/40 dark:border-white/10 shadow-[0_10px_30px_-5px_rgba(124,44,245,0.06),inset_0_1px_0_0_rgba(255,255,255,0.7)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.85),inset_0_1px_0_0_rgba(255,255,255,0.12),inset_0_-1px_0_0_rgba(124,44,245,0.25)] pointer-events-none transition-opacity duration-200"
-      >
-        {/* Subtle radiant purple bottom accent rule */}
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-electric-purple/40 dark:via-electric-purple/60 to-transparent" />
-      </div>
-
       {/* 1. CENTER: Standalone Floating Navigation Bar (Desktop) with Integrated Theme Toggle */}
       <div className="hidden lg:block fixed top-4 sm:top-5 left-1/2 -translate-x-1/2 z-50">
         <nav 

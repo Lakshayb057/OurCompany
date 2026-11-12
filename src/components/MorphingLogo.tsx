@@ -99,18 +99,18 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
   const targetX = isMobile ? 16 : 24;       // left alignment
   const targetY = isMobile ? 12 : 8;        // vertically centered with header
 
-  // Progress from 0 (hero) to 1 (header docked) - calibrated to 340px for smoother, gradual flight
-  const maxScroll = 340;
+  // Progress from 0 (hero) to 1 (header docked) - calibrated for fluid, butter-smooth flight on all screens
+  const maxScroll = isMobile ? 220 : 320;
   const rawP = isAlwaysDocked ? 1 : Math.min(1, Math.max(0, scrollY / maxScroll));
 
-  // Smooth sinusoidal S-curve
+  // Smooth sinusoidal S-curve with zero sudden acceleration jumps
   const p = isAlwaysDocked ? 1 : (0.5 - Math.cos(rawP * Math.PI) / 2);
 
   // Peak in-flight factor (0 at endpoints, 1 at midpoint)
   const flight = isAlwaysDocked ? 0 : Math.sin(rawP * Math.PI);
 
-  // Once the logo arrives and aligns to the top-left, trigger the 3D "CodeVerse" emergence
-  const isDocked = isAlwaysDocked || rawP >= 0.88;
+  // Once the logo approaches dock position, smoothly trigger the "CodeVerse" wordmark emergence
+  const isDocked = isAlwaysDocked || rawP >= 0.85;
 
   // Interpolated position and dimensions for the ribbon logo
   const heroCurrentY = box ? box.y - scrollY : targetY;
@@ -120,10 +120,10 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
   const currentH = (box && !isAlwaysDocked) ? box.height * (1 - p) + targetH * p : targetH;
 
   // Smooth 3D rotations and perspective elevation during flight
-  const rotateY = flight * -22;
-  const rotateX = flight * 12;
-  const rotateZ = flight * -5;
-  const translateZ = flight * 48;
+  const rotateY = flight * -18;
+  const rotateX = flight * 10;
+  const rotateZ = flight * -4;
+  const translateZ = flight * 40;
 
   const handleLogoClick = () => {
     if (onLogoClick) {
@@ -135,9 +135,9 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
 
   // Subtle natural drop-shadow on the 3D transparent ribbon itself during flight
   const ribbonFilter = flight > 0.05
-    ? `drop-shadow(0 ${6 + flight * 14}px ${10 + flight * 16}px rgba(124, 44, 245, ${0.25 + flight * 0.3}))`
+    ? `drop-shadow(0 ${4 + flight * 12}px ${8 + flight * 14}px rgba(124, 44, 245, ${0.2 + flight * 0.25}))`
     : isDocked
-      ? 'drop-shadow(0 2px 10px rgba(124, 44, 245, 0.28))'
+      ? 'drop-shadow(0 2px 8px rgba(124, 44, 245, 0.24))'
       : 'none';
 
   return (
@@ -145,22 +145,18 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
       onClick={handleLogoClick}
       style={{
         position: 'fixed',
-        left: `${currentX}px`,
-        top: `${currentY}px`,
+        left: 0,
+        top: 0,
+        transform: `translate3d(${Math.round(currentX)}px, ${Math.round(currentY)}px, 0)`,
         zIndex: 50,
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
-        opacity: rawP === 0 ? (hasEntered ? 1 : 0) : 1,
-        transform: rawP === 0 
-          ? (hasEntered ? 'perspective(1000px) scale(1) translate3d(0, 0, 0) rotateY(0)' : 'perspective(1000px) scale(0.72) translate3d(0, 36px, 60px) rotateY(-20deg)')
-          : 'none',
-        transition: rawP === 0 
-          ? 'opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1), transform 0.95s cubic-bezier(0.16, 1, 0.3, 1)' 
-          : 'none',
-        willChange: 'transform, left, top, opacity',
+        opacity: hasEntered ? 1 : 0,
+        transition: 'opacity 0.4s ease-out',
+        willChange: 'transform',
       }}
-      className="select-none group focus:outline-none bg-transparent border-0 p-0 shadow-none"
+      className="select-none group focus:outline-none bg-transparent border-0 p-0 shadow-none pointer-events-auto"
       title={isAlwaysDocked ? "CodeVerse - Return to Home" : "CodeVerse Home - Scroll to top"}
       aria-label="CodeVerse Home"
       role="button"
@@ -171,41 +167,41 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
         }
       }}
     >
-      {/* 1. The 3D Morphing Ribbon Emblem (Substantially enlarged in docked state) */}
+      {/* 1. The 3D Morphing Ribbon Emblem */}
       <div
         style={{
-          width: `${currentW}px`,
-          height: `${currentH}px`,
+          width: `${Math.round(currentW)}px`,
+          height: `${Math.round(currentH)}px`,
           transform: `perspective(1000px) translate3d(0, 0, ${translateZ}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg)`,
           transformStyle: 'preserve-3d',
           filter: ribbonFilter,
-          willChange: 'transform, width, height, filter',
+          willChange: 'transform, width, height',
           flexShrink: 0,
         }}
-        className={`flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${rawP === 0 && hasEntered ? 'animate-hero-float' : ''}`}
+        className="flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
       >
         <img
           src="/hero-ribbon.png"
           alt="CodeVerse Ribbon"
-          className="w-full h-full object-contain pointer-events-none"
+          className={`w-full h-full object-contain pointer-events-none ${rawP === 0 && hasEntered ? 'animate-hero-float' : ''}`}
         />
       </div>
 
-      {/* 2. The 3D Animated "CodeVerse" Word (Substantially enlarged font size) */}
+      {/* 2. The 3D Animated "CodeVerse" Wordmark - Butter smooth max-width reveal */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           overflow: 'hidden',
-          width: isDocked ? 'auto' : '0px',
+          maxWidth: isDocked ? (isMobile ? '160px' : '280px') : '0px',
           opacity: isDocked ? 1 : 0,
           transform: isDocked 
-            ? 'perspective(600px) translate3d(0, 0, 0) rotateY(0deg) scale(1)' 
-            : 'perspective(600px) translate3d(-32px, 0, -25px) rotateY(32deg) scale(0.85)',
+            ? 'translate3d(0, 0, 0) scale(1)' 
+            : 'translate3d(-14px, 0, 0) scale(0.92)',
           transformOrigin: 'left center',
-          transition: 'width 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-out, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
+          transition: 'max-width 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease-out, transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), margin-left 0.32s ease-out',
           pointerEvents: isDocked ? 'auto' : 'none',
-          marginLeft: isDocked ? (isMobile ? '6px' : '8px') : '0px',
+          marginLeft: isDocked ? (isMobile ? '6px' : '10px') : '0px',
         }}
         className="font-extrabold tracking-tight select-none"
       >

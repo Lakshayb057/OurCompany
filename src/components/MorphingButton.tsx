@@ -229,17 +229,17 @@ export const MorphingButton: React.FC<MorphingButtonProps> = ({
           height: `${currentH1}px`,
           borderRadius: `${currentRadius1}px`,
           zIndex: 50,
-          transform: rawP === 0 && !hasEntered
+          transform: !hasEntered
             ? 'perspective(1000px) translateY(28px) scale(0.92)'
             : `perspective(1000px) translate3d(0, 0, ${translateZ1}px) rotateY(${rotateY1}deg) rotateX(${rotateX1}deg) rotateZ(${rotateZ1}deg)`,
           transformStyle: 'preserve-3d',
-          opacity: rawP === 0 ? (hasEntered ? 1 : 0) : 1,
-          transition: rawP === 0 
+          opacity: hasEntered ? 1 : 0,
+          transition: !hasEntered 
             ? 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)' 
             : 'none',
-          transitionDelay: rawP === 0 ? '480ms' : '0ms',
+          transitionDelay: !hasEntered ? '480ms' : '0ms',
           boxShadow: dynamicShadow1,
-          willChange: 'transform, left, top, width, height, border-radius, opacity',
+          willChange: 'transform, left, top, width, height, border-radius',
           cursor: 'pointer',
         }}
         className="relative overflow-hidden group p-[1px] select-none focus:outline-none active:scale-[0.98] transition-transform"
@@ -276,17 +276,17 @@ export const MorphingButton: React.FC<MorphingButtonProps> = ({
             height: `${currentH2}px`,
             borderRadius: `${currentRadius2}px`,
             zIndex: 50,
-            transform: rawP === 0 && !hasEntered
+            transform: !hasEntered
               ? 'perspective(1000px) translateY(28px) scale(0.92)'
               : `perspective(1000px) translate3d(0, 0, ${translateZ2}px) rotateY(${rotateY2}deg) rotateX(${rotateX2}deg) rotateZ(${rotateZ2}deg)`,
             transformStyle: 'preserve-3d',
-            opacity: rawP === 0 ? (hasEntered ? 1 : 0) : 1,
-            transition: rawP === 0 
+            opacity: hasEntered ? 1 : 0,
+            transition: !hasEntered 
               ? 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)' 
               : 'none',
-            transitionDelay: rawP === 0 ? '580ms' : '0ms',
+            transitionDelay: !hasEntered ? '580ms' : '0ms',
             boxShadow: dynamicShadow2,
-            willChange: 'transform, left, top, width, height, border-radius, opacity',
+            willChange: 'transform, left, top, width, height, border-radius',
             cursor: 'pointer',
           }}
           className="relative overflow-hidden group select-none focus:outline-none active:scale-[0.98] transition-transform bg-white/95 dark:bg-black/75 backdrop-blur-md border border-purple-200 dark:border-white/15 hover:border-electric-purple dark:hover:border-electric-purple/80 text-light-text dark:text-white"
