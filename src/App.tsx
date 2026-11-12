@@ -13,6 +13,8 @@ import { CaseStudyModal } from './components/CaseStudyModal';
 import { ProcessSection } from './components/ProcessSection';
 import { GlobalVision } from './components/GlobalVision';
 import { LeadershipSection } from './components/LeadershipSection';
+import { PlansSection } from './components/PlansSection';
+import { PlansPage } from './components/PlansPage';
 import { PartnershipPhilosophy } from './components/PartnershipPhilosophy';
 import { InquirySection } from './components/InquirySection';
 import { Footer } from './components/Footer';
@@ -59,7 +61,7 @@ export const App: React.FC = () => {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<Product | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [inquiryDomain, setInquiryDomain] = useState<string>('AI, Intelligent Agents & OCR');
-  const [currentRoute, setCurrentRoute] = useState<'home' | 'projects' | 'services'>(() => {
+  const [currentRoute, setCurrentRoute] = useState<'home' | 'projects' | 'services' | 'plan'>(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname;
       if (path === '/projects') {
@@ -68,6 +70,9 @@ export const App: React.FC = () => {
       if (path === '/services') {
         return 'services';
       }
+      if (path === '/plan' || path === '/plans') {
+        return 'plan';
+      }
     }
     return 'home';
   });
@@ -75,7 +80,7 @@ export const App: React.FC = () => {
   // Activate calibrated slow, silky-smooth momentum scrolling
   useSmoothScroll(!isAdminOpen && !selectedCaseStudy);
 
-  // URL-based Admin, Projects & Services route detection (/admin, /projects, /services, or hashes)
+  // URL-based Admin, Projects, Services & Plans route detection (/admin, /projects, /services, /plan, or hashes)
   useEffect(() => {
     const handleLocationChange = () => {
       const path = window.location.pathname;
@@ -87,6 +92,8 @@ export const App: React.FC = () => {
         setCurrentRoute('projects');
       } else if (path === '/services') {
         setCurrentRoute('services');
+      } else if (path === '/plan' || path === '/plans') {
+        setCurrentRoute('plan');
       } else if (!isAdmin) {
         setCurrentRoute('home');
         if (hash) {
@@ -129,6 +136,12 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const navigateToPlans = () => {
+    setCurrentRoute('plan');
+    window.history.pushState(null, '', '/plan');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const navigateToHome = (sectionId?: string) => {
     setCurrentRoute('home');
     window.history.pushState(null, '', '/');
@@ -146,6 +159,12 @@ export const App: React.FC = () => {
       navigateToProjects();
     } else if (target === 'services') {
       navigateToServices();
+    } else if (target === 'plans') {
+      if (currentRoute === 'home') {
+        scrollToSection('plans');
+      } else {
+        navigateToPlans();
+      }
     } else if (currentRoute !== 'home') {
       navigateToHome(target);
     } else {
@@ -284,7 +303,11 @@ export const App: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {currentRoute === 'projects' ? (
+        {currentRoute === 'plan' ? (
+          <PlansPage
+            onBackToHome={() => navigateToHome()}
+          />
+        ) : currentRoute === 'projects' ? (
           <ProjectsPage
             products={products}
             onOpenCaseStudy={(prod) => setSelectedCaseStudy(prod)}
@@ -347,12 +370,18 @@ export const App: React.FC = () => {
               team={team}
             />
 
+            {/* Section 08: Engineering Plans & Packages */}
+            <PlansSection
+              onOpenPlansPage={navigateToPlans}
+            />
+
             {/* Section 09 & 10.4: Partnership & 100% Allocation Philosophy */}
             <PartnershipPhilosophy />
 
             {/* Section 10: Let's Build Together (Project Inquiry) */}
             <InquirySection
               initialProjectType={inquiryDomain}
+              onRedirectToPlans={navigateToPlans}
             />
           </>
         )}

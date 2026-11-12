@@ -3,9 +3,10 @@ import { Clock, Shield, Sparkles, CheckCircle2, AlertCircle, ArrowRight } from '
 
 interface InquirySectionProps {
   initialProjectType?: string;
+  onRedirectToPlans?: (userData?: { fullName: string; email: string; contact: string; description: string; budgetRange: string }) => void;
 }
 
-export const InquirySection: React.FC<InquirySectionProps> = ({ initialProjectType }) => {
+export const InquirySection: React.FC<InquirySectionProps> = ({ initialProjectType, onRedirectToPlans }) => {
   const [formData, setFormData] = useState({
     fullName: '',
     contact: '',
@@ -52,6 +53,22 @@ export const InquirySection: React.FC<InquirySectionProps> = ({ initialProjectTy
     setLoading(true);
 
     try {
+      // Save submitted client data so /plan page can prefill their details
+      try {
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('codeverse_client_inquiry', JSON.stringify({
+            fullName: formData.fullName,
+            contact: formData.contact,
+            email: formData.email,
+            budgetRange: formData.budgetRange,
+            description: formData.description,
+            timestamp: Date.now()
+          }));
+        }
+      } catch (e) {
+        console.warn('Could not cache inquiry in sessionStorage', e);
+      }
+
       const res = await fetch('/api/v1/inquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -65,20 +82,29 @@ export const InquirySection: React.FC<InquirySectionProps> = ({ initialProjectTy
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setSuccess(data.message || 'Inquiry submitted successfully! Our engineering leadership will review your inquiry within 24 hours.');
-        setFormData({
-          fullName: '',
-          contact: '',
-          email: '',
-          budgetRange: '$25,000 - $50,000',
-          description: '',
-        });
+        setSuccess('Inquiry successfully recorded! Redirecting to Plans & Packages...');
+        setTimeout(() => {
+          if (onRedirectToPlans) {
+            onRedirectToPlans(formData);
+          } else if (typeof window !== 'undefined') {
+            window.history.pushState({}, '', '/plan');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          }
+        }, 900);
       } else {
         setError(data.message || 'Failed to submit inquiry. Please verify your details.');
       }
     } catch (err) {
-      console.warn('API error, acknowledging submission locally:', err);
-      setSuccess('Thank you for contacting CodeVerse. Your inquiry has been received and logged for review by engineering leadership.');
+      console.warn('API error, acknowledging submission locally and redirecting:', err);
+      setSuccess('Inquiry received! Redirecting to Plans & Packages...');
+      setTimeout(() => {
+        if (onRedirectToPlans) {
+          onRedirectToPlans(formData);
+        } else if (typeof window !== 'undefined') {
+          window.history.pushState({}, '', '/plan');
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        }
+      }, 900);
     } finally {
       setLoading(false);
     }
@@ -118,16 +144,6 @@ export const InquirySection: React.FC<InquirySectionProps> = ({ initialProjectTy
                   <h4 className="text-sm font-bold text-light-text dark:text-white">Mutual Confidentiality (NDA)</h4>
                   <p className="text-xs text-light-subtext dark:text-muted-gray mt-0.5">
                     Your proprietary specifications and trade secrets are protected under strict confidentiality protocols.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3.5 p-4 rounded-xl bg-white dark:bg-midnight-card border border-purple-100 dark:border-midnight-border/70 shadow-sm">
-                <Sparkles className="w-5 h-5 text-electric-purple flex-shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="text-sm font-bold text-light-text dark:text-white">Concrete Architectural Proposal</h4>
-                  <p className="text-xs text-light-subtext dark:text-muted-gray mt-0.5">
-                    We deliver an initial scope breakdown, entity model outline, and transparent timeline estimates.
                   </p>
                 </div>
               </div>
@@ -263,11 +279,11 @@ export const InquirySection: React.FC<InquirySectionProps> = ({ initialProjectTy
                     {loading ? (
                       <span className="flex items-center gap-2">
                         <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Transmitting to Engineering Gateway...</span>
+                        <span>Saving Inquiry & Opening Plans...</span>
                       </span>
                     ) : (
                       <>
-                        <span>Submit Qualified Project Inquiry</span>
+                        <span>Submit & See Plans</span>
                         <ArrowRight className="w-4 h-4 ml-1" />
                       </>
                     )}

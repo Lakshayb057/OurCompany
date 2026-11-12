@@ -3,13 +3,22 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+import { connectDB, isConnected, Inquiry, PlanRegistration } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load .env
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
+
 const DATA_FILE = path.join(__dirname, 'data', 'store.json');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Initialize DB connection
+connectDB();
 
 app.use(cors());
 app.use(express.json());
@@ -18,13 +27,15 @@ app.use(express.json());
 function readData() {
   try {
     if (!fs.existsSync(DATA_FILE)) {
-      return { inquiries: [], services: [], products: [], team: [], internalProjects: [] };
+      return { inquiries: [], planRegistrations: [], services: [], products: [], team: [], internalProjects: [] };
     }
     const raw = fs.readFileSync(DATA_FILE, 'utf-8');
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!parsed.planRegistrations) parsed.planRegistrations = [];
+    return parsed;
   } catch (err) {
     console.error('Error reading data store:', err);
-    return { inquiries: [], services: [], products: [], team: [], internalProjects: [] };
+    return { inquiries: [], planRegistrations: [], services: [], products: [], team: [], internalProjects: [] };
   }
 }
 
@@ -95,7 +106,7 @@ app.get('/api/v1/team', (req, res) => {
 });
 
 // Public API: Submit Inquiry (FR-09, FR-10, FR-11)
-app.post('/api/v1/inquiries', (req, res) => {
+app.post('/api/v1/inquiries', async (req, res) => {
   const { fullName, contact, phone, email, company, country, projectType, budgetRange, timeline, preferredContact, description } = req.body;
 
   // Validation
@@ -126,17 +137,95 @@ app.post('/api/v1/inquiries', (req, res) => {
     createdAt: new Date().toISOString()
   };
 
+  // 1. Save to local store fallback
   data.inquiries.unshift(newInquiry);
   writeData(data);
+
+  // 2. Save to MongoDB Atlas if connected
+  if (isConnected()) {
+    try {
+      await Inquiry.create(newInquiry);
+      console.log(`[MongoDB Atlas] Inquiry persisted successfully: ${newInquiry.fullName}`);
+    } catch (dbErr) {
+      console.error('[MongoDB Atlas] Error writing inquiry to MongoDB:', dbErr.message);
+    }
+  }
 
   // Email Notification simulation as per Section 5.1 & 7.1
   console.log(`[Notification Dispatch] New qualified project inquiry received from ${newInquiry.fullName} (${newInquiry.email}) for ${newInquiry.projectType}.`);
 
   return res.status(201).json({
     success: true,
-    message: 'Thank you for contacting CodeVerse. Our engineering leadership will review your inquiry within 24 hours.',
-    data: { inquiryId: newInquiry.id }
+    message: 'Thank you for contacting CodeVerse. Your inquiry has been submitted and saved!',
+    data: { inquiryId: newInquiry.id, inquiry: newInquiry }
   });
+});
+
+// Public API: Register for a Plan / Package
+app.post('/api/v1/plan-registrations', async (req, res) => {
+  const { fullName, email, contact, company, planId, planName, category, domainOption, billingPeriod, estimatedPrice, notes } = req.body;
+
+  // Validation
+  if (!fullName || !fullName.trim()) {
+    return res.status(400).json({ success: false, message: 'Full name is required.' });
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+    return res.status(400).json({ success: false, message: 'A valid email address is required.' });
+  }
+  if (!contact || !contact.trim()) {
+    return res.status(400).json({ success: false, message: 'Contact number / WhatsApp is required.' });
+  }
+  if (!planName || !planName.trim()) {
+    return res.status(400).json({ success: false, message: 'Plan name is required.' });
+  }
+
+  const data = readData();
+  data.planRegistrations = data.planRegistrations || [];
+
+  const newReg = {
+    id: `plan-reg-${Date.now()}`,
+    fullName: fullName.trim(),
+    email: email.trim().toLowerCase(),
+    contact: contact.trim(),
+    company: (company || '').trim(),
+    planId: (planId || 'custom-plan').trim(),
+    planName: planName.trim(),
+    category: category || 'General',
+    domainOption: domainOption || 'with-domain',
+    billingPeriod: billingPeriod || 'One-Time',
+    estimatedPrice: estimatedPrice || '',
+    notes: (notes || '').trim(),
+    status: 'Pending Review',
+    createdAt: new Date().toISOString()
+  };
+
+  // 1. Save to local store fallback
+  data.planRegistrations.unshift(newReg);
+  writeData(data);
+
+  // 2. Save to MongoDB Atlas if connected
+  if (isConnected()) {
+    try {
+      await PlanRegistration.create(newReg);
+      console.log(`[MongoDB Atlas] Plan registration persisted successfully: ${newReg.fullName} for ${newReg.planName}`);
+    } catch (dbErr) {
+      console.error('[MongoDB Atlas] Error writing plan registration to MongoDB:', dbErr.message);
+    }
+  }
+
+  console.log(`[Plan Registration] New registration: ${newReg.fullName} (${newReg.email}) for "${newReg.planName}" [${newReg.domainOption}]`);
+
+  return res.status(201).json({
+    success: true,
+    message: `Plan registration for "${newReg.planName}" confirmed! Our engineering team will contact you within 24 hours to initiate onboarding.`,
+    data: { registrationId: newReg.id }
+  });
+});
+
+// Admin API: List Plan Registrations
+app.get('/api/v1/admin/plan-registrations', (req, res) => {
+  const data = readData();
+  res.json({ success: true, data: data.planRegistrations || [] });
 });
 
 // Auth API: Admin Login

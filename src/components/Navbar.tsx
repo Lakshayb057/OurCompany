@@ -8,7 +8,7 @@ interface NavbarProps {
   dockBtnRef?: React.RefObject<HTMLDivElement>;
   dockStartBtnRef?: React.RefObject<HTMLDivElement>;
   dockExploreBtnRef?: React.RefObject<HTMLDivElement>;
-  currentRoute?: 'home' | 'projects' | 'services';
+  currentRoute?: 'home' | 'projects' | 'services' | 'plan';
   onLogoClick?: () => void;
 }
 
@@ -28,7 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [scrollY, setScrollY] = useState(0);
 
-  const isDedicatedPage = currentRoute === 'projects' || currentRoute === 'services';
+  const isDedicatedPage = currentRoute === 'projects' || currentRoute === 'services' || currentRoute === 'plan';
 
   const handleMouseEnterProjects = () => {
     if (dropdownTimeoutRef.current) {
@@ -77,6 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'How We Work', target: 'process' },
     { label: 'Global Vision', target: 'global' },
     { label: 'Leadership', target: 'leadership' },
+    { label: 'Plans', target: 'plans' },
   ];
 
   const handleLinkClick = (target: string) => {
