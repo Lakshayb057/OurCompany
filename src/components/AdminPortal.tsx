@@ -577,8 +577,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     const img = member.photo || (member as any).avatar || '';
     const desig = member.role || (member as any).designation || 'Principal Engineer';
     const responsibility = member.bio || (member as any).primaryResponsibility || 'Architecting distributed systems and reactive client architectures.';
+    const initials = member.initials || (member.name ? member.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'CE');
+    const linkedin = member.linkedin || '';
     const normalizedMember: TeamMember = {
       ...member,
+      initials,
+      linkedin,
       photo: img,
       avatar: img,
       role: desig,
@@ -1952,34 +1956,63 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
                 {/* Edit Team Modal */}
                 {editingTeamMember && (
-                  <div className="fixed inset-0 z-[120] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="w-full max-w-lg bg-white dark:bg-midnight-800 rounded-3xl p-6 border border-light-border dark:border-midnight-border shadow-2xl space-y-4">
-                      <div className="flex items-center justify-between">
+                  <div className="fixed inset-0 z-[120] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+                    <div className="w-full max-w-xl bg-white dark:bg-midnight-800 rounded-3xl p-6 border-2 border-electric-purple shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+                      <div className="flex items-center justify-between pb-1 border-b border-light-border dark:border-midnight-border/60">
                         <h2 className="font-bold text-sm text-light-text dark:text-white">Edit Team Member</h2>
-                        <button onClick={() => setEditingTeamMember(null)} className="text-light-subtext cursor-pointer">
+                        <button onClick={() => setEditingTeamMember(null)} className="text-light-subtext hover:text-white cursor-pointer p-1">
                           <X className="w-4 h-4" />
                         </button>
                       </div>
 
-                      <div className="space-y-3 text-xs">
-                        <div>
-                          <label className="block font-mono text-light-subtext mb-1">Name</label>
-                          <input
-                            type="text"
-                            value={editingTeamMember.name}
-                            onChange={(e) => setEditingTeamMember({ ...editingTeamMember, name: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
-                          />
+                      <div className="space-y-3.5 text-xs">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Full Name</label>
+                            <input
+                              type="text"
+                              value={editingTeamMember.name || ''}
+                              onChange={(e) => setEditingTeamMember({ ...editingTeamMember, name: e.target.value })}
+                              placeholder="e.g. Lakshay"
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                            />
+                          </div>
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Role / Title</label>
+                            <input
+                              type="text"
+                              value={editingTeamMember.role || editingTeamMember.designation || ''}
+                              onChange={(e) => setEditingTeamMember({ ...editingTeamMember, role: e.target.value, designation: e.target.value })}
+                              placeholder="Principal Engineer"
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <label className="block font-mono text-light-subtext mb-1">Role</label>
-                          <input
-                            type="text"
-                            value={editingTeamMember.role}
-                            onChange={(e) => setEditingTeamMember({ ...editingTeamMember, role: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
-                          />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Initials (2 Letters)</label>
+                            <input
+                              type="text"
+                              maxLength={3}
+                              value={editingTeamMember.initials || ''}
+                              onChange={(e) => setEditingTeamMember({ ...editingTeamMember, initials: e.target.value.toUpperCase() })}
+                              placeholder="CE"
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border uppercase"
+                            />
+                          </div>
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">LinkedIn Profile</label>
+                            <input
+                              type="url"
+                              value={editingTeamMember.linkedin || ''}
+                              onChange={(e) => setEditingTeamMember({ ...editingTeamMember, linkedin: e.target.value })}
+                              placeholder="https://linkedin.com"
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                            />
+                          </div>
                         </div>
+
                         <div>
                           <CloudinaryUploader
                             label="Leader Headshot / Photograph"
@@ -1992,15 +2025,18 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                             onChange={(url) => setEditingTeamMember({ ...editingTeamMember, photo: url, avatar: url })}
                           />
                         </div>
+
                         <div>
-                          <label className="block font-mono text-light-subtext mb-1">Bio</label>
+                          <label className="block text-xs font-mono text-light-subtext mb-1">Bio / Background</label>
                           <textarea
                             rows={3}
-                            value={editingTeamMember.bio}
-                            onChange={(e) => setEditingTeamMember({ ...editingTeamMember, bio: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                            value={editingTeamMember.bio || editingTeamMember.primaryResponsibility || ''}
+                            onChange={(e) => setEditingTeamMember({ ...editingTeamMember, bio: e.target.value, primaryResponsibility: e.target.value })}
+                            placeholder="Architecting distributed systems and reactive client architectures."
+                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs"
                           />
                         </div>
+
                         <div>
                           <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none pt-1">
                             <input
@@ -2014,16 +2050,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                         </div>
                       </div>
 
-                      <div className="flex justify-end gap-2 pt-2">
+                      <div className="flex justify-end gap-2 pt-2 border-t border-light-border dark:border-midnight-border/60">
                         <button
                           onClick={() => setEditingTeamMember(null)}
-                          className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer hover:bg-black/5 dark:hover:bg-white/5"
                         >
                           Cancel
                         </button>
                         <button
                           onClick={() => handleSaveExistingTeamMember(editingTeamMember)}
-                          className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer"
+                          className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer shadow-md shadow-purple-600/20"
                         >
                           <Save className="w-3.5 h-3.5" />
                           <span>Save Changes</span>
