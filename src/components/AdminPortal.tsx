@@ -6,7 +6,7 @@ import {
   Database, Users, Sparkles, Plus, Trash2, Edit3, Save, Globe,
   Briefcase, Activity, CheckCircle, ArrowLeft, Sun, Moon, ChevronRight,
   Phone, Mail, MapPin, Code, Cpu, Eye, EyeOff, Upload, Image as ImageIcon, Cloud, Loader2,
-  Video, Film, Play, Settings, Linkedin, Instagram
+  Video, Film, Play, Settings, Linkedin, Instagram, Building2
 } from 'lucide-react';
 import {
   Inquiry, Product, Service, TeamMember,

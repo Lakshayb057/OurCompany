@@ -380,7 +380,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
             </p>
           </div>
           <button
-            onClick={() => handleAdoptPlatform(displayProducts[0] || ({} as Product))}
+            onClick={() => handleAdoptPlatform(inHousePlatforms[0] || ({} as Product))}
             className="px-6 py-3.5 rounded-xl bg-electric-purple hover:bg-electric-light text-white font-semibold text-sm flex items-center gap-2 shadow-lg shadow-purple-600/30 whitespace-nowrap transition-all cursor-pointer"
           >
             <span>Partner / Tie-Up Inquiries</span>
@@ -395,7 +395,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
         isOpen={isAdoptionModalOpen}
         onClose={() => setIsAdoptionModalOpen(false)}
         product={adoptionModalProduct}
-        allProducts={displayProducts}
+        allProducts={inHousePlatforms}
       />
     </div>
   );
