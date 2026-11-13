@@ -26,9 +26,11 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
     'P2P & Community'
   ];
 
-  // Filter projects based on category and search query
+  // Filter projects based on category, search query, and visibility
   const filteredProducts = useMemo(() => {
     return products.filter((prod) => {
+      // Visibility filter: hide projects toggled off in admin portal
+      if (prod.isVisible === false) return false;
       // Category filter matching
       let matchesCat = true;
       if (selectedCategory === 'AI & Intelligent Agents') {

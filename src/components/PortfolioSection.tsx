@@ -30,9 +30,10 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   onViewAllProjects,
   onViewAllServices 
 }) => {
-  // Featured Flagship Services: UniVerse & Nexus CRM
-  const universeProduct = products.find(p => p.slug === 'universe' || p.id === 'prod-01') || products[0];
-  const nexusProduct = products.find(p => p.slug === 'nexus-crm' || p.id === 'prod-04') || products.find(p => p.name.toLowerCase().includes('nexus')) || products[1];
+  // Featured Flagship Services: UniVerse & Nexus CRM (filtered by visibility)
+  const visibleProducts = products.filter(p => p.isVisible !== false);
+  const universeProduct = visibleProducts.find(p => p.slug === 'universe' || p.id === 'prod-01') || visibleProducts[0];
+  const nexusProduct = visibleProducts.find(p => p.slug === 'nexus-crm' || p.id === 'prod-04') || visibleProducts.find(p => p.name.toLowerCase().includes('nexus')) || visibleProducts[1];
   const displayProducts = [universeProduct, nexusProduct].filter(Boolean);
 
   // UniVerse Interactive Media state (seamlessly toggle between WebP Video & High-Res Banner)

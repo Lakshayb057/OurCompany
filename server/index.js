@@ -274,16 +274,24 @@ app.get('/api/v1/services', async (req, res) => {
 
 // Products / Portfolio
 app.get('/api/v1/products', async (req, res) => {
+  let list = [];
   if (isConnected()) {
     try {
       const products = await ProductModel.find().lean();
-      if (products && products.length) return res.json({ success: true, data: products });
+      if (products && products.length) list = products;
     } catch (e) {
       console.warn('Error fetching products from Atlas:', e.message);
     }
   }
-  const data = readData();
-  res.json({ success: true, data: data.products || [] });
+  if (!list.length) {
+    const data = readData();
+    list = data.products || [];
+  }
+  const normalized = list.map(p => ({
+    ...p,
+    isVisible: p.isVisible !== undefined ? Boolean(p.isVisible) : true
+  }));
+  res.json({ success: true, data: normalized });
 });
 
 // Real-Time Sync Status Check
@@ -334,16 +342,24 @@ app.get('/api/v1/team', async (req, res) => {
 
 // Plans
 app.get('/api/v1/plans', async (req, res) => {
+  let list = [];
   if (isConnected()) {
     try {
       const plans = await PlanModel.find().lean();
-      if (plans && plans.length) return res.json({ success: true, data: plans });
+      if (plans && plans.length) list = plans;
     } catch (e) {
       console.warn('Error fetching plans from Atlas:', e.message);
     }
   }
-  const data = readData();
-  res.json({ success: true, data: data.plans || [] });
+  if (!list.length) {
+    const data = readData();
+    list = data.plans || [];
+  }
+  const normalized = list.map(p => ({
+    ...p,
+    isVisible: p.isVisible !== undefined ? Boolean(p.isVisible) : true
+  }));
+  res.json({ success: true, data: normalized });
 });
 
 // Submit Inquiry
@@ -619,8 +635,10 @@ app.delete('/api/v1/admin/services/:id', async (req, res) => {
 // -------------------------------------------------------------
 
 app.post('/api/v1/admin/products', async (req, res) => {
+  const isVisible = req.body.isVisible !== undefined ? Boolean(req.body.isVisible) : true;
   const newProduct = {
     ...req.body,
+    isVisible,
     id: req.body.id || `prod-${Date.now()}`
   };
   const store = readData();
@@ -642,7 +660,11 @@ app.post('/api/v1/admin/products', async (req, res) => {
 
 app.put('/api/v1/admin/products/:id', async (req, res) => {
   const { id } = req.params;
-  const updatedProduct = req.body;
+  const isVisible = req.body.isVisible !== undefined ? Boolean(req.body.isVisible) : true;
+  const updatedProduct = {
+    ...req.body,
+    isVisible
+  };
   const store = readData();
   store.products = store.products || [];
   const idx = store.products.findIndex(p => p.id === id);
@@ -796,8 +818,10 @@ app.delete('/api/v1/admin/team/:id', async (req, res) => {
 // -------------------------------------------------------------
 
 app.post('/api/v1/admin/plans', async (req, res) => {
+  const isVisible = req.body.isVisible !== undefined ? Boolean(req.body.isVisible) : true;
   const newPlan = {
     ...req.body,
+    isVisible,
     id: req.body.id || `plan-${Date.now()}`
   };
   const store = readData();
@@ -819,7 +843,11 @@ app.post('/api/v1/admin/plans', async (req, res) => {
 
 app.put('/api/v1/admin/plans/:id', async (req, res) => {
   const { id } = req.params;
-  const updatedPlan = req.body;
+  const isVisible = req.body.isVisible !== undefined ? Boolean(req.body.isVisible) : true;
+  const updatedPlan = {
+    ...req.body,
+    isVisible
+  };
   const store = readData();
   store.plans = store.plans || [];
   const idx = store.plans.findIndex(p => p.id === id);

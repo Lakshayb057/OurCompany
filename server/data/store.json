@@ -530,9 +530,15 @@
       "designation": "Board Director #2",
       "role": "Corporate Governance & Oversight",
       "primaryResponsibility": "Corporate governance, strategic policy decisions, risk management, and organizational oversight.",
-      "bio": "",
+      "bio": "Corporate governance, strategic policy decisions, risk management, and organizational oversight.",
       "avatar": "/ishita.jpeg",
-      "linkedin": "https://linkedin.com/in/ishita-codeverse"
+      "linkedin": "https://linkedin.com/in/ishita-codeverse",
+      "_id": "6af567e1d2bc06a02165ca9d",
+      "updatedAt": "2026-11-13T08:08:24.312Z",
+      "__v": 0,
+      "photo": "/ishita.jpeg",
+      "initials": "IM",
+      "isVisible": false
     },
     {
       "id": "tm-05",

@@ -19,6 +19,7 @@ export interface PlanPackage {
   deliverables: string[];
   techStack: string[];
   idealFor: string;
+  isVisible?: boolean;
 }
 
 export const PLAN_CATEGORIES = [

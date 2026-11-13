@@ -78,6 +78,7 @@ const productSchema = new mongoose.Schema({
   coverImage: { type: String, default: '' },
   image: { type: String, default: '' },
   previewUrl: { type: String, default: '' },
+  isVisible: { type: Boolean, default: true },
   updatedAt: { type: Date, default: Date.now }
 }, { strict: false });
 
@@ -117,6 +118,7 @@ const planSchema = new mongoose.Schema({
   deliverables: [{ type: String }],
   techStack: [{ type: String }],
   idealFor: { type: String, default: '' },
+  isVisible: { type: Boolean, default: true },
   updatedAt: { type: Date, default: Date.now }
 });
 

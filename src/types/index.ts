@@ -55,6 +55,7 @@ export interface Product {
   previewUrl?: string;
   liveUrl?: string;
   githubUrl?: string;
+  isVisible?: boolean;
 }
 
 export interface TeamMember {

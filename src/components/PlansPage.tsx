@@ -41,8 +41,12 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome, plans }) => 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // Filter plans
+  // Filter plans based on category, domain, search, and visibility
   const filteredPlans = basePlans.filter((plan) => {
+    // Visibility filter: hide plans toggled off in admin portal
+    if (plan.isVisible === false) {
+      return false;
+    }
     // Category match
     if (activeCategory !== 'all' && plan.category !== activeCategory) {
       return false;

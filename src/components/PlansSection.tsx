@@ -12,7 +12,8 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, pla
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
   const [selectedPlanForModal, setSelectedPlanForModal] = useState<PlanPackage | null>(null);
 
-  const allPlans = (plans && plans.length > 0) ? plans : PLANS_DATA;
+  // Filter visible plans only
+  const allPlans = ((plans && plans.length > 0) ? plans : PLANS_DATA).filter(p => p.isVisible !== false);
 
   // Exactly 3 featured plans on the home section (Startup Launchpad, Sprint MVP, Custom Enterprise ERP)
   const homeFeaturedPlans: PlanPackage[] = [

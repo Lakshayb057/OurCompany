@@ -387,8 +387,25 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     architecture: 'Microservices & Event-Driven Pipeline',
     previewUrl: 'https://codeverse.tech',
     githubUrl: 'https://github.com/codeverse-technologies',
-    badge: 'LIVE PRODUCTION'
+    badge: 'LIVE PRODUCTION',
+    isVisible: true
   });
+
+  const handleToggleProductVisibility = async (prod: Product) => {
+    const newVisibility = prod.isVisible === false ? true : false;
+    const updated: Product = { ...prod, isVisible: newVisibility };
+    if (onUpdateProduct) onUpdateProduct(updated);
+    try {
+      await fetch(`/api/v1/admin/products/${prod.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+    } catch (e) {
+      console.warn('Atlas update product visibility error:', e);
+    }
+    showToast(`Project "${prod.name}" is now ${newVisibility ? 'visible on' : 'hidden from'} the website.`);
+  };
 
   const handleCreateProduct = async () => {
     if (!newProduct.name?.trim()) {
@@ -408,7 +425,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       previewUrl: newProduct.previewUrl || 'https://codeverse.tech',
       image: newProduct.image || newProduct.previewUrl,
       githubUrl: newProduct.githubUrl || 'https://github.com/codeverse-technologies',
-      badge: newProduct.badge || 'PRODUCTION'
+      badge: newProduct.badge || 'PRODUCTION',
+      isVisible: newProduct.isVisible !== false
     };
 
     try {
@@ -435,22 +453,27 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       previewUrl: 'https://codeverse.tech',
       image: '',
       githubUrl: 'https://github.com/codeverse-technologies',
-      badge: 'LIVE PRODUCTION'
+      badge: 'LIVE PRODUCTION',
+      isVisible: true
     });
     showToast(`Project "${created.name}" created & saved.`);
   };
 
   const handleSaveExistingProduct = async (prod: Product) => {
+    const updated = {
+      ...prod,
+      isVisible: prod.isVisible !== false
+    };
     try {
       await fetch(`/api/v1/admin/products/${prod.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(prod)
+        body: JSON.stringify(updated)
       });
     } catch (e) {
       console.warn('Atlas update product error:', e);
     }
-    onUpdateProduct(prod);
+    onUpdateProduct(updated);
     setEditingProduct(null);
     showToast(`Project "${prod.name}" updated.`);
   };
@@ -604,8 +627,25 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     deliverables: ['Custom Responsive Design', 'Zero-Downtime Deployment', 'Full Source Handover'],
     popular: false,
     domainIncluded: true,
-    techStack: ['React', 'Tailwind CSS', 'Vite']
+    techStack: ['React', 'Tailwind CSS', 'Vite'],
+    isVisible: true
   });
+
+  const handleTogglePlanVisibility = async (plan: PlanPackage) => {
+    const newVisibility = plan.isVisible === false ? true : false;
+    const updated: PlanPackage = { ...plan, isVisible: newVisibility };
+    if (onUpdatePlan) onUpdatePlan(updated);
+    try {
+      await fetch(`/api/v1/admin/plans/${plan.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+    } catch (e) {
+      console.warn('Atlas update plan visibility error:', e);
+    }
+    showToast(`Plan "${plan.name}" is now ${newVisibility ? 'visible on' : 'hidden from'} the website.`);
+  };
 
   const handleCreatePlan = async () => {
     if (!newPlan.name?.trim()) {
@@ -629,7 +669,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       isPopular: Boolean(newPlan.popular || newPlan.isPopular),
       domainIncluded: Boolean(newPlan.domainIncluded),
       techStack: newPlan.techStack || ['React', 'Node.js'],
-      idealFor: newPlan.idealFor || 'Startups & Growing Businesses'
+      idealFor: newPlan.idealFor || 'Startups & Growing Businesses',
+      isVisible: newPlan.isVisible !== false
     };
 
     try {
@@ -644,20 +685,38 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
     if (onAddPlan) onAddPlan(created);
     setIsAddingPlan(false);
+    setNewPlan({
+      name: '',
+      category: 'single-page',
+      tagline: 'Modern, High-Speed Web Presence',
+      description: 'Bespoke design, responsive layout, and lightning-fast edge delivery.',
+      priceINR: 19999,
+      priceUSD: 249,
+      billingCycle: 'One-Time Project',
+      deliverables: ['Custom Responsive Design', 'Zero-Downtime Deployment', 'Full Source Handover'],
+      popular: false,
+      domainIncluded: true,
+      techStack: ['React', 'Tailwind CSS', 'Vite'],
+      isVisible: true
+    });
     showToast(`Plan "${created.name}" created.`);
   };
 
   const handleSaveExistingPlan = async (plan: PlanPackage) => {
+    const updated = {
+      ...plan,
+      isVisible: plan.isVisible !== false
+    };
     try {
       await fetch(`/api/v1/admin/plans/${plan.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(plan)
+        body: JSON.stringify(updated)
       });
     } catch (e) {
       console.warn('Atlas update plan error:', e);
     }
-    if (onUpdatePlan) onUpdatePlan(plan);
+    if (onUpdatePlan) onUpdatePlan(updated);
     setEditingPlan(null);
     showToast(`Plan "${plan.name}" updated.`);
   };
@@ -1463,16 +1522,28 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       />
                     </div>
 
+                    <div>
+                      <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none pt-1">
+                        <input
+                          type="checkbox"
+                          checked={newProduct.isVisible !== false}
+                          onChange={(e) => setNewProduct({ ...newProduct, isVisible: e.target.checked })}
+                          className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                        />
+                        <span>Display on website (Visible to public)</span>
+                      </label>
+                    </div>
+
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => setIsAddingProduct(false)}
-                        className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs"
+                        className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleCreateProduct}
-                        className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90"
+                        className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 cursor-pointer"
                       >
                         Save Project to Database
                       </button>
@@ -1482,64 +1553,98 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
                 {/* Projects List */}
                 <div className="space-y-3">
-                  {products.map((prod) => (
-                    <div
-                      key={prod.id}
-                      className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-                    >
-                      <div className="flex items-start gap-4">
-                        {((prod as any).image || prod.previewUrl) ? (
-                          <div className="w-16 h-14 rounded-xl overflow-hidden border border-purple-200 dark:border-white/10 bg-black flex-shrink-0">
-                            <img src={(prod as any).image || prod.previewUrl} alt={prod.name} className="w-full h-full object-cover" />
-                          </div>
-                        ) : (
-                          <div className="w-14 h-14 rounded-xl bg-purple-50 dark:bg-midnight-900 border border-light-border dark:border-midnight-border flex items-center justify-center flex-shrink-0 text-electric-purple">
-                            <FolderKanban className="w-6 h-6 opacity-60" />
-                          </div>
-                        )}
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-sm text-light-text dark:text-white">{prod.name}</h3>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-purple-500/10 text-electric-purple dark:text-lavender-glow border border-purple-500/20">
-                              {prod.category}
-                            </span>
-                            {prod.metric && (
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                {prod.metric}
+                  {products.map((prod) => {
+                    const isVisible = prod.isVisible !== false;
+                    return (
+                      <div
+                        key={prod.id}
+                        className={`p-5 rounded-2xl border shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all ${
+                          isVisible
+                            ? 'bg-white dark:bg-midnight-800 border-light-border dark:border-midnight-border'
+                            : 'bg-white/60 dark:bg-midnight-800/60 border-dashed border-amber-400/60 dark:border-amber-500/30 opacity-75'
+                        }`}
+                      >
+                        <div className="flex items-start gap-4">
+                          {((prod as any).image || prod.previewUrl) ? (
+                            <div className="w-16 h-14 rounded-xl overflow-hidden border border-purple-200 dark:border-white/10 bg-black flex-shrink-0">
+                              <img src={(prod as any).image || prod.previewUrl} alt={prod.name} className={`w-full h-full object-cover ${!isVisible ? 'grayscale' : ''}`} />
+                            </div>
+                          ) : (
+                            <div className="w-14 h-14 rounded-xl bg-purple-50 dark:bg-midnight-900 border border-light-border dark:border-midnight-border flex items-center justify-center flex-shrink-0 text-electric-purple">
+                              <FolderKanban className="w-6 h-6 opacity-60" />
+                            </div>
+                          )}
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="font-bold text-sm text-light-text dark:text-white">{prod.name}</h3>
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-purple-500/10 text-electric-purple dark:text-lavender-glow border border-purple-500/20">
+                                {prod.category}
                               </span>
-                            )}
-                          </div>
-                          <p className="text-xs text-light-subtext dark:text-muted-gray line-clamp-2">
-                            {prod.subtitle || prod.tagline}
-                          </p>
-                          <div className="flex flex-wrap gap-1.5 pt-1">
-                            {prod.techStack?.slice(0, 4).map((tech, idx) => (
-                              <span key={idx} className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-purple-50 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray">
-                                {tech}
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold flex items-center gap-1 ${
+                                isVisible
+                                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                              }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${isVisible ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+                                {isVisible ? 'Live on Site' : 'Hidden'}
                               </span>
-                            ))}
+                              {prod.metric && (
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                                  {prod.metric}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-light-subtext dark:text-muted-gray line-clamp-2">
+                              {prod.subtitle || prod.tagline}
+                            </p>
+                            <div className="flex flex-wrap gap-1.5 pt-1">
+                              {prod.techStack?.slice(0, 4).map((tech, idx) => (
+                                <span key={idx} className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-purple-50 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray">
+                                  {tech}
+                                </span>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <button
-                          onClick={() => setEditingProduct(prod)}
-                          className="p-2 rounded-xl border border-light-border dark:border-midnight-border text-light-subtext hover:text-white hover:bg-purple-50 dark:hover:bg-white/5 text-xs flex items-center gap-1"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                          <span className="hidden sm:inline">Edit</span>
-                        </button>
-                        <button
-                          onClick={() => handleDeleteProduct(prod.id, prod.name)}
-                          className="p-2 rounded-xl text-red-500 hover:bg-red-500/10 text-xs flex items-center gap-1"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                          <span className="hidden sm:inline">Delete</span>
-                        </button>
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {/* Project Visibility Toggle Button */}
+                          <button
+                            type="button"
+                            onClick={() => handleToggleProductVisibility(prod)}
+                            title={isVisible ? "Currently visible on website. Click to hide." : "Currently hidden from website. Click to make visible."}
+                            className={`p-1.5 rounded-lg border transition-all text-xs flex items-center justify-center cursor-pointer ${
+                              isVisible
+                                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/25'
+                                : 'border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/25'
+                            }`}
+                          >
+                            {isVisible ? (
+                              <Eye className="w-3.5 h-3.5" />
+                            ) : (
+                              <EyeOff className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => setEditingProduct(prod)}
+                            className="p-1.5 rounded-lg border border-light-border dark:border-midnight-border text-light-subtext hover:text-white text-xs flex items-center gap-1 cursor-pointer"
+                            title="Edit project details"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProduct(prod.id, prod.name)}
+                            className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 text-xs flex items-center gap-1 cursor-pointer"
+                            title="Delete project"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Delete</span>
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Edit Product Modal */}
@@ -1548,7 +1653,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     <div className="w-full max-w-lg bg-white dark:bg-midnight-800 rounded-3xl p-6 border border-light-border dark:border-midnight-border shadow-2xl space-y-4">
                       <div className="flex items-center justify-between">
                         <h2 className="font-bold text-sm text-light-text dark:text-white">Edit Project</h2>
-                        <button onClick={() => setEditingProduct(null)} className="text-light-subtext">
+                        <button onClick={() => setEditingProduct(null)} className="text-light-subtext cursor-pointer">
                           <X className="w-4 h-4" />
                         </button>
                       </div>
@@ -1602,18 +1707,29 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                             className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
                           />
                         </div>
+                        <div>
+                          <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none pt-1">
+                            <input
+                              type="checkbox"
+                              checked={editingProduct.isVisible !== false}
+                              onChange={(e) => setEditingProduct({ ...editingProduct, isVisible: e.target.checked })}
+                              className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                            />
+                            <span>Display on website (Visible to public)</span>
+                          </label>
+                        </div>
                       </div>
 
                       <div className="flex justify-end gap-2 pt-2">
                         <button
                           onClick={() => setEditingProduct(null)}
-                          className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs"
+                          className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer"
                         >
                           Cancel
                         </button>
                         <button
                           onClick={() => handleSaveExistingProduct(editingProduct)}
-                          className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5"
+                          className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer"
                         >
                           <Save className="w-3.5 h-3.5" />
                           <span>Save Changes</span>
@@ -2006,16 +2122,28 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       </div>
                     </div>
 
+                    <div>
+                      <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none pt-1">
+                        <input
+                          type="checkbox"
+                          checked={newPlan.isVisible !== false}
+                          onChange={(e) => setNewPlan({ ...newPlan, isVisible: e.target.checked })}
+                          className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                        />
+                        <span>Display on website (Visible to public)</span>
+                      </label>
+                    </div>
+
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => setIsAddingPlan(false)}
-                        className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs"
+                        className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleCreatePlan}
-                        className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90"
+                        className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 cursor-pointer"
                       >
                         Publish Plan to Database
                       </button>
@@ -2025,55 +2153,91 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
                 {/* Plans List */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {plans.map((p) => (
-                    <div
-                      key={p.id}
-                      className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm flex flex-col justify-between space-y-3"
-                    >
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-electric-purple border border-purple-500/20">
-                            {p.category}
-                          </span>
-                          {p.domainIncluded && (
-                            <span className="text-[10px] font-mono text-emerald-500 flex items-center gap-1">
-                              <Globe className="w-3 h-3" />
-                              Domain Incl.
-                            </span>
-                          )}
-                        </div>
-
-                        <h3 className="font-bold text-sm text-light-text dark:text-white mt-2">{p.name}</h3>
-                        <p className="text-xs text-light-subtext dark:text-muted-gray mt-1 line-clamp-2">{p.description}</p>
-                      </div>
-
-                      <div className="pt-2 border-t border-light-border dark:border-midnight-border/60 flex items-center justify-between">
+                  {plans.map((p) => {
+                    const isVisible = p.isVisible !== false;
+                    return (
+                      <div
+                        key={p.id}
+                        className={`p-5 rounded-2xl border shadow-sm flex flex-col justify-between space-y-3 transition-all ${
+                          isVisible
+                            ? 'bg-white dark:bg-midnight-800 border-light-border dark:border-midnight-border'
+                            : 'bg-white/60 dark:bg-midnight-800/60 border-dashed border-amber-400/60 dark:border-amber-500/30 opacity-75'
+                        }`}
+                      >
                         <div>
-                          <span className="text-sm font-extrabold text-electric-purple dark:text-lavender-glow">
-                            ₹{p.priceINR?.toLocaleString('en-IN')}
-                          </span>
-                          <span className="text-[10px] text-light-subtext dark:text-muted-gray ml-1.5">
-                            / ${p.priceUSD?.toLocaleString('en-US')}
-                          </span>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-electric-purple border border-purple-500/20">
+                                {p.category}
+                              </span>
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold flex items-center gap-1 ${
+                                isVisible
+                                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                              }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${isVisible ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+                                {isVisible ? 'Live on Site' : 'Hidden'}
+                              </span>
+                            </div>
+                            {p.domainIncluded && (
+                              <span className="text-[10px] font-mono text-emerald-500 flex items-center gap-1">
+                                <Globe className="w-3 h-3" />
+                                Domain Incl.
+                              </span>
+                            )}
+                          </div>
+
+                          <h3 className="font-bold text-sm text-light-text dark:text-white mt-2">{p.name}</h3>
+                          <p className="text-xs text-light-subtext dark:text-muted-gray mt-1 line-clamp-2">{p.description}</p>
                         </div>
 
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={() => setEditingPlan(p)}
-                            className="p-1.5 rounded-lg border border-light-border dark:border-midnight-border text-light-subtext hover:text-white text-xs"
-                          >
-                            <Edit3 className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => handleDeletePlan(p.id, p.name)}
-                            className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 text-xs"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                        <div className="pt-2 border-t border-light-border dark:border-midnight-border/60 flex items-center justify-between">
+                          <div>
+                            <span className="text-sm font-extrabold text-electric-purple dark:text-lavender-glow">
+                              ₹{p.priceINR?.toLocaleString('en-IN')}
+                            </span>
+                            <span className="text-[10px] text-light-subtext dark:text-muted-gray ml-1.5">
+                              / ${p.priceUSD?.toLocaleString('en-US')}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                            {/* Plan Visibility Eye Button Toggle */}
+                            <button
+                              type="button"
+                              onClick={() => handleTogglePlanVisibility(p)}
+                              title={isVisible ? "Currently visible on website. Click to hide." : "Currently hidden from website. Click to make visible."}
+                              className={`p-1.5 rounded-lg border transition-all text-xs flex items-center justify-center cursor-pointer ${
+                                isVisible
+                                  ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/25'
+                                  : 'border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/25'
+                              }`}
+                            >
+                              {isVisible ? (
+                                <Eye className="w-3.5 h-3.5" />
+                              ) : (
+                                <EyeOff className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => setEditingPlan(p)}
+                              className="p-1.5 rounded-lg border border-light-border dark:border-midnight-border text-light-subtext hover:text-white text-xs cursor-pointer"
+                              title="Edit plan details"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeletePlan(p.id, p.name)}
+                              className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 text-xs cursor-pointer"
+                              title="Delete plan"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Edit Plan Modal */}
@@ -2082,7 +2246,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     <div className="w-full max-w-lg bg-white dark:bg-midnight-800 rounded-3xl p-6 border border-light-border dark:border-midnight-border shadow-2xl space-y-4">
                       <div className="flex items-center justify-between">
                         <h2 className="font-bold text-sm text-light-text dark:text-white">Edit Plan Package</h2>
-                        <button onClick={() => setEditingPlan(null)} className="text-light-subtext">
+                        <button onClick={() => setEditingPlan(null)} className="text-light-subtext cursor-pointer">
                           <X className="w-4 h-4" />
                         </button>
                       </div>
@@ -2126,18 +2290,29 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                             className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
                           />
                         </div>
+                        <div>
+                          <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none pt-1">
+                            <input
+                              type="checkbox"
+                              checked={editingPlan.isVisible !== false}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, isVisible: e.target.checked })}
+                              className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                            />
+                            <span>Display on website (Visible to public)</span>
+                          </label>
+                        </div>
                       </div>
 
                       <div className="flex justify-end gap-2 pt-2">
                         <button
                           onClick={() => setEditingPlan(null)}
-                          className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs"
+                          className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer"
                         >
                           Cancel
                         </button>
                         <button
                           onClick={() => handleSaveExistingPlan(editingPlan)}
-                          className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5"
+                          className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer"
                         >
                           <Save className="w-3.5 h-3.5" />
                           <span>Save Changes</span>
