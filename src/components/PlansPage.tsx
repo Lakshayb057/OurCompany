@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  ArrowLeft, Sparkles, Check, Globe, Shield, Clock, Search, 
+  Sparkles, Check, Globe, Shield, Clock, Search, 
   ExternalLink, Layers, Zap, Server, Calendar, Filter, ChevronDown, 
   HelpCircle, CheckCircle2, MessageSquare, Terminal 
 } from 'lucide-react';
@@ -109,48 +109,31 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome, plans }) => 
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8 sm:space-y-12">
         
-        {/* Navigation Breadcrumb & Controls (Matches Projects & Services page) */}
-        <div className="flex items-center justify-between gap-4">
-          <button
-            onClick={() => onBackToHome()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 dark:bg-midnight-card/80 border border-purple-200/70 dark:border-midnight-border text-xs sm:text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-glow shadow-sm hover:shadow transition-all group"
-          >
-            <ArrowLeft className="w-4 h-4 text-electric-purple group-hover:-translate-x-1 transition-transform" />
-            <span>Back to Home</span>
-          </button>
-
-          <div className="flex items-center gap-3">
-            {/* Currency Switcher */}
-            <div className="inline-flex items-center p-1 rounded-full bg-white dark:bg-midnight-card border border-purple-200 dark:border-midnight-border shadow-sm text-xs font-mono font-bold">
-              <button
-                type="button"
-                onClick={() => setCurrency('INR')}
-                className={`px-3 py-1 rounded-full transition-all ${
-                  currency === 'INR'
-                    ? 'bg-electric-purple text-white shadow-md'
-                    : 'text-light-subtext dark:text-gray-400 hover:text-electric-purple'
-                }`}
-              >
-                ₹ INR
-              </button>
-              <button
-                type="button"
-                onClick={() => setCurrency('USD')}
-                className={`px-3 py-1 rounded-full transition-all ${
-                  currency === 'USD'
-                    ? 'bg-electric-purple text-white shadow-md'
-                    : 'text-light-subtext dark:text-gray-400 hover:text-electric-purple'
-                }`}
-              >
-                $ USD
-              </button>
-            </div>
-
-            <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-light-subtext dark:text-muted-gray">
-              <button onClick={() => onBackToHome()} className="hover:text-electric-purple transition-colors">Home</button>
-              <span>/</span>
-              <span className="text-electric-purple dark:text-lavender-glow font-bold">Plans & Packages</span>
-            </div>
+        {/* Top Controls: Currency Switcher */}
+        <div className="flex items-center justify-end">
+          <div className="inline-flex items-center p-1 rounded-full bg-white dark:bg-midnight-card border border-purple-200 dark:border-midnight-border shadow-sm text-xs font-mono font-bold">
+            <button
+              type="button"
+              onClick={() => setCurrency('INR')}
+              className={`px-3 py-1 rounded-full transition-all ${
+                currency === 'INR'
+                  ? 'bg-electric-purple text-white shadow-md'
+                  : 'text-light-subtext dark:text-gray-400 hover:text-electric-purple'
+              }`}
+            >
+              ₹ INR
+            </button>
+            <button
+              type="button"
+              onClick={() => setCurrency('USD')}
+              className={`px-3 py-1 rounded-full transition-all ${
+                currency === 'USD'
+                  ? 'bg-electric-purple text-white shadow-md'
+                  : 'text-light-subtext dark:text-gray-400 hover:text-electric-purple'
+              }`}
+            >
+              $ USD
+            </button>
           </div>
         </div>
 

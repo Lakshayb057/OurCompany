@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ArrowLeft, Search, Github, ExternalLink, BookOpen, Layers, Check, Sparkles, ArrowRight } from 'lucide-react';
+import { Search, Github, ExternalLink, BookOpen, Layers, Check, ArrowRight } from 'lucide-react';
 import { Product } from '../types';
 
 interface ProjectsPageProps {
@@ -67,30 +67,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Navigation Breadcrumb & Back to Home */}
-        <div className="flex items-center justify-between gap-4 mb-4 sm:mb-8">
-          <button
-            onClick={() => onBackToHome()}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/80 dark:bg-midnight-card/80 border border-purple-200/70 dark:border-midnight-border text-xs sm:text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-glow shadow-sm hover:shadow transition-all group"
-          >
-            <ArrowLeft className="w-4 h-4 text-electric-purple group-hover:-translate-x-1 transition-transform" />
-            <span>Back to Home</span>
-          </button>
-
-          <div className="flex items-center gap-2 text-xs font-mono text-light-subtext dark:text-muted-gray">
-            <button onClick={() => onBackToHome()} className="hover:text-electric-purple transition-colors">Home</button>
-            <span>/</span>
-            <span className="text-electric-purple dark:text-lavender-glow font-bold">Projects</span>
-          </div>
-        </div>
-
         {/* Page Header */}
         <div className="max-w-3xl space-y-3 sm:space-y-4 mb-6 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-electric-purple/10 dark:bg-electric-purple/20 border border-electric-purple/25 text-electric-purple dark:text-lavender-glow text-xs font-semibold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Systems & Startup Archive</span>
-          </div>
-          
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-light-text dark:text-white leading-[1.12]">
             Engineering <span className="text-gradient-purple">Projects</span>
           </h1>

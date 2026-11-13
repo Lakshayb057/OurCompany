@@ -19,3 +19,4 @@ export function getOptimizedImageUrl(url?: string | null, width = 800): string {
 
   return cleanUrl;
 }
+
