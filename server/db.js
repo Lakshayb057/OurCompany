@@ -93,6 +93,7 @@ const teamMemberSchema = new mongoose.Schema({
   photo: { type: String, default: '' },
   initials: { type: String, default: '' },
   linkedin: { type: String, default: '' },
+  isVisible: { type: Boolean, default: true },
   updatedAt: { type: Date, default: Date.now }
 }, { strict: false });
 

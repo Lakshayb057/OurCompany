@@ -543,6 +543,19 @@
       "bio": "",
       "avatar": "/suryansh.jpeg",
       "linkedin": "https://linkedin.com/in/suryansh-codeverse"
+    },
+    {
+      "id": "team-1794556572524",
+      "name": "Anshuman",
+      "role": "CGO",
+      "designation": "CGO",
+      "initials": "AU",
+      "photo": "https://res.cloudinary.com/gymcfo5j/image/upload/v1794556566/codeverse/leadership/ugoofpi7twfmoqwppzvp.jpg",
+      "avatar": "https://res.cloudinary.com/gymcfo5j/image/upload/v1794556566/codeverse/leadership/ugoofpi7twfmoqwppzvp.jpg",
+      "bio": "Architecting distributed systems and reactive client architectures.",
+      "primaryResponsibility": "Architecting distributed systems and reactive client architectures.",
+      "linkedin": "https://linkedin.com",
+      "updatedAt": "2026-11-13T07:56:12.527Z"
     }
   ],
   "internalProjects": [

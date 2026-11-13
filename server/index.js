@@ -315,6 +315,7 @@ app.get('/api/v1/team', async (req, res) => {
     const bio = m.bio || m.primaryResponsibility || 'Architecting distributed systems and reactive client architectures.';
     const primaryResponsibility = m.primaryResponsibility || m.bio || bio;
     const initials = m.initials || (m.name ? m.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'CE');
+    const isVisible = m.isVisible !== undefined ? Boolean(m.isVisible) : true;
     return {
       ...m,
       avatar,
@@ -323,7 +324,8 @@ app.get('/api/v1/team', async (req, res) => {
       designation,
       bio,
       primaryResponsibility,
-      initials
+      initials,
+      isVisible
     };
   });
 
@@ -693,6 +695,7 @@ app.post('/api/v1/admin/team', async (req, res) => {
   const bio = req.body.bio || req.body.primaryResponsibility || 'Architecting distributed systems and reactive client architectures.';
   const primaryResponsibility = req.body.primaryResponsibility || req.body.bio || bio;
   const initials = req.body.initials || (req.body.name ? req.body.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'CE');
+  const isVisible = req.body.isVisible !== undefined ? Boolean(req.body.isVisible) : true;
 
   const newMember = {
     ...req.body,
@@ -704,6 +707,7 @@ app.post('/api/v1/admin/team', async (req, res) => {
     bio,
     primaryResponsibility,
     initials,
+    isVisible,
     updatedAt: new Date()
   };
   const store = readData();
@@ -732,6 +736,7 @@ app.put('/api/v1/admin/team/:id', async (req, res) => {
   const bio = req.body.bio || req.body.primaryResponsibility || 'Architecting distributed systems and reactive client architectures.';
   const primaryResponsibility = req.body.primaryResponsibility || req.body.bio || bio;
   const initials = req.body.initials || (req.body.name ? req.body.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'CE');
+  const isVisible = req.body.isVisible !== undefined ? Boolean(req.body.isVisible) : true;
 
   const updatedMember = {
     ...req.body,
@@ -742,6 +747,7 @@ app.put('/api/v1/admin/team/:id', async (req, res) => {
     bio,
     primaryResponsibility,
     initials,
+    isVisible,
     updatedAt: new Date()
   };
 

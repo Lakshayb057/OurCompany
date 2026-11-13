@@ -9,8 +9,8 @@ interface LeadershipSectionProps {
 export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) => {
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
   
-  // Safe fallback if team is empty
-  const teamList = useMemo(() => team || [], [team]);
+  // Safe fallback if team is empty, filter only visible members
+  const teamList = useMemo(() => (team || []).filter(member => member.isVisible !== false), [team]);
   const teamLength = teamList.length;
 
   // Triplicate array for smooth infinite rotation: [...team, ...team, ...team]

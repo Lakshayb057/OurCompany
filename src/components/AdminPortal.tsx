@@ -5,7 +5,7 @@ import {
   ExternalLink, Download, RefreshCw, LogOut, Check, Layers,
   Database, Users, Sparkles, Plus, Trash2, Edit3, Save, Globe,
   Briefcase, Activity, CheckCircle, ArrowLeft, Sun, Moon, ChevronRight,
-  Phone, Mail, MapPin, Code, Cpu, Eye, Upload, Image as ImageIcon, Cloud, Loader2
+  Phone, Mail, MapPin, Code, Cpu, Eye, EyeOff, Upload, Image as ImageIcon, Cloud, Loader2
 } from 'lucide-react';
 import {
   Inquiry, Product, Service, TeamMember,
@@ -475,8 +475,33 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     initials: 'CE',
     bio: 'Architecting distributed systems and reactive client architectures.',
     linkedin: 'https://linkedin.com',
-    photo: ''
+    photo: '',
+    isVisible: true
   });
+
+  const handleToggleTeamMemberVisibility = async (member: TeamMember) => {
+    const newVisibility = member.isVisible === false ? true : false;
+    const updated: TeamMember = {
+      ...member,
+      isVisible: newVisibility
+    };
+
+    if (onUpdateTeamMember) {
+      onUpdateTeamMember(updated);
+    }
+
+    try {
+      await fetch(`/api/v1/admin/team/${member.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+    } catch (e) {
+      console.warn('Atlas update team visibility error:', e);
+    }
+
+    showToast(`${member.name} is now ${newVisibility ? 'visible on' : 'hidden from'} the website.`);
+  };
 
   const handleCreateTeamMember = async () => {
     if (!newTeamMember.name?.trim()) {
@@ -497,7 +522,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       avatar: img,
       bio: responsibility,
       primaryResponsibility: responsibility,
-      linkedin: newTeamMember.linkedin || 'https://linkedin.com'
+      linkedin: newTeamMember.linkedin || 'https://linkedin.com',
+      isVisible: newTeamMember.isVisible !== false
     };
 
     try {
@@ -518,7 +544,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       initials: 'CE',
       bio: '',
       linkedin: 'https://linkedin.com',
-      photo: ''
+      photo: '',
+      isVisible: true
     });
     showToast(`Team member "${created.name}" added & saved.`);
   };
@@ -534,7 +561,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       role: desig,
       designation: desig,
       bio: responsibility,
-      primaryResponsibility: responsibility
+      primaryResponsibility: responsibility,
+      isVisible: member.isVisible !== false
     };
 
     try {
@@ -1697,16 +1725,28 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       />
                     </div>
 
+                    <div>
+                      <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none pt-1">
+                        <input
+                          type="checkbox"
+                          checked={newTeamMember.isVisible !== false}
+                          onChange={(e) => setNewTeamMember({ ...newTeamMember, isVisible: e.target.checked })}
+                          className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                        />
+                        <span>Display on website (Visible to public)</span>
+                      </label>
+                    </div>
+
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => setIsAddingTeamMember(false)}
-                        className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs"
+                        className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleCreateTeamMember}
-                        className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90"
+                        className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 cursor-pointer"
                       >
                         Save Team Member
                       </button>
@@ -1716,46 +1756,82 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
                 {/* Team Members List */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {team.map((member) => (
-                    <div
-                      key={member.id}
-                      className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm flex items-start justify-between gap-3"
-                    >
-                      <div className="flex items-start gap-3">
-                        {member.photo || member.avatar ? (
-                          <img
-                            src={member.photo || member.avatar}
-                            alt={member.name}
-                            className="w-10 h-10 rounded-xl object-cover shadow-md flex-shrink-0 border border-purple-200 dark:border-white/10"
-                          />
-                        ) : (
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-electric-purple to-purple-600 text-white font-bold flex items-center justify-center text-sm shadow-md flex-shrink-0">
-                            {member.initials}
+                  {team.map((member) => {
+                    const isVisible = member.isVisible !== false;
+                    return (
+                      <div
+                        key={member.id}
+                        className={`p-5 rounded-2xl border shadow-sm flex items-start justify-between gap-3 transition-all ${
+                          isVisible
+                            ? 'bg-white dark:bg-midnight-800 border-light-border dark:border-midnight-border'
+                            : 'bg-white/60 dark:bg-midnight-800/60 border-dashed border-amber-400/60 dark:border-amber-500/30 opacity-75'
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          {member.photo || member.avatar ? (
+                            <img
+                              src={member.photo || member.avatar}
+                              alt={member.name}
+                              className={`w-10 h-10 rounded-xl object-cover shadow-md flex-shrink-0 border border-purple-200 dark:border-white/10 ${!isVisible ? 'grayscale' : ''}`}
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-electric-purple to-purple-600 text-white font-bold flex items-center justify-center text-sm shadow-md flex-shrink-0">
+                              {member.initials}
+                            </div>
+                          )}
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="font-bold text-sm text-light-text dark:text-white">{member.name}</h3>
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold flex items-center gap-1 ${
+                                isVisible
+                                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                              }`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${isVisible ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+                                {isVisible ? 'Live on Site' : 'Hidden'}
+                              </span>
+                            </div>
+                            <p className="text-xs text-electric-purple dark:text-lavender-glow mt-0.5">{member.role}</p>
+                            <p className="text-xs text-light-subtext dark:text-muted-gray mt-1 line-clamp-2">{member.bio}</p>
                           </div>
-                        )}
-                        <div>
-                          <h3 className="font-bold text-sm text-light-text dark:text-white">{member.name}</h3>
-                          <p className="text-xs text-electric-purple dark:text-lavender-glow">{member.role}</p>
-                          <p className="text-xs text-light-subtext dark:text-muted-gray mt-1 line-clamp-2">{member.bio}</p>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {/* Visibility Eye Button Toggle */}
+                          <button
+                            type="button"
+                            onClick={() => handleToggleTeamMemberVisibility(member)}
+                            title={isVisible ? "Currently visible on website. Click to hide." : "Currently hidden from website. Click to make visible."}
+                            className={`p-1.5 rounded-lg border transition-all text-xs flex items-center justify-center cursor-pointer ${
+                              isVisible
+                                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/25'
+                                : 'border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/25'
+                            }`}
+                          >
+                            {isVisible ? (
+                              <Eye className="w-3.5 h-3.5" />
+                            ) : (
+                              <EyeOff className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => setEditingTeamMember(member)}
+                            className="p-1.5 rounded-lg border border-light-border dark:border-midnight-border text-light-subtext hover:text-white text-xs cursor-pointer"
+                            title="Edit member details"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteTeamMember(member.id, member.name)}
+                            className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 text-xs cursor-pointer"
+                            title="Delete member"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
                         </div>
                       </div>
-
-                      <div className="flex items-center gap-1 flex-shrink-0">
-                        <button
-                          onClick={() => setEditingTeamMember(member)}
-                          className="p-1.5 rounded-lg border border-light-border dark:border-midnight-border text-light-subtext hover:text-white text-xs"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteTeamMember(member.id, member.name)}
-                          className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 text-xs"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Edit Team Modal */}
@@ -1764,7 +1840,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     <div className="w-full max-w-lg bg-white dark:bg-midnight-800 rounded-3xl p-6 border border-light-border dark:border-midnight-border shadow-2xl space-y-4">
                       <div className="flex items-center justify-between">
                         <h2 className="font-bold text-sm text-light-text dark:text-white">Edit Team Member</h2>
-                        <button onClick={() => setEditingTeamMember(null)} className="text-light-subtext">
+                        <button onClick={() => setEditingTeamMember(null)} className="text-light-subtext cursor-pointer">
                           <X className="w-4 h-4" />
                         </button>
                       </div>
@@ -1809,18 +1885,29 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                             className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
                           />
                         </div>
+                        <div>
+                          <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none pt-1">
+                            <input
+                              type="checkbox"
+                              checked={editingTeamMember.isVisible !== false}
+                              onChange={(e) => setEditingTeamMember({ ...editingTeamMember, isVisible: e.target.checked })}
+                              className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                            />
+                            <span>Display on website (Visible to public)</span>
+                          </label>
+                        </div>
                       </div>
 
                       <div className="flex justify-end gap-2 pt-2">
                         <button
                           onClick={() => setEditingTeamMember(null)}
-                          className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs"
+                          className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer"
                         >
                           Cancel
                         </button>
                         <button
                           onClick={() => handleSaveExistingTeamMember(editingTeamMember)}
-                          className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5"
+                          className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer"
                         >
                           <Save className="w-3.5 h-3.5" />
                           <span>Save Changes</span>

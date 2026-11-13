@@ -68,6 +68,7 @@ export interface TeamMember {
   photo?: string;
   initials?: string;
   linkedin?: string;
+  isVisible?: boolean;
 }
 
 export interface InternalProject {
