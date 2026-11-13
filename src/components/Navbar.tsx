@@ -67,8 +67,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   // Dynamic glass opacity that smoothly materializes as user scrolls down and logo docks
-  // If on a dedicated projects or services page, navbar is always in docked glass state
-  const glassOpacity = isDedicatedPage ? 1 : Math.min(1, Math.max(0, (scrollY - 60) / 180));
+  // If on a dedicated projects, services, or plan page, navbar is always in docked glass state
+  const glassOpacity = isDedicatedPage ? 1 : Math.min(1, Math.max(0, (scrollY - 40) / 120));
 
   const navItems = [
     { label: 'Our Story', target: 'story' },
@@ -87,13 +87,23 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
+      {/* 0. FULL-WIDTH UNIFIED FROSTED GLASS HEADER BACKGROUND */}
+      <div 
+        style={{ 
+          opacity: glassOpacity,
+        }}
+        className="fixed top-0 inset-x-0 h-[68px] sm:h-[84px] z-40 transition-opacity duration-300 pointer-events-none select-none backdrop-blur-2xl bg-white/85 dark:bg-[#070514]/85 border-b border-purple-200/50 dark:border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
+      >
+        <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-electric-purple/35 dark:via-purple-500/30 to-transparent pointer-events-none" />
+      </div>
+
       {/* 1. CENTER: Standalone Floating Navigation Bar (Desktop) with Integrated Theme Toggle */}
       <div className="hidden lg:block fixed top-4 sm:top-5 left-1/2 -translate-x-1/2 z-50 max-w-[95vw]">
         <nav 
           className={`flex items-center flex-nowrap whitespace-nowrap gap-0.5 xl:gap-1 rounded-full pl-4 xl:pl-5 pr-2 xl:pr-3 py-1.5 backdrop-blur-md transition-all duration-300 ${
-            glassOpacity > 0.5 
-              ? 'bg-white/20 dark:bg-white/[0.06] border border-purple-200/30 dark:border-white/10 shadow-none'
-              : 'bg-white/90 dark:bg-black/80 border border-purple-200 dark:border-white/15 shadow-lg shadow-purple-950/5 dark:shadow-black/50 py-2'
+            glassOpacity > 0.4 
+              ? 'bg-purple-100/50 dark:bg-white/[0.08] border border-purple-200/70 dark:border-white/15 shadow-sm'
+              : 'bg-white/95 dark:bg-black/85 border border-purple-200 dark:border-white/15 shadow-lg shadow-purple-950/5 dark:shadow-black/50 py-2'
           }`}
         >
           {navItems.map((item) => {
@@ -107,7 +117,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <button
                     onClick={() => handleLinkClick('projects')}
-                    className="px-2.5 xl:px-3.5 py-1.5 text-[13px] xl:text-sm font-semibold transition-all duration-200 rounded-full text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10 flex items-center gap-1 group/btn whitespace-nowrap flex-shrink-0"
+                    className="px-2.5 xl:px-3.5 py-1.5 text-[13px] xl:text-sm font-semibold transition-all duration-200 rounded-full text-slate-800 dark:text-gray-100 hover:text-electric-purple dark:hover:text-white hover:bg-purple-200/50 dark:hover:bg-white/10 flex items-center gap-1 group/btn whitespace-nowrap flex-shrink-0"
                     aria-expanded={projectsDropdownOpen}
                   >
                     <span className="whitespace-nowrap">{item.label}</span>
@@ -172,7 +182,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 key={item.target}
                 onClick={() => handleLinkClick(item.target)}
-                className="px-2.5 xl:px-3.5 py-1.5 text-[13px] xl:text-sm font-semibold transition-all duration-200 rounded-full text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10 whitespace-nowrap flex-shrink-0"
+                className="px-2.5 xl:px-3.5 py-1.5 text-[13px] xl:text-sm font-semibold transition-all duration-200 rounded-full text-slate-800 dark:text-gray-100 hover:text-electric-purple dark:hover:text-white hover:bg-purple-200/50 dark:hover:bg-white/10 whitespace-nowrap flex-shrink-0"
               >
                 {item.label}
               </button>
@@ -182,10 +192,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Centered Dark/Light Mode Toggle */}
           {onToggleTheme && (
             <>
-              <div className="h-4 w-[1px] bg-purple-200/80 dark:bg-white/15 mx-0.5 xl:mx-1 flex-shrink-0" aria-hidden="true" />
+              <div className="h-4 w-[1px] bg-purple-300/80 dark:bg-white/20 mx-0.5 xl:mx-1 flex-shrink-0" aria-hidden="true" />
               <button
                 onClick={onToggleTheme}
-                className="p-1.5 rounded-full text-light-subtext dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/70 dark:hover:bg-white/10 transition-colors focus:outline-none flex-shrink-0"
+                className="p-1.5 rounded-full text-slate-800 dark:text-gray-100 hover:text-electric-purple dark:hover:text-white hover:bg-purple-200/50 dark:hover:bg-white/10 transition-colors focus:outline-none flex-shrink-0"
                 title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 aria-label="Toggle theme"
               >
