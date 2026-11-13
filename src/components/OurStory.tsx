@@ -41,7 +41,7 @@ export const OurStory: React.FC<OurStoryProps> = ({ content }) => {
   const [cardsRowRef, isCardsRowInView] = useScrollReveal(0.18, '0px 0px -40px 0px');
   const [processRef, isProcessInView] = useScrollReveal(0.18, '0px 0px -40px 0px');
 
-  const headline = content?.heading || 'Why Codrix Exists';
+  const headline = (content?.heading || 'Why Codrix Exists').replace(/CodeVerse/gi, 'Codrix');
   const subheading = content?.subheading || "We started with a foundational truth: modern businesses don't just need software; they need resilient, intelligent digital engines built with surgical craftsmanship.";
 
   return (

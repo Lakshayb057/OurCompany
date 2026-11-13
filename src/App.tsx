@@ -28,6 +28,27 @@ import { INITIAL_SERVICES, INITIAL_PRODUCTS, INITIAL_TEAM } from './data/mockDat
 import { Service, Product, TeamMember, SiteContent } from './types';
 import { PlanPackage, PLANS_DATA } from './data/plansData';
 
+function sanitizeBrand<T>(obj: T): T {
+  if (typeof obj === 'string') {
+    return obj
+      .replace(/CODEVERSE/g, 'CODRIX')
+      .replace(/CodeVerse/g, 'Codrix')
+      .replace(/Codeverse/g, 'Codrix')
+      .replace(/codeverse/g, 'codrix') as unknown as T;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(sanitizeBrand) as unknown as T;
+  }
+  if (obj && typeof obj === 'object') {
+    const res: any = {};
+    for (const key of Object.keys(obj)) {
+      res[key] = sanitizeBrand((obj as any)[key]);
+    }
+    return res as T;
+  }
+  return obj;
+}
+
 export const App: React.FC = () => {
   const heroLogoAnchorRef = useRef<HTMLDivElement>(null);
   const heroBtnAnchorRef = useRef<HTMLDivElement>(null);
@@ -205,19 +226,19 @@ export const App: React.FC = () => {
       ]);
 
       if (srvRes.status === 'fulfilled' && srvRes.value?.success && srvRes.value.data?.length) {
-        setServices(srvRes.value.data);
+        setServices(sanitizeBrand(srvRes.value.data));
       }
       if (prodRes.status === 'fulfilled' && prodRes.value?.success && prodRes.value.data?.length) {
-        setProducts(prodRes.value.data);
+        setProducts(sanitizeBrand(prodRes.value.data));
       }
       if (teamRes.status === 'fulfilled' && teamRes.value?.success && teamRes.value.data?.length) {
-        setTeam(teamRes.value.data);
+        setTeam(sanitizeBrand(teamRes.value.data));
       }
       if (plansRes.status === 'fulfilled' && plansRes.value?.success && plansRes.value.data?.length) {
-        setPlans(plansRes.value.data);
+        setPlans(sanitizeBrand(plansRes.value.data));
       }
       if (contentRes.status === 'fulfilled' && contentRes.value?.success && contentRes.value.data) {
-        setSiteContent(contentRes.value.data);
+        setSiteContent(sanitizeBrand(contentRes.value.data));
       }
     } catch (err) {
       console.log('Using optimized built-in data:', err);
@@ -324,7 +345,7 @@ export const App: React.FC = () => {
         globalVision: { headline: '', subheading: '', metrics: [] },
         siteSettings: { companyName: '', legalHeadquarters: '', contactEmail: '', contactPhone: '', copyrightNotice: '' }
       };
-      return { ...current, [section]: data };
+      return { ...current, [section]: sanitizeBrand(data) };
     });
   };
 

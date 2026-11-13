@@ -12,7 +12,7 @@ interface GlobalVisionProps {
 
 export const GlobalVision: React.FC<GlobalVisionProps> = ({ onStartProject, content }) => {
   const headline = content?.headline || 'Engineered Locally. Deployed Globally.';
-  const subheading = content?.subheading || 'Codrix is architected from day one for global delivery. Whether partnering with fast-moving startups in London, agritech pioneers in South Asia, or scale-ups in North America, we deliver frictionless remote collaboration backed by airtight SLAs.';
+  const subheading = (content?.subheading || 'Codrix is architected from day one for global delivery. Whether partnering with fast-moving startups in London, agritech pioneers in South Asia, or scale-ups in North America, we deliver frictionless remote collaboration backed by airtight SLAs.').replace(/CodeVerse/gi, 'Codrix');
   return (
     <section id="global" className="pt-2 sm:pt-16 md:pt-20 pb-8 sm:pb-16 md:pb-24 relative overflow-hidden">
       {/* Ambient background glows */}

@@ -244,18 +244,37 @@ app.get('/api/v1/health', (req, res) => {
   });
 });
 
+function sanitizeBrand(obj) {
+  if (typeof obj === 'string') {
+    return obj
+      .replace(/CODEVERSE/g, 'CODRIX')
+      .replace(/CodeVerse/g, 'Codrix')
+      .replace(/Codeverse/g, 'Codrix')
+      .replace(/codeverse/g, 'codrix');
+  }
+  if (Array.isArray(obj)) return obj.map(sanitizeBrand);
+  if (obj && typeof obj === 'object') {
+    const res = {};
+    for (const key of Object.keys(obj)) {
+      res[key] = sanitizeBrand(obj[key]);
+    }
+    return res;
+  }
+  return obj;
+}
+
 // Full Dynamic Site Content (Hero, Story, Process, Global Vision, Site Settings)
 app.get('/api/v1/content', async (req, res) => {
   if (isConnected()) {
     try {
       const doc = await SiteContentModel.findOne({ id: 'site_singleton' }).lean();
-      if (doc) return res.json({ success: true, data: doc });
+      if (doc) return res.json({ success: true, data: sanitizeBrand(doc) });
     } catch (e) {
       console.warn('Error reading content from Atlas:', e.message);
     }
   }
   const store = readData();
-  res.json({ success: true, data: store.siteContent || getDefaultSiteContent() });
+  res.json({ success: true, data: sanitizeBrand(store.siteContent || getDefaultSiteContent()) });
 });
 
 // Services

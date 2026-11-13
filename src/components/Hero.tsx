@@ -29,7 +29,7 @@ export const Hero: React.FC<HeroProps> = ({
   startBtnAnchorRef,
   exploreBtnAnchorRef
 }) => {
-  const line1 = content?.line1 || 'CODRIX';
+  const line1 = (content?.line1 || 'CODRIX').replace(/CODEVERSE/gi, 'CODRIX');
   const line2 = content?.line2 || 'TURNING IDEAS INTO';
   const line3 = content?.line3 || 'TECHNOLOGY';
   const badge1 = content?.badge1 || 'PERN / Microservices';
