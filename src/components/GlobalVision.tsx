@@ -12,7 +12,7 @@ interface GlobalVisionProps {
 
 export const GlobalVision: React.FC<GlobalVisionProps> = ({ onStartProject, content }) => {
   const headline = content?.headline || 'Engineered Locally. Deployed Globally.';
-  const subheading = content?.subheading || 'CodeVerse is architected from day one for global delivery. Whether partnering with fast-moving startups in London, agritech pioneers in South Asia, or scale-ups in North America, we deliver frictionless remote collaboration backed by airtight SLAs.';
+  const subheading = content?.subheading || 'Codrix is architected from day one for global delivery. Whether partnering with fast-moving startups in London, agritech pioneers in South Asia, or scale-ups in North America, we deliver frictionless remote collaboration backed by airtight SLAs.';
   return (
     <section id="global" className="pt-2 sm:pt-16 md:pt-20 pb-8 sm:pb-16 md:pb-24 relative overflow-hidden">
       {/* Ambient background glows */}
@@ -88,7 +88,7 @@ export const GlobalVision: React.FC<GlobalVisionProps> = ({ onStartProject, cont
                 onClick={onStartProject}
                 className="px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-electric-purple via-lavender-glow to-deep-violet text-white font-semibold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-purple-600/30 hover:shadow-purple-600/45 hover:scale-[1.02] transition-all"
               >
-                <span>Partner With CodeVerse Worldwide</span>
+                <span>Partner With Codrix Worldwide</span>
                 <Globe className="w-4 h-4 ml-1" />
               </button>
             </div>

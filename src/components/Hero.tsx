@@ -29,7 +29,7 @@ export const Hero: React.FC<HeroProps> = ({
   startBtnAnchorRef,
   exploreBtnAnchorRef
 }) => {
-  const line1 = content?.line1 || 'CODEVERSE';
+  const line1 = content?.line1 || 'CODRIX';
   const line2 = content?.line2 || 'TURNING IDEAS INTO';
   const line3 = content?.line3 || 'TECHNOLOGY';
   const badge1 = content?.badge1 || 'PERN / Microservices';
@@ -163,7 +163,7 @@ export const Hero: React.FC<HeroProps> = ({
           <div className="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left order-2 lg:order-2">
             {/* 3D Kinetic Headline with Staggered Word Reveal */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] text-light-text dark:text-white flex flex-col items-center lg:items-start gap-1">
-              {/* Line 1: CODEVERSE */}
+              {/* Line 1: CODRIX */}
               <div className="overflow-hidden py-1">
                 <div
                   style={{

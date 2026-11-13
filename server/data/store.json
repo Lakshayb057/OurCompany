@@ -256,7 +256,7 @@
         "Scalable PERN architecture hosted on AWS EC2, AWS RDS PostgreSQL with connection pooling, and AWS S3 object storage."
       ],
       "liveUrl": "https://universe-campus.live",
-      "githubUrl": "https://github.com/codeverse114/UniVerse-Platform"
+      "githubUrl": "https://github.com/codrix114/UniVerse-Platform"
     },
     {
       "id": "prod-02",
@@ -490,7 +490,7 @@
         "Seamless dual-channel checkout supporting Razorpay UPI transactions and WhatsApp direct click-to-order with pre-filled cart payloads."
       ],
       "liveUrl": "https://sachikheti.com",
-      "githubUrl": "https://github.com/codeverse114/SachiKheti"
+      "githubUrl": "https://github.com/codrix114/SachiKheti"
     }
   ],
   "team": [
@@ -502,7 +502,7 @@
       "primaryResponsibility": "Vision, leadership, strategy, product ownership, and 0-to-1 engineering.",
       "bio": "",
       "avatar": "/lakshay.jpeg",
-      "linkedin": "https://linkedin.com/in/lakshay-codeverse"
+      "linkedin": "https://linkedin.com/in/lakshay-codrix"
     },
     {
       "id": "tm-02",
@@ -512,7 +512,7 @@
       "primaryResponsibility": "Technology architecture, cloud infrastructure, engineering standards, and technical delivery.",
       "bio": "",
       "avatar": "/Parth.jpeg",
-      "linkedin": "https://linkedin.com/in/parth-codeverse"
+      "linkedin": "https://linkedin.com/in/parth-codrix"
     },
     {
       "id": "tm-03",
@@ -522,7 +522,7 @@
       "primaryResponsibility": "Operations, project execution, agile methodologies, and client delivery governance.",
       "bio": "",
       "avatar": "/Diya.jpg",
-      "linkedin": "https://linkedin.com/in/diya-codeverse"
+      "linkedin": "https://linkedin.com/in/diya-codrix"
     },
     {
       "id": "tm-04",
@@ -532,7 +532,7 @@
       "primaryResponsibility": "Corporate governance, strategic policy decisions, risk management, and organizational oversight.",
       "bio": "Corporate governance, strategic policy decisions, risk management, and organizational oversight.",
       "avatar": "/ishita.jpeg",
-      "linkedin": "https://linkedin.com/in/ishita-codeverse",
+      "linkedin": "https://linkedin.com/in/ishita-codrix",
       "_id": "6af567e1d2bc06a02165ca9d",
       "updatedAt": "2026-11-13T08:08:24.312Z",
       "__v": 0,
@@ -548,7 +548,7 @@
       "primaryResponsibility": "Business development, international client acquisition, growth marketing, and strategic partnerships.",
       "bio": "",
       "avatar": "/suryansh.jpeg",
-      "linkedin": "https://linkedin.com/in/suryansh-codeverse"
+      "linkedin": "https://linkedin.com/in/suryansh-codrix"
     },
     {
       "id": "team-1794556572524",
@@ -556,8 +556,8 @@
       "role": "CGO",
       "designation": "CGO",
       "initials": "AU",
-      "photo": "https://res.cloudinary.com/gymcfo5j/image/upload/v1794556566/codeverse/leadership/ugoofpi7twfmoqwppzvp.jpg",
-      "avatar": "https://res.cloudinary.com/gymcfo5j/image/upload/v1794556566/codeverse/leadership/ugoofpi7twfmoqwppzvp.jpg",
+      "photo": "https://res.cloudinary.com/gymcfo5j/image/upload/v1794556566/codrix/leadership/ugoofpi7twfmoqwppzvp.jpg",
+      "avatar": "https://res.cloudinary.com/gymcfo5j/image/upload/v1794556566/codrix/leadership/ugoofpi7twfmoqwppzvp.jpg",
       "bio": "Architecting distributed systems and reactive client architectures.",
       "primaryResponsibility": "Architecting distributed systems and reactive client architectures.",
       "linkedin": "https://linkedin.com",
@@ -618,7 +618,7 @@
   "plans": [],
   "siteContent": {
     "hero": {
-      "line1": "CODEVERSE",
+      "line1": "CODRIX",
       "line2": "TURNING IDEAS INTO",
       "line3": "TECHNOLOGY",
       "badge1": "Production-Grade Distributed Cloud Systems",
@@ -628,7 +628,7 @@
     "story": {
       "heading": "Engineered for Performance. Built for Reliability.",
       "subheading": "We build mission-critical digital systems with architectural precision.",
-      "paragraph1": "Founded by engineers with deep passion for distributed computing, CodeVerse designs, architects, and scales resilient full-stack systems. We eliminate technical debt at the design phase.",
+      "paragraph1": "Founded by engineers with deep passion for distributed computing, Codrix designs, architects, and scales resilient full-stack systems. We eliminate technical debt at the design phase.",
       "paragraph2": "From real-time campus dining ecosystems to intelligent OCR pipeline fleets, our software powers operations with sub-100ms response times and zero-downtime reliability.",
       "stats": [
         {
@@ -725,11 +725,11 @@
       ]
     },
     "siteSettings": {
-      "companyName": "Codeverse",
+      "companyName": "Codrix",
       "legalHeadquarters": "Corporate Headquarters: India • Global Remote Delivery",
       "contactEmail": "lakshayb057@gmail.com",
       "contactPhone": "+91 99999 99999",
-      "copyrightNotice": "© 2026 CodeVerse. All rights reserved."
+      "copyrightNotice": "© 2026 Codrix. All rights reserved."
     },
     "updatedAt": "2026-11-12T14:54:54.859Z"
   }

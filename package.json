@@ -1,8 +1,8 @@
 {
-  "name": "codeverse",
+  "name": "codrix",
   "version": "1.0.0",
   "private": true,
-  "description": "CodeVerse - Turning Ideas Into Technology | Corporate Website & Innovation Platform",
+  "description": "Codrix - Turning Ideas Into Technology | Corporate Website & Innovation Platform",
   "type": "module",
   "scripts": {
     "dev": "vite",

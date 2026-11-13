@@ -18,7 +18,7 @@ $linearBrush = New-Object System.Drawing.Drawing2D.LinearGradientBrush($bgRect, 
 $g.FillRectangle($linearBrush, $bgRect)
 $linearBrush.Dispose()
 
-# 3. Add Radiant Radial Glow in the Center (CodeVerse Purple #7C2CF5)
+# 3. Add Radiant Radial Glow in the Center (Codrix Purple #7C2CF5)
 $glowPath = New-Object System.Drawing.Drawing2D.GraphicsPath
 $glowRect = New-Object System.Drawing.Rectangle([int]($width / 2 - 1300), [int]($height / 2 - 900), 2600, 1800)
 $glowPath.AddEllipse($glowRect)
@@ -40,8 +40,8 @@ $g.FillPath($fpgb, $floorPath)
 $fpgb.Dispose()
 $floorPath.Dispose()
 
-# 5. Load hero-ribbon.png (CodeVerse 3D Ribbon Emblem)
-$ribbonPath = "E:\family documentes\CodeVerse\public\hero-ribbon.png"
+# 5. Load hero-ribbon.png (Codrix 3D Ribbon Emblem)
+$ribbonPath = "E:\family documentes\CodRix\public\hero-ribbon.png"
 if (Test-Path $ribbonPath) {
     $ribbon = [System.Drawing.Image]::FromFile($ribbonPath)
     
@@ -58,7 +58,7 @@ if (Test-Path $ribbonPath) {
     $ribbon.Dispose()
 }
 
-# 6. Render Typography: CODEVERSE
+# 6. Render Typography: CODRIX
 $fontFamily = [System.Drawing.FontFamily]::GenericSansSerif
 $font = New-Object System.Drawing.Font($fontFamily, 64, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
 $subFont = New-Object System.Drawing.Font($fontFamily, 22, [System.Drawing.FontStyle]::Regular, [System.Drawing.GraphicsUnit]::Pixel)
@@ -73,8 +73,8 @@ $textBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromAr
 $subBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(190, 185, 140, 255))
 
 $textY = [int]($height / 2 + 400)
-$g.DrawString("C O D E V E R S E", $font, $shadowBrush, [float]($width / 2), [float]($textY + 4), $sf)
-$g.DrawString("C O D E V E R S E", $font, $textBrush, [float]($width / 2), [float]$textY, $sf)
+$g.DrawString("C O D R I X", $font, $shadowBrush, [float]($width / 2), [float]($textY + 4), $sf)
+$g.DrawString("C O D R I X", $font, $textBrush, [float]($width / 2), [float]$textY, $sf)
 
 $subY = $textY + 75
 $g.DrawString("TURNING IDEAS INTO TECHNOLOGY", $subFont, $subBrush, [float]($width / 2), [float]$subY, $sf)
@@ -86,12 +86,19 @@ $font.Dispose()
 $subFont.Dispose()
 $sf.Dispose()
 
-# 7. Save High-Quality PNG
-$outPng = "E:\family documentes\CodeVerse\wallpaper-brand.png"
+# 7. Save High-Quality PNG & JPG
+$outPng = "E:\family documentes\CodRix\wallpaper-brand.png"
 $bmp.Save($outPng, [System.Drawing.Imaging.ImageFormat]::Png)
 
-$pubPng = "E:\family documentes\CodeVerse\public\wallpaper-brand.png"
+$pubPng = "E:\family documentes\CodRix\public\wallpaper-brand.png"
 $bmp.Save($pubPng, [System.Drawing.Imaging.ImageFormat]::Png)
+
+# Update root and public wallpaper variations
+Copy-Item $outPng "E:\family documentes\CodRix\wallpaper.png" -Force
+Copy-Item $pubPng "E:\family documentes\CodRix\public\wallpaper.png" -Force
+
+$bmp.Save("E:\family documentes\CodRix\wallpaper.jpg", [System.Drawing.Imaging.ImageFormat]::Jpeg)
+$bmp.Save("E:\family documentes\CodRix\public\wallpaper.jpg", [System.Drawing.Imaging.ImageFormat]::Jpeg)
 
 $g.Dispose()
 $bmp.Dispose()

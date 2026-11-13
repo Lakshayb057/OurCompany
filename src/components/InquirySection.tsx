@@ -56,7 +56,7 @@ export const InquirySection: React.FC<InquirySectionProps> = ({ initialProjectTy
       // Save submitted client data so /plan page can prefill their details
       try {
         if (typeof window !== 'undefined') {
-          sessionStorage.setItem('codeverse_client_inquiry', JSON.stringify({
+          sessionStorage.setItem('codrix_client_inquiry', JSON.stringify({
             fullName: formData.fullName,
             contact: formData.contact,
             email: formData.email,
@@ -150,7 +150,7 @@ export const InquirySection: React.FC<InquirySectionProps> = ({ initialProjectTy
             </div>
 
             <div className="p-4 rounded-xl bg-lavender-soft/40 dark:bg-midnight-card/50 border border-purple-200 dark:border-midnight-border/50 text-xs font-mono text-light-subtext dark:text-muted-gray">
-              Direct Contact: <span className="text-light-text dark:text-white font-semibold">leadership@codeverse.tech</span>
+              Direct Contact: <span className="text-light-text dark:text-white font-semibold">leadership@codrix.tech</span>
             </div>
           </div>
 

@@ -126,7 +126,7 @@ const planSchema = new mongoose.Schema({
 const siteContentSchema = new mongoose.Schema({
   id: { type: String, default: 'site_singleton', unique: true },
   hero: {
-    line1: { type: String, default: 'CODEVERSE' },
+    line1: { type: String, default: 'CODRIX' },
     line2: { type: String, default: 'TURNING IDEAS INTO' },
     line3: { type: String, default: 'TECHNOLOGY' },
     badge1: { type: String, default: 'Production-Grade Distributed Cloud Systems' },
@@ -136,7 +136,7 @@ const siteContentSchema = new mongoose.Schema({
   story: {
     heading: { type: String, default: 'Engineered for Performance. Built for Reliability.' },
     subheading: { type: String, default: 'We build mission-critical digital systems with architectural precision.' },
-    paragraph1: { type: String, default: 'Founded by engineers with deep passion for distributed computing, CodeVerse designs, architects, and scales resilient full-stack systems. We eliminate technical debt at the design phase.' },
+    paragraph1: { type: String, default: 'Founded by engineers with deep passion for distributed computing, Codrix designs, architects, and scales resilient full-stack systems. We eliminate technical debt at the design phase.' },
     paragraph2: { type: String, default: 'From real-time campus dining ecosystems to intelligent OCR pipeline fleets, our software powers operations with sub-100ms response times and zero-downtime reliability.' },
     stats: [
       { label: { type: String, default: 'Clean Codebase' }, value: { type: String, default: '100%' } },
@@ -192,11 +192,11 @@ const siteContentSchema = new mongoose.Schema({
     ]
   },
   siteSettings: {
-    companyName: { type: String, default: 'CodeVerse' },
+    companyName: { type: String, default: 'Codrix' },
     legalHeadquarters: { type: String, default: 'Corporate Headquarters: India • Global Remote Delivery' },
-    contactEmail: { type: String, default: 'leadership@codeverse.tech' },
+    contactEmail: { type: String, default: 'leadership@codrix.tech' },
     contactPhone: { type: String, default: '+91 99999 99999' },
-    copyrightNotice: { type: String, default: '© 2026 CodeVerse. All rights reserved.' }
+    copyrightNotice: { type: String, default: '© 2026 Codrix. All rights reserved.' }
   },
   updatedAt: { type: Date, default: Date.now }
 });
@@ -209,7 +209,7 @@ export const TeamModel = mongoose.models.TeamMember || mongoose.model('TeamMembe
 export const PlanModel = mongoose.models.PlanPackage || mongoose.model('PlanPackage', planSchema);
 export const SiteContentModel = mongoose.models.SiteContent || mongoose.model('SiteContent', siteContentSchema);
 
-export const DEFAULT_ATLAS_URI = 'mongodb+srv://Lakshay:Lakshay123@ourcompany.fwhyx65.mongodb.net/codeverse?compressors=zlib';
+export const DEFAULT_ATLAS_URI = 'mongodb+srv://Lakshay:Lakshay123@ourcompany.fwhyx65.mongodb.net/codrix?compressors=zlib';
 
 let cachedConnectionPromise = null;
 

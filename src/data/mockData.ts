@@ -123,7 +123,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       "Scalable PERN architecture hosted on AWS EC2, AWS RDS PostgreSQL with connection pooling, and AWS S3 object storage."
     ],
     liveUrl: "https://universe-campus.live",
-    githubUrl: "https://github.com/codeverse114/UniVerse-Platform"
+    githubUrl: "https://github.com/codrix114/UniVerse-Platform"
   },
   {
     id: "prod-02",
@@ -248,7 +248,7 @@ export const INITIAL_PRODUCTS: Product[] = [
       "Seamless dual-channel checkout supporting Razorpay UPI transactions and WhatsApp direct click-to-order with pre-filled cart payloads."
     ],
     liveUrl: "https://sachikheti.com",
-    githubUrl: "https://github.com/codeverse114/SachiKheti"
+    githubUrl: "https://github.com/codrix114/SachiKheti"
   }
 ];
 
@@ -261,7 +261,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     primaryResponsibility: "Vision, leadership, strategy, product ownership, and 0-to-1 engineering.",
     bio: "",
     avatar: "/lakshay.jpeg",
-    linkedin: "https://linkedin.com/in/lakshay-codeverse"
+    linkedin: "https://linkedin.com/in/lakshay-codrix"
   },
   {
     id: "tm-02",
@@ -271,7 +271,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     primaryResponsibility: "Technology architecture, cloud infrastructure, engineering standards, and technical delivery.",
     bio: "",
     avatar: "/Parth.jpeg",
-    linkedin: "https://linkedin.com/in/parth-codeverse"
+    linkedin: "https://linkedin.com/in/parth-codrix"
   },
   {
     id: "tm-03",
@@ -281,7 +281,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     primaryResponsibility: "Operations, project execution, agile methodologies, and client delivery governance.",
     bio: "",
     avatar: "/Diya.jpg",
-    linkedin: "https://linkedin.com/in/diya-codeverse"
+    linkedin: "https://linkedin.com/in/diya-codrix"
   },
   {
     id: "tm-04",
@@ -291,7 +291,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     primaryResponsibility: "Corporate governance, strategic policy decisions, risk management, and organizational oversight.",
     bio: "",
     avatar: "/ishita.jpeg",
-    linkedin: "https://linkedin.com/in/ishita-codeverse"
+    linkedin: "https://linkedin.com/in/ishita-codrix"
   },
   {
     id: "tm-05",
@@ -301,7 +301,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     primaryResponsibility: "Business development, international client acquisition, growth marketing, and strategic partnerships.",
     bio: "",
     avatar: "/suryansh.jpeg",
-    linkedin: "https://linkedin.com/in/suryansh-codeverse"
+    linkedin: "https://linkedin.com/in/suryansh-codrix"
   }
 ];
 

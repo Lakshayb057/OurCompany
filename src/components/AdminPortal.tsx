@@ -28,7 +28,7 @@ const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
   label,
   value,
   onChange,
-  folder = 'codeverse',
+  folder = 'codrix',
   isUploading,
   setIsUploading,
   showToast,
@@ -213,8 +213,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       return false;
     }
   });
-  const [loginEmail, setLoginEmail] = useState('admin@codeverse.tech');
-  const [loginPass, setLoginPass] = useState('CodeVerse@2026');
+  const [loginEmail, setLoginEmail] = useState('admin@codrix.tech');
+  const [loginPass, setLoginPass] = useState('Codrix@2026');
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -232,7 +232,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     connected: true,
     provider: 'Database',
     host: 'database.cluster',
-    database: 'codeverse',
+    database: 'codrix',
   });
   const [isCheckingDb, setIsCheckingDb] = useState(false);
 
@@ -353,13 +353,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       }
     } catch {
       // Fallback auth for local resiliency
-      if (loginEmail === 'admin@codeverse.tech' && loginPass === 'CodeVerse@2026') {
+      if (loginEmail === 'admin@codrix.tech' && loginPass === 'Codrix@2026') {
         setIsAuthenticated(true);
         try {
           sessionStorage.setItem('cv_admin_auth', 'true');
         } catch { }
       } else {
-        setLoginError('Invalid credentials. Use admin@codeverse.tech / CodeVerse@2026');
+        setLoginError('Invalid credentials. Use admin@codrix.tech / Codrix@2026');
       }
     } finally {
       setIsLoggingIn(false);
@@ -385,8 +385,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     metric: '4x Efficiency',
     techStack: ['React 19', 'TypeScript', 'Node.js', 'MongoDB'],
     architecture: 'Microservices & Event-Driven Pipeline',
-    previewUrl: 'https://codeverse.tech',
-    githubUrl: 'https://github.com/codeverse-technologies',
+    previewUrl: 'https://codrix.tech',
+    githubUrl: 'https://github.com/codrix-technologies',
     badge: 'LIVE PRODUCTION',
     isVisible: true
   });
@@ -422,9 +422,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       metric: newProduct.metric || '4x Scale',
       techStack: newProduct.techStack || ['React', 'TypeScript', 'Node.js'],
       architecture: newProduct.architecture || 'Distributed Microservices',
-      previewUrl: newProduct.previewUrl || 'https://codeverse.tech',
+      previewUrl: newProduct.previewUrl || 'https://codrix.tech',
       image: newProduct.image || newProduct.previewUrl,
-      githubUrl: newProduct.githubUrl || 'https://github.com/codeverse-technologies',
+      githubUrl: newProduct.githubUrl || 'https://github.com/codrix-technologies',
       badge: newProduct.badge || 'PRODUCTION',
       isVisible: newProduct.isVisible !== false
     };
@@ -450,9 +450,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       metric: '4x Efficiency',
       techStack: ['React 19', 'TypeScript', 'Node.js', 'MongoDB'],
       architecture: 'Microservices & Event-Driven Pipeline',
-      previewUrl: 'https://codeverse.tech',
+      previewUrl: 'https://codrix.tech',
       image: '',
-      githubUrl: 'https://github.com/codeverse-technologies',
+      githubUrl: 'https://github.com/codrix-technologies',
       badge: 'LIVE PRODUCTION',
       isVisible: true
     });
@@ -807,11 +807,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             <div className="flex items-center justify-center gap-2.5 mb-1">
               <img
                 src="/hero-ribbon.png"
-                alt="CodeVerse Ribbon"
+                alt="Codrix Ribbon"
                 className="w-10 h-10 object-contain drop-shadow-[0_2px_14px_rgba(124,44,245,0.45)]"
               />
               <span className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-light-text via-electric-purple to-deep-violet dark:from-white dark:via-lavender-light dark:to-electric-light bg-clip-text text-transparent tracking-tight">
-                CodeVerse
+                Codrix
               </span>
             </div>
           </div>
@@ -906,11 +906,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
         >
           <img
             src="/hero-ribbon.png"
-            alt="CodeVerse"
+            alt="Codrix"
             className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-[0_2px_10px_rgba(124,44,245,0.35)] transition-transform duration-200 group-hover:scale-105"
           />
           <span className="text-xl sm:text-2xl font-black bg-gradient-to-r from-light-text via-electric-purple to-deep-violet dark:from-white dark:via-lavender-light dark:to-electric-light bg-clip-text text-transparent tracking-tight whitespace-nowrap">
-            CodeVerse
+            Codrix
           </span>
         </div>
 
@@ -1502,7 +1502,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       <CloudinaryUploader
                         label="Project Showcase Image / Banner"
                         value={newProduct.previewUrl || (newProduct as any).image || ''}
-                        folder="codeverse/projects"
+                        folder="codrix/projects"
                         isUploading={isUploadingImage}
                         setIsUploading={setIsUploadingImage}
                         showToast={showToast}
@@ -1690,7 +1690,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                           <CloudinaryUploader
                             label="Project Showcase Image / Banner"
                             value={(editingProduct as any).image || editingProduct.previewUrl || ''}
-                            folder="codeverse/projects"
+                            folder="codrix/projects"
                             isUploading={isUploadingImage}
                             setIsUploading={setIsUploadingImage}
                             showToast={showToast}
@@ -1821,7 +1821,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       <CloudinaryUploader
                         label="Leader Headshot / Photograph"
                         value={newTeamMember.photo || ''}
-                        folder="codeverse/leadership"
+                        folder="codrix/leadership"
                         isUploading={isUploadingImage}
                         setIsUploading={setIsUploadingImage}
                         showToast={showToast}
@@ -1984,7 +1984,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                           <CloudinaryUploader
                             label="Leader Headshot / Photograph"
                             value={editingTeamMember.photo || editingTeamMember.avatar || ''}
-                            folder="codeverse/leadership"
+                            folder="codrix/leadership"
                             isUploading={isUploadingImage}
                             setIsUploading={setIsUploadingImage}
                             showToast={showToast}

@@ -109,7 +109,7 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
   // Peak in-flight factor (0 at endpoints, 1 at midpoint)
   const flight = isAlwaysDocked ? 0 : Math.sin(rawP * Math.PI);
 
-  // Once the logo approaches dock position, smoothly trigger the "CodeVerse" wordmark emergence
+  // Once the logo approaches dock position, smoothly trigger the "Codrix" wordmark emergence
   const isDocked = isAlwaysDocked || rawP >= 0.85;
 
   // Interpolated position and dimensions for the ribbon logo
@@ -157,8 +157,8 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
         willChange: 'transform',
       }}
       className="select-none group focus:outline-none bg-transparent border-0 p-0 shadow-none pointer-events-auto"
-      title={isAlwaysDocked ? "CodeVerse - Return to Home" : "CodeVerse Home - Scroll to top"}
-      aria-label="CodeVerse Home"
+      title={isAlwaysDocked ? "Codrix - Return to Home" : "Codrix Home - Scroll to top"}
+      aria-label="Codrix Home"
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -182,12 +182,12 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
       >
         <img
           src="/hero-ribbon.png"
-          alt="CodeVerse Ribbon"
+          alt="Codrix Ribbon"
           className={`w-full h-full object-contain pointer-events-none ${rawP === 0 && hasEntered ? 'animate-hero-float' : ''}`}
         />
       </div>
 
-      {/* 2. The 3D Animated "CodeVerse" Wordmark - Butter smooth max-width reveal */}
+      {/* 2. The 3D Animated "Codrix" Wordmark - Butter smooth max-width reveal */}
       <div
         style={{
           display: 'flex',
@@ -211,7 +211,7 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
           }}
           className="text-lg sm:text-3xl font-black bg-gradient-to-r from-light-text via-electric-purple to-deep-violet dark:from-white dark:via-lavender-light dark:to-electric-light bg-clip-text text-transparent tracking-tight whitespace-nowrap"
         >
-          CodeVerse
+          Codrix
         </span>
       </div>
     </div>

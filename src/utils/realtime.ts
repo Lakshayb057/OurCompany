@@ -20,7 +20,7 @@ class RealtimeSyncManager {
   private initBroadcastChannel() {
     try {
       if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
-        this.broadcastChannel = new BroadcastChannel('codeverse_realtime_sync');
+        this.broadcastChannel = new BroadcastChannel('codrix_realtime_sync');
         this.broadcastChannel.onmessage = (event) => {
           if (event.data && event.data.type) {
             this.notifyListeners(event.data);
@@ -50,7 +50,7 @@ class RealtimeSyncManager {
         timeout: 10000,
       });
 
-      this.socket.on('codeverse:sync', (data) => {
+      this.socket.on('codrix:sync', (data) => {
         if (data?.timestamp) {
           this.lastTimestamp = data.timestamp;
         }
@@ -58,7 +58,7 @@ class RealtimeSyncManager {
       });
 
       this.socket.on('connect', () => {
-        console.log('[Realtime] Socket connected to CodeVerse server:', this.socket?.id);
+        console.log('[Realtime] Socket connected to Codrix server:', this.socket?.id);
       });
     } catch (e) {
       console.warn('[Realtime] Socket connection initialized with polling fallback');
@@ -116,7 +116,7 @@ class RealtimeSyncManager {
 
     if (this.socket && this.socket.connected) {
       try {
-        this.socket.emit('codeverse:client_change', payload);
+        this.socket.emit('codrix:client_change', payload);
       } catch (e) {}
     }
 

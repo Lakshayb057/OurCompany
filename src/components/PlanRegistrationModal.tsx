@@ -41,7 +41,7 @@ export const PlanRegistrationModal: React.FC<PlanRegistrationModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       try {
-        const cached = sessionStorage.getItem('codeverse_client_inquiry');
+        const cached = sessionStorage.getItem('codrix_client_inquiry');
         if (cached) {
           const parsed = JSON.parse(cached);
           if (parsed.fullName && !fullName) setFullName(parsed.fullName);
@@ -186,7 +186,7 @@ export const PlanRegistrationModal: React.FC<PlanRegistrationModalProps> = ({
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                 <a
-                  href={`https://wa.me/919999999999?text=${encodeURIComponent(`Hi CodeVerse team! I have registered for the "${activePlan.name}" plan under ${fullName}. Looking forward to connecting!`)}`}
+                  href={`https://wa.me/919999999999?text=${encodeURIComponent(`Hi Codrix team! I have registered for the "${activePlan.name}" plan under ${fullName}. Looking forward to connecting!`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-all shadow-md flex items-center justify-center gap-2"
@@ -351,7 +351,7 @@ export const PlanRegistrationModal: React.FC<PlanRegistrationModalProps> = ({
                       <span className="font-bold text-light-text dark:text-white">With Domain</span>
                     </div>
                     <span className="text-[10px] text-light-subtext dark:text-muted-gray mt-1">
-                      CodeVerse registers & configures 1-year domain
+                      Codrix registers & configures 1-year domain
                     </span>
                   </label>
 

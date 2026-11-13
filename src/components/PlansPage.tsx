@@ -27,7 +27,7 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome, plans }) => 
   // Check if user came from the project inquiry form
   useEffect(() => {
     try {
-      const cached = sessionStorage.getItem('codeverse_client_inquiry');
+      const cached = sessionStorage.getItem('codrix_client_inquiry');
       if (cached) {
         const parsed = JSON.parse(cached);
         if (parsed.fullName) {
@@ -84,7 +84,7 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome, plans }) => 
     },
     {
       q: 'Do I get 100% intellectual property (IP) and source code ownership?',
-      a: 'Yes, unconditionally. Upon final milestone deployment, full copyright, repository ownership (GitHub / GitLab), and production infrastructure keys are transferred directly to your organization. CodeVerse maintains zero proprietary lock-in.'
+      a: 'Yes, unconditionally. Upon final milestone deployment, full copyright, repository ownership (GitHub / GitLab), and production infrastructure keys are transferred directly to your organization. Codrix maintains zero proprietary lock-in.'
     },
     {
       q: 'What is the onboarding process after I register for a plan?',
@@ -552,7 +552,7 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome, plans }) => 
         {/* Bottom CTA Card */}
         <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-electric-purple via-lavender-glow to-deep-violet text-white text-center space-y-5 shadow-2xl shadow-purple-600/30">
           <h3 className="text-2xl sm:text-4xl font-black tracking-tight">
-            Ready to Engineer Your Platform with CodeVerse?
+            Ready to Engineer Your Platform with Codrix?
           </h3>
           <p className="text-xs sm:text-sm text-purple-100 max-w-xl mx-auto leading-relaxed">
             Every partnership begins with a direct technical discovery call with our CTO and founding team. Lock in your sprint today.

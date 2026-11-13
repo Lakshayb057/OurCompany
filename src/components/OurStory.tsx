@@ -41,7 +41,7 @@ export const OurStory: React.FC<OurStoryProps> = ({ content }) => {
   const [cardsRowRef, isCardsRowInView] = useScrollReveal(0.18, '0px 0px -40px 0px');
   const [processRef, isProcessInView] = useScrollReveal(0.18, '0px 0px -40px 0px');
 
-  const headline = content?.heading || 'Why CodeVerse Exists';
+  const headline = content?.heading || 'Why Codrix Exists';
   const subheading = content?.subheading || "We started with a foundational truth: modern businesses don't just need software; they need resilient, intelligent digital engines built with surgical craftsmanship.";
 
   return (
@@ -295,7 +295,7 @@ export const OurStory: React.FC<OurStoryProps> = ({ content }) => {
           {/* Horizontal Divider Line */}
           <div className="border-t border-light-border dark:border-midnight-border/70" />
 
-          {/* 3. BOTTOM HALF (The Process CodeVerse Follows): Triggers when user scrolls down to this block */}
+          {/* 3. BOTTOM HALF (The Process Codrix Follows): Triggers when user scrolls down to this block */}
           <div 
             ref={processRef}
             className="p-5 sm:p-8 md:p-10 bg-lavender-soft/30 dark:bg-black/25 relative overflow-hidden"
@@ -313,7 +313,7 @@ export const OurStory: React.FC<OurStoryProps> = ({ content }) => {
                 Our Approach
               </span>
               <h3 className="text-2xl sm:text-3xl font-bold mt-1 text-light-text dark:text-white">
-                The Process <span className="text-gradient-purple">CodeVerse</span> Follows
+                The Process <span className="text-gradient-purple">Codrix</span> Follows
               </h3>
               <p className="text-sm text-light-subtext dark:text-muted-gray mt-2 leading-relaxed">
                 A simple, transparent, and collaborative process that keeps you involved at every step.

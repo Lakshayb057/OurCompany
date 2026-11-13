@@ -1,15 +1,15 @@
-# CodeVerse — Corporate Website & Innovation Platform
+# Codrix — Corporate Website & Innovation Platform
 
 > **TURNING IDEAS INTO TECHNOLOGY**  
-> Built strictly according to the **CodeVerse Software Requirements Specification (SRS v1.0)**.
+> Built strictly according to the **Codrix Software Requirements Specification (SRS v1.0)**.
 
 ---
 
 ## 🚀 Overview
 
-CodeVerse is an engineering startup building scalable full-stack web applications, real-time event engines, AI automation systems, and proprietary digital products.
+Codrix is an engineering startup building scalable full-stack web applications, real-time event engines, AI automation systems, and proprietary digital products.
 
-This repository contains the complete implementation of the **CodeVerse Promotional Story Website & Management Suite**, featuring:
+This repository contains the complete implementation of the **Codrix Promotional Story Website & Management Suite**, featuring:
 1. **Story-Led Public Experience**: High-impact hero with official gradient ribbon visual identity, company story, core philosophy, and global delivery positioning.
 2. **Specialized Engineering Domains**: Interactive catalogue covering Distributed Cloud Systems, AI/OCR Agents, High-Throughput CRMs, Institutional ERPs, Agri-Commerce OS, and Circular Marketplaces.
 3. **Comprehensive Case Studies**: Deep-dive showcases for all 6 projects from SRS Appendix C (**UniVerse**, **ChatLeads AI**, **ABV — SkillPort**, **Nexus CRM**, **CampXChange**, **SachiKheti**) with live demo links, repository links, impact telemetry, and architecture breakdowns.
@@ -31,10 +31,10 @@ This repository contains the complete implementation of the **CodeVerse Promotio
 ## 📁 Repository Structure
 
 ```
-CodeVerse/
+CodRix/
 ├── dist/                     # Optimized production bundle (Vite + Tailwind)
 ├── public/
-│   ├── logo.png              # Official CodeVerse gradient ribbon logo
+│   ├── logo.png              # Official Codrix gradient ribbon logo
 │   └── hero-ribbon.png       # 3D fluid ribbon hero artwork asset
 ├── server/
 │   ├── data/
@@ -96,8 +96,8 @@ npm start
 ## 🔑 Administrative Access (SRS Section 12)
 
 Click the **Admin Portal** button in the navigation bar or footer:
-- **Admin Email**: `admin@codeverse.tech`
-- **Access Key**: `CodeVerse@2026`
+- **Admin Email**: `admin@codrix.tech`
+- **Access Key**: `Codrix@2026`
 
 Modules included:
 - **Overview Telemetry**: Active lead volume, conversion pipeline, and catalog stats.
@@ -112,7 +112,7 @@ Modules included:
 
 | Requirement | Description | Status |
 | :--- | :--- | :--- |
-| **FR-01** | Homepage displays CodeVerse logo, headline "Turning Ideas Into Technology", and clear CTAs | ✅ Implemented |
+| **FR-01** | Homepage displays Codrix logo, headline "Turning Ideas Into Technology", and clear CTAs | ✅ Implemented |
 | **FR-02** | Present company story, mission, vision, and engineering philosophy | ✅ Implemented |
 | **FR-03 & FR-04** | Service catalogue grouped by engineering domain with tech tags, benefits, and CTAs | ✅ Implemented |
 | **FR-05 & FR-06** | Product section showing statuses and detailed modal case study views | ✅ Implemented |

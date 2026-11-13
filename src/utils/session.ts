@@ -1,5 +1,5 @@
 /**
- * CodeVerse Session & Cookie Utilities
+ * Codrix Session & Cookie Utilities
  * Manages theme persistence, cookie consent, and active browser sessions across reloads and hard refreshes.
  */
 
@@ -38,8 +38,8 @@ export function deleteCookie(name: string): void {
 }
 
 // Theme storage keys
-const THEME_KEY = 'codeverse-theme';
-const COOKIE_THEME_KEY = 'codeverse_theme';
+const THEME_KEY = 'codrix-theme';
+const COOKIE_THEME_KEY = 'codrix_theme';
 
 export function getStoredTheme(): 'light' | 'dark' {
   try {
@@ -69,8 +69,8 @@ export function saveStoredTheme(theme: 'light' | 'dark'): void {
 }
 
 // Cookie Consent keys
-const CONSENT_KEY = 'codeverse_cookie_consent';
-const SESSION_ID_KEY = 'codeverse_session_id';
+const CONSENT_KEY = 'codrix_cookie_consent';
+const SESSION_ID_KEY = 'codrix_session_id';
 
 export type CookieConsentStatus = 'accepted' | 'rejected' | null;
 

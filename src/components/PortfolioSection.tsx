@@ -24,11 +24,11 @@ const PROJECT_IMAGES: Record<string, string> = {
   'sachikheti': '/services/agri-commerce.jpg',
 };
 
-export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ 
-  products, 
+export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
+  products,
   onOpenCaseStudy,
   onViewAllProjects,
-  onViewAllServices 
+  onViewAllServices
 }) => {
   // Featured Flagship Services: UniVerse & Nexus CRM (filtered by visibility)
   const visibleProducts = products.filter(p => p.isVisible !== false);
@@ -49,7 +49,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
       <div className="absolute bottom-10 right-0 w-[450px] h-[450px] bg-lavender-glow/5 dark:bg-deep-violet/15 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
+
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-6 sm:mb-16">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
@@ -70,11 +70,10 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               <div
                 key={prod.id}
                 onClick={() => onOpenCaseStudy(prod)}
-                className={`group relative rounded-3xl overflow-hidden flex flex-col justify-between border border-black/10 dark:border-white/10 hover:border-electric-purple/60 dark:hover:border-electric-purple/60 transition-all duration-500 cursor-pointer shadow-none hover:shadow-none ${
-                  isUniverse
-                    ? 'lg:col-span-8 min-h-[460px] sm:min-h-[500px] lg:min-h-[520px]'
-                    : 'lg:col-span-4 min-h-[460px] sm:min-h-[500px] lg:min-h-[520px]'
-                }`}
+                className={`group relative rounded-3xl overflow-hidden flex flex-col justify-between border border-black/10 dark:border-white/10 hover:border-electric-purple/60 dark:hover:border-electric-purple/60 transition-all duration-500 cursor-pointer shadow-none hover:shadow-none ${isUniverse
+                  ? 'lg:col-span-8 min-h-[460px] sm:min-h-[500px] lg:min-h-[520px]'
+                  : 'lg:col-span-4 min-h-[460px] sm:min-h-[500px] lg:min-h-[520px]'
+                  }`}
               >
                 {/* 1. Full-Bleed Background Media covering the ENTIRE div (100% Crisp, Zero Overlay Wash) */}
                 <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-black flex items-center justify-center">
@@ -115,11 +114,10 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                           e.stopPropagation();
                           setUniverseMediaMode('video');
                         }}
-                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                          universeMediaMode === 'video'
-                            ? 'bg-electric-purple text-white'
-                            : 'text-white/75 hover:text-white'
-                        }`}
+                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${universeMediaMode === 'video'
+                          ? 'bg-electric-purple text-white'
+                          : 'text-white/75 hover:text-white'
+                          }`}
                       >
                         <Play className="w-3 h-3 fill-current" />
                         <span>Video</span>
@@ -130,11 +128,10 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                           e.stopPropagation();
                           setUniverseMediaMode('photo');
                         }}
-                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                          universeMediaMode === 'photo'
-                            ? 'bg-electric-purple text-white'
-                            : 'text-white/75 hover:text-white'
-                        }`}
+                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${universeMediaMode === 'photo'
+                          ? 'bg-electric-purple text-white'
+                          : 'text-white/75 hover:text-white'
+                          }`}
                       >
                         <ImageIcon className="w-3 h-3" />
                         <span>Banner</span>

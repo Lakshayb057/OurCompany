@@ -53,8 +53,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
     };
   }, []); // Run on mount
 
-  const codeLetters = ['C', 'o', 'd', 'e'];
-  const verseLetters = ['V', 'e', 'r', 's', 'e'];
+  const codLetters = ['C', 'o', 'd'];
+  const rixLetters = ['r', 'i', 'x'];
 
   const isTextVisible = phase === 'text-emerge' || phase === 'hold';
   const isRetracting = phase === 'text-retract';
@@ -156,7 +156,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
           <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40">
             <img
               src="/hero-ribbon.png"
-              alt="CodeVerse Ribbon Emblem"
+              alt="Codrix Ribbon Emblem"
               className="w-full h-full object-contain pointer-events-none select-none drop-shadow-[0_16px_36px_rgba(124,44,245,0.32)] dark:drop-shadow-[0_22px_48px_rgba(182,108,255,0.42)]"
             />
           </div>
@@ -178,7 +178,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
           </div>
         </div>
 
-        {/* 2. Kinetic Emergent "CodeVerse" Typography */}
+        {/* 2. Kinetic Emergent "Codrix" Typography */}
         <div
           className="overflow-hidden transition-all duration-500 ease-out flex items-center"
           style={{
@@ -191,15 +191,15 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
           }}
         >
           <div className="flex items-center tracking-tight select-none py-2 whitespace-nowrap pl-0 sm:pl-1">
-            {/* Word: Code */}
+            {/* Word: Cod */}
             <div className="flex items-center">
-              {codeLetters.map((char, index) => {
+              {codLetters.map((char, index) => {
                 const staggerDelay = isRetracting
-                  ? (codeLetters.length - 1 - index) * 30
+                  ? (codLetters.length - 1 - index) * 30
                   : index * 45;
                 return (
                   <span
-                    key={`code-${index}`}
+                    key={`cod-${index}`}
                     style={{
                       transform: isTextVisible
                         ? 'perspective(600px) rotateY(0deg) translateX(0px) translateZ(0px) scale(1)'
@@ -217,15 +217,15 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
               })}
             </div>
 
-            {/* Word: Verse */}
+            {/* Word: rix */}
             <div className="flex items-center ml-0.5 sm:ml-1">
-              {verseLetters.map((char, index) => {
+              {rixLetters.map((char, index) => {
                 const staggerDelay = isRetracting
-                  ? (verseLetters.length - 1 - index) * 30
-                  : (codeLetters.length + index) * 45;
+                  ? (rixLetters.length - 1 - index) * 30
+                  : (codLetters.length + index) * 45;
                 return (
                   <span
-                    key={`verse-${index}`}
+                    key={`rix-${index}`}
                     style={{
                       transform: isTextVisible
                         ? 'perspective(600px) rotateY(0deg) translateX(0px) translateZ(0px) scale(1)'

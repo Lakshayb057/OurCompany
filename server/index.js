@@ -31,7 +31,7 @@ export function broadcastSync(type, action, data) {
   lastSyncTimestamp = Date.now();
   if (io) {
     try {
-      io.emit('codeverse:sync', { type, action, data, timestamp: lastSyncTimestamp });
+      io.emit('codrix:sync', { type, action, data, timestamp: lastSyncTimestamp });
     } catch (err) {
       console.warn('[Socket.io] Broadcast warning:', err.message);
     }
@@ -119,7 +119,7 @@ function getInitialEmptyStore() {
 function getDefaultSiteContent() {
   return {
     hero: {
-      line1: 'CODEVERSE',
+      line1: 'CODRIX',
       line2: 'TURNING IDEAS INTO',
       line3: 'TECHNOLOGY',
       badge1: 'Production-Grade Distributed Cloud Systems',
@@ -129,7 +129,7 @@ function getDefaultSiteContent() {
     story: {
       heading: 'Engineered for Performance. Built for Reliability.',
       subheading: 'We build mission-critical digital systems with architectural precision.',
-      paragraph1: 'Founded by engineers with deep passion for distributed computing, CodeVerse designs, architects, and scales resilient full-stack systems. We eliminate technical debt at the design phase.',
+      paragraph1: 'Founded by engineers with deep passion for distributed computing, Codrix designs, architects, and scales resilient full-stack systems. We eliminate technical debt at the design phase.',
       paragraph2: 'From real-time campus dining ecosystems to intelligent OCR pipeline fleets, our software powers operations with sub-100ms response times and zero-downtime reliability.',
       stats: [
         { label: 'Clean Codebase', value: '100%' },
@@ -185,11 +185,11 @@ function getDefaultSiteContent() {
       ]
     },
     siteSettings: {
-      companyName: 'CodeVerse',
+      companyName: 'Codrix',
       legalHeadquarters: 'Corporate Headquarters: India • Global Remote Delivery',
-      contactEmail: 'leadership@codeverse.tech',
+      contactEmail: 'leadership@codrix.tech',
       contactPhone: '+91 99999 99999',
-      copyrightNotice: '© 2026 CodeVerse. All rights reserved.'
+      copyrightNotice: '© 2026 Codrix. All rights reserved.'
     }
   };
 }
@@ -407,7 +407,7 @@ app.post('/api/v1/inquiries', async (req, res) => {
 
   return res.status(201).json({
     success: true,
-    message: 'Thank you for contacting CodeVerse. Your inquiry has been submitted and saved!',
+    message: 'Thank you for contacting Codrix. Your inquiry has been submitted and saved!',
     data: { inquiryId: newInquiry.id, inquiry: newInquiry }
   });
 });
@@ -467,14 +467,14 @@ app.post('/api/v1/plan-registrations', async (req, res) => {
 // Admin Login
 app.post('/api/v1/auth/login', (req, res) => {
   const { email, password } = req.body;
-  if (email === 'admin@codeverse.tech' && password === 'CodeVerse@2026') {
+  if (email === 'admin@codrix.tech' && password === 'Codrix@2026') {
     return res.json({
       success: true,
       data: {
         token: 'cv_admin_session_jwt_token_2026',
         user: {
           name: 'Lakshay',
-          email: 'admin@codeverse.tech',
+          email: 'admin@codrix.tech',
           role: 'Super Admin',
           permissions: ['all']
         }
@@ -499,7 +499,7 @@ app.get('/api/v1/admin/status', async (req, res) => {
     connected,
     provider: 'MongoDB Atlas',
     host: 'ourcompany.fwhyx65.mongodb.net',
-    database: 'codeverse',
+    database: 'codrix',
     counts: {
       inquiries: store.inquiries?.length || 0,
       planRegistrations: store.planRegistrations?.length || 0,
@@ -1038,7 +1038,7 @@ app.get('/api/v1/admin/cloudinary-status', (req, res) => {
 
 // Upload image to Cloudinary (Folder-based: leadership, projects, process)
 app.post('/api/v1/admin/upload-image', async (req, res) => {
-  const { image, folder = 'codeverse' } = req.body;
+  const { image, folder = 'codrix' } = req.body;
   if (!image) {
     return res.status(400).json({ success: false, message: 'No image data provided.' });
   }
@@ -1155,10 +1155,10 @@ if (!process.env.VERCEL) {
   });
 
   io.on('connection', (socket) => {
-    socket.emit('codeverse:connected', { time: Date.now() });
+    socket.emit('codrix:connected', { time: Date.now() });
   });
 
   httpServer.listen(PORT, () => {
-    console.log(`CodeVerse Backend with Socket.io running on port ${PORT}`);
+    console.log(`Codrix Backend with Socket.io running on port ${PORT}`);
   });
 }

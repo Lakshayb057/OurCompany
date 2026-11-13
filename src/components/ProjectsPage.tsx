@@ -275,7 +275,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
               Have a similar system or startup in mind?
             </h3>
             <p className="text-sm text-slate-300">
-              Partner with CodeVerse engineering to architect, prototype, and ship your production platform with milestone rigor.
+              Partner with Codrix engineering to architect, prototype, and ship your production platform with milestone rigor.
             </p>
           </div>
           <button
