@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Github, ArrowUpRight, BookOpen, ArrowRight, Play, Image as ImageIcon } from 'lucide-react';
 import { Product } from '../types';
+import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 
 interface PortfolioSectionProps {
   products: Product[];
@@ -83,20 +84,25 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                         src="/universe_video.webp"
                         alt="UniVerse Platform Demo Video"
                         className="w-full h-full object-cover object-top sm:object-[center_8%] transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                        loading="eager"
+                        loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <img
                         src="/universe-banner.jpg"
                         alt={prod.name}
                         className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                        loading="eager"
+                        decoding="async"
                       />
                     )
                   ) : (
                     <img
-                      src={imgSrc}
+                      src={getOptimizedImageUrl(imgSrc, 900)}
                       alt={prod.name}
                       className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
                     />
                   )}
                 </div>

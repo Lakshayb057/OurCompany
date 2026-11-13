@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Linkedin, Shield, ChevronLeft, ChevronRight } from 'lucide-react';
 import { TeamMember } from '../types';
+import { getOptimizedImageUrl } from '../utils/imageOptimizer';
 
 interface LeadershipSectionProps {
   team: TeamMember[];
@@ -195,8 +196,10 @@ export const LeadershipSection: React.FC<LeadershipSectionProps> = ({ team }) =>
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                   {(member.avatar || (member as any).photo) && !imgErrors[member.id] ? (
                     <img
-                      src={member.avatar || (member as any).photo}
+                      src={getOptimizedImageUrl(member.avatar || (member as any).photo, 600)}
                       alt={member.name}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
                       onError={() => setImgErrors((prev) => ({ ...prev, [member.id]: true }))}
                     />

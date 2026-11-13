@@ -29,6 +29,8 @@ export const GlobalVision: React.FC<GlobalVisionProps> = ({ onStartProject, cont
             <img
               src="/global-vision.jpg"
               alt="Engineered Locally, Deployed Globally - 4K Photography"
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center transform transition-transform duration-1000 ease-out group-hover:scale-105 opacity-85 sm:opacity-95 dark:opacity-85"
             />
             {/* Light Mode Gradients - Gentle left-side text scrim, leaving the photograph beautifully visible across the container */}

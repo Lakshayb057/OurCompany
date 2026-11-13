@@ -53,6 +53,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
     return typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
   });
   const sectionRef = useRef<HTMLElement>(null);
+  const touchStartY = useRef<number>(0);
 
   // Track responsive screen size for mobile horizontal glide
   useEffect(() => {
@@ -211,16 +212,60 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
               })}
             </div>
 
-            {/* Right Column / Mobile Full Width: Premium Vertical Card Partial Overlap Deck */}
+            {/* Right Column / Mobile Full Width: Premium 3D Kinetic Card Deck */}
             <div className="w-full lg:col-span-7 flex flex-col justify-center items-center flex-1 h-full min-h-0 py-1 sm:py-2">
+              
+              {/* Mobile Stage Selector & Step Pills (01 to 05) */}
+              <div className="flex lg:hidden items-center justify-center gap-1.5 sm:gap-2 my-1 z-20 w-full px-2">
+                {steps.map((step, idx) => {
+                  const isActive = activeStep === idx;
+                  return (
+                    <button
+                      key={step.num}
+                      type="button"
+                      onClick={() => handleStepClick(idx)}
+                      className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-mono transition-all duration-300 cursor-pointer ${
+                        isActive
+                          ? 'bg-electric-purple text-white shadow-lg shadow-purple-600/40 scale-105 font-bold ring-2 ring-purple-400/50'
+                          : 'bg-black/40 dark:bg-white/5 text-slate-500 dark:text-gray-400 hover:text-white border border-white/10'
+                      }`}
+                    >
+                      <span>{step.num}</span>
+                      {isActive && (
+                        <span className="text-[10px] font-sans font-semibold max-w-[85px] truncate">
+                          {step.shortTitle || step.title}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 3D Kinetic Deck Container with Depth Perspective & Touch Swipe */}
               <div 
-                className="relative w-full h-full max-h-[calc(100dvh-185px)] sm:max-h-[68vh] lg:h-[570px] max-w-sm sm:max-w-md lg:max-w-none mx-auto flex items-center justify-center overflow-hidden"
+                className="relative w-full h-full max-h-[calc(100dvh-200px)] sm:max-h-[68vh] lg:h-[570px] max-w-sm sm:max-w-md lg:max-w-none mx-auto flex items-center justify-center overflow-hidden"
+                style={{
+                  perspective: '1200px',
+                  transformStyle: 'preserve-3d',
+                }}
+                onTouchStart={(e) => {
+                  touchStartY.current = e.touches[0].clientY;
+                }}
+                onTouchEnd={(e) => {
+                  const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+                  if (Math.abs(deltaY) > 40) {
+                    if (deltaY < 0 && activeStep < steps.length - 1) {
+                      handleStepClick(activeStep + 1);
+                    } else if (deltaY > 0 && activeStep > 0) {
+                      handleStepClick(activeStep - 1);
+                    }
+                  }
+                }}
               >
                 
                 {steps.map((step, idx) => {
                   let transform = '';
                   let opacity = 0;
-                  let scale = 1;
                   let brightness = 1;
                   let shadowClass = 'shadow-2xl';
                   const cardZIndex = (idx + 1) * 10;
@@ -228,38 +273,44 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
 
                   const enterProgress = Math.min(Math.max(scrubValue - (idx - 1), 0), 1);
                   const depth = Math.max(0, scrubValue - idx);
-                  const overlapShift = isMobile ? 16 : 28;
+                  const overlapShift = isMobile ? 18 : 28;
 
                   if (idx === 0) {
-                    // First card stays visible at top of stack, shifting up slightly as newer cards overlay it
+                    // First card stays visible at top of stack, shifting up and tilting slightly into 3D space as newer cards overlay it
                     opacity = 1;
-                    const shiftY = Math.min(depth * overlapShift, isMobile ? 56 : 96);
-                    scale = 1 - Math.min(depth * (isMobile ? 0.024 : 0.018), 0.08);
-                    brightness = 1 - Math.min(depth * 0.07, 0.24);
+                    const shiftY = Math.min(depth * overlapShift, isMobile ? 54 : 96);
+                    const translateZ = -Math.min(depth * (isMobile ? 24 : 35), 110);
+                    const rotateX = Math.min(depth * (isMobile ? 2.5 : 3.5), 10);
+                    const scale = 1 - Math.min(depth * (isMobile ? 0.028 : 0.02), 0.08);
+                    brightness = 1 - Math.min(depth * 0.08, 0.28);
                     shadowClass = depth > 0 ? 'shadow-xl' : 'shadow-2xl';
-                    transform = `translate3d(0, ${-shiftY}px, 0) scale(${scale})`;
+                    transform = `perspective(1200px) translate3d(0, ${-shiftY}px, ${translateZ}px) rotateX(${rotateX}deg) scale(${scale})`;
                   } else if (enterProgress <= 0) {
-                    // Card waiting below viewport
+                    // Card waiting below viewport in 3D perspective
                     opacity = 0;
-                    transform = `translate3d(0, 105%, 0) scale(0.96)`;
+                    transform = `perspective(1200px) translate3d(0, 110%, -60px) rotateX(-16deg) scale(0.92)`;
                     isClickable = false;
                   } else if (enterProgress < 1) {
-                    // Card smoothly sliding up from below over the previous stacked card with partial overlap
-                    const currentY = (1 - enterProgress) * 105;
-                    opacity = Math.min(enterProgress * 2.5, 1);
-                    scale = 0.96 + enterProgress * 0.04;
+                    // Card smoothly gliding up from below over previous stacked card with 3D pitch tilt & elevation
+                    const currentY = (1 - enterProgress) * 110;
+                    const currentRotateX = (1 - enterProgress) * -16;
+                    const currentZ = (1 - enterProgress) * -60;
+                    const currentScale = 0.92 + enterProgress * 0.08;
+                    opacity = Math.min(enterProgress * 2.8, 1);
                     brightness = 1;
-                    shadowClass = 'shadow-[0_-16px_40px_rgba(0,0,0,0.7),0_25px_50px_rgba(0,0,0,0.85)]';
-                    transform = `translate3d(0, ${currentY}%, 0) scale(${scale})`;
+                    shadowClass = 'shadow-[0_-20px_50px_rgba(124,44,245,0.35),0_30px_60px_rgba(0,0,0,0.85)]';
+                    transform = `perspective(1200px) translate3d(0, ${currentY}%, ${currentZ}px) rotateX(${currentRotateX}deg) scale(${currentScale})`;
                     isClickable = true;
                   } else {
-                    // Card has fully entered, sits at rest or shifts up as subsequent cards overlap
+                    // Card has fully entered, sits at rest or recedes backward in 3D stack
                     opacity = 1;
                     const shiftY = Math.min(depth * overlapShift, (4 - idx) * overlapShift);
-                    scale = 1 - Math.min(depth * (isMobile ? 0.024 : 0.018), 0.08);
-                    brightness = 1 - Math.min(depth * 0.07, 0.24);
-                    shadowClass = 'shadow-[0_-10px_30px_rgba(0,0,0,0.6),0_20px_45px_rgba(0,0,0,0.8)]';
-                    transform = `translate3d(0, ${-shiftY}px, 0) scale(${scale})`;
+                    const translateZ = -Math.min(depth * (isMobile ? 24 : 35), 110);
+                    const rotateX = Math.min(depth * (isMobile ? 2.5 : 3.5), 10);
+                    const scale = 1 - Math.min(depth * (isMobile ? 0.028 : 0.02), 0.08);
+                    brightness = 1 - Math.min(depth * 0.08, 0.28);
+                    shadowClass = 'shadow-[0_-12px_35px_rgba(0,0,0,0.65),0_20px_45px_rgba(0,0,0,0.85)]';
+                    transform = `perspective(1200px) translate3d(0, ${-shiftY}px, ${translateZ}px) rotateX(${rotateX}deg) scale(${scale})`;
                     isClickable = true;
                   }
 
@@ -273,16 +324,22 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                         filter: `brightness(${brightness})`,
                         pointerEvents: isClickable ? 'auto' : 'none',
                         WebkitMaskImage: '-webkit-radial-gradient(white, black)',
-                        transition: 'transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.16s ease-out, filter 0.16s ease-out'
+                        transition: 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out, filter 0.2s ease-out'
                       }}
                       className={`absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border-2 border-purple-200/90 dark:border-electric-purple/60 ${shadowClass} will-change-transform isolate`}
                     >
+                      {/* Top Radiant Laser Rim Light on Active Entering Card */}
+                      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-electric-purple to-transparent opacity-80 z-20 pointer-events-none" />
+
                       {/* Image Frame with Full Bleed to all 4 rounded corners */}
                       <div className="relative w-full h-full overflow-hidden rounded-[inherit]">
                         <img
                           src={step.image}
                           alt={step.title}
-                          className="w-full h-full object-cover object-center rounded-[inherit]"
+                          loading={idx === 0 ? "eager" : "lazy"}
+                          decoding="async"
+                          fetchPriority={idx === 0 ? "high" : "auto"}
+                          className="w-full h-full object-cover object-center rounded-[inherit] transform transition-transform duration-700 ease-out"
                         />
 
                         {/* Dark Atmospheric Gradients for Text Contrast */}

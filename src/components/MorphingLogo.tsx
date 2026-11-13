@@ -183,6 +183,9 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
         <img
           src="/hero-ribbon.png"
           alt="Codrix Ribbon"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className={`w-full h-full object-contain pointer-events-none ${rawP === 0 && hasEntered ? 'animate-hero-float' : ''}`}
         />
       </div>

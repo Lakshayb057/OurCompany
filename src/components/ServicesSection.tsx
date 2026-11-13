@@ -139,12 +139,13 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
               >
                 {/* 4K Portrait Explanatory Imagery Container */}
                 <div className="relative aspect-[4/5] w-full overflow-hidden bg-slate-900">
-                  <img
-                    src={imgSrc}
-                    alt={service.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover object-center transform transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
+                    <img
+                      src={imgSrc}
+                      alt={service.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover object-center transform transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
 
                   {/* Dual-Theme Atmospheric Gradients */}
                   {/* Top subtle vignette */}

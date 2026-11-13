@@ -189,6 +189,8 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
                       <img
                         src={imageSrc}
                         alt={service.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-90"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent pointer-events-none" />
