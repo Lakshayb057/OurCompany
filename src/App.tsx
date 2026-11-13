@@ -343,7 +343,16 @@ export const App: React.FC = () => {
         story: { heading: '', subheading: '', paragraph1: '', paragraph2: '', stats: [] },
         process: [],
         globalVision: { headline: '', subheading: '', metrics: [] },
-        siteSettings: { companyName: '', legalHeadquarters: '', contactEmail: '', contactPhone: '', copyrightNotice: '' }
+        siteSettings: {
+          companyName: '',
+          legalHeadquarters: '',
+          contactEmail: '',
+          contactPhone: '',
+          copyrightNotice: '',
+          linkedinUrl: '',
+          instagramUrl: '',
+          gmailUrl: ''
+        }
       };
       return { ...current, [section]: sanitizeBrand(data) };
     });

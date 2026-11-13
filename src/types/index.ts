@@ -14,6 +14,25 @@ export interface Inquiry {
   createdAt: string;
 }
 
+export interface PlatformAdoption {
+  id: string;
+  platformId: string;
+  platformName: string;
+  fullName: string;
+  email: string;
+  contact: string;
+  companyName: string;
+  companyContact: string;
+  usecases: string;
+  requirements: string;
+  timeline?: string;
+  estimatedScale?: string;
+  status: 'New' | 'In Review' | 'Contacted' | 'Converted' | 'Archived' | string;
+  notes?: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface Service {
   id: string;
   slug: string;
@@ -147,6 +166,9 @@ export interface SiteContent {
     contactEmail: string;
     contactPhone: string;
     copyrightNotice: string;
+    linkedinUrl?: string;
+    instagramUrl?: string;
+    gmailUrl?: string;
   };
 }
 

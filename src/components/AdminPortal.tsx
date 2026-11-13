@@ -6,11 +6,11 @@ import {
   Database, Users, Sparkles, Plus, Trash2, Edit3, Save, Globe,
   Briefcase, Activity, CheckCircle, ArrowLeft, Sun, Moon, ChevronRight,
   Phone, Mail, MapPin, Code, Cpu, Eye, EyeOff, Upload, Image as ImageIcon, Cloud, Loader2,
-  Video, Film, Play
+  Video, Film, Play, Settings, Linkedin, Instagram
 } from 'lucide-react';
 import {
   Inquiry, Product, Service, TeamMember,
-  PlanRegistrationItem, SiteContent, ProcessStage
+  PlanRegistrationItem, PlatformAdoption, SiteContent, ProcessStage
 } from '../types';
 import { PlanPackage } from '../data/plansData';
 
@@ -210,10 +210,12 @@ interface AdminPortalProps {
 type AdminTab =
   | 'overview'
   | 'inquiries'
+  | 'adoptions'
   | 'registrations'
   | 'portfolio'
   | 'team'
-  | 'plans';
+  | 'plans'
+  | 'settings';
 
 export const AdminPortal: React.FC<AdminPortalProps> = ({
   isOpen,
@@ -288,6 +290,42 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   const [registrationsSearch, setRegistrationsSearch] = useState('');
   const [selectedRegistration, setSelectedRegistration] = useState<PlanRegistrationItem | null>(null);
 
+  // Platform Adoptions State
+  const [adoptions, setAdoptions] = useState<PlatformAdoption[]>([]);
+  const [adoptionsFilter, setAdoptionsFilter] = useState('All');
+  const [adoptionsPlatformFilter, setAdoptionsPlatformFilter] = useState('All');
+  const [adoptionsSearch, setAdoptionsSearch] = useState('');
+  const [selectedAdoption, setSelectedAdoption] = useState<PlatformAdoption | null>(null);
+  const [adoptionNotes, setAdoptionNotes] = useState('');
+
+  // Site Settings & Socials State
+  const [settingsForm, setSettingsForm] = useState({
+    companyName: siteContent?.siteSettings?.companyName || 'Codrix',
+    legalHeadquarters: siteContent?.siteSettings?.legalHeadquarters || 'Corporate Headquarters: India',
+    contactEmail: siteContent?.siteSettings?.contactEmail || 'codrixsoftwares@gmail.com',
+    contactPhone: siteContent?.siteSettings?.contactPhone || '+91 99999 99999',
+    copyrightNotice: siteContent?.siteSettings?.copyrightNotice || 'All rights reserved.',
+    linkedinUrl: siteContent?.siteSettings?.linkedinUrl || 'https://linkedin.com/company/codrix',
+    instagramUrl: siteContent?.siteSettings?.instagramUrl || 'https://instagram.com/codrix.tech',
+    gmailUrl: siteContent?.siteSettings?.gmailUrl || 'mailto:codrixsoftwares@gmail.com',
+  });
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+
+  useEffect(() => {
+    if (siteContent?.siteSettings) {
+      setSettingsForm({
+        companyName: siteContent.siteSettings.companyName || 'Codrix',
+        legalHeadquarters: siteContent.siteSettings.legalHeadquarters || 'Corporate Headquarters: India',
+        contactEmail: siteContent.siteSettings.contactEmail || 'codrixsoftwares@gmail.com',
+        contactPhone: siteContent.siteSettings.contactPhone || '+91 99999 99999',
+        copyrightNotice: siteContent.siteSettings.copyrightNotice || 'All rights reserved.',
+        linkedinUrl: siteContent.siteSettings.linkedinUrl || 'https://linkedin.com/company/codrix',
+        instagramUrl: siteContent.siteSettings.instagramUrl || 'https://instagram.com/codrix.tech',
+        gmailUrl: siteContent.siteSettings.gmailUrl || 'mailto:codrixsoftwares@gmail.com',
+      });
+    }
+  }, [siteContent]);
+
   // Save notification toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -341,6 +379,18 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     }
   }, []);
 
+  const fetchAdoptions = useCallback(async () => {
+    try {
+      const res = await fetch('/api/v1/admin/platform-adoptions');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data) setAdoptions(json.data);
+      }
+    } catch (e) {
+      console.warn('Platform adoptions fetch error', e);
+    }
+  }, []);
+
   const fetchCloudinaryStatus = useCallback(async () => {
     try {
       const res = await fetch('/api/v1/admin/cloudinary-status');
@@ -360,9 +410,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       fetchDbStatus();
       fetchInquiries();
       fetchRegistrations();
+      fetchAdoptions();
       fetchCloudinaryStatus();
     }
-  }, [isOpen, isAuthenticated, fetchDbStatus, fetchInquiries, fetchRegistrations, fetchCloudinaryStatus]);
+  }, [isOpen, isAuthenticated, fetchDbStatus, fetchInquiries, fetchRegistrations, fetchAdoptions, fetchCloudinaryStatus]);
 
   // Handle Login
   const handleLogin = async (e: React.FormEvent) => {
@@ -853,6 +904,63 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     }
   };
 
+  // Platform Adoption Handlers
+  const handleUpdateAdoptionStatus = async (id: string, newStatus: string, notes?: string) => {
+    try {
+      await fetch(`/api/v1/admin/platform-adoptions/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus, notes })
+      });
+      setAdoptions(prev => prev.map(a => a.id === id ? { ...a, status: newStatus, ...(notes !== undefined ? { notes } : {}) } : a));
+      if (selectedAdoption && selectedAdoption.id === id) {
+        setSelectedAdoption(prev => prev ? { ...prev, status: newStatus, ...(notes !== undefined ? { notes } : {}) } : null);
+      }
+      showToast(`Platform adoption status updated to ${newStatus}`);
+    } catch (e) {
+      console.warn('Atlas adoption update error:', e);
+    }
+  };
+
+  const handleDeleteAdoption = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this platform adoption application?')) return;
+    try {
+      await fetch(`/api/v1/admin/platform-adoptions/${id}`, { method: 'DELETE' });
+      setAdoptions(prev => prev.filter(a => a.id !== id));
+      if (selectedAdoption?.id === id) setSelectedAdoption(null);
+      showToast('Platform adoption application deleted.');
+    } catch (e) {
+      console.warn('Atlas adoption delete error:', e);
+    }
+  };
+
+  // Site Settings Handler
+  const handleSaveSettings = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setIsSavingSettings(true);
+    try {
+      const res = await fetch('/api/v1/admin/content/siteSettings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settingsForm)
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        if (onUpdateSiteContent) {
+          onUpdateSiteContent('siteSettings', settingsForm);
+        }
+        showToast('Site settings & social media links updated!');
+      } else {
+        showToast(json.message || 'Failed to update settings.');
+      }
+    } catch (err: any) {
+      console.error('Settings save error:', err);
+      showToast('Network error saving settings.');
+    } finally {
+      setIsSavingSettings(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   // -------------------------------------------------------------
@@ -1045,6 +1153,26 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             </button>
 
             <button
+              onClick={() => setActiveTab('adoptions')}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'adoptions'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Sparkles className="w-4 h-4 text-amber-400" />
+                <span>Platform Adoptions</span>
+              </div>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                adoptions.some(a => a.status === 'New')
+                  ? 'bg-amber-400 text-black shadow-sm shadow-amber-400/40'
+                  : 'bg-white/20 dark:bg-white/10'
+              }`}>
+                {adoptions.length}
+              </span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('registrations')}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'registrations'
                 ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
@@ -1101,6 +1229,20 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
               </div>
               <span className="text-[10px] opacity-75 font-mono">{plans.length}</span>
             </button>
+
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${activeTab === 'settings'
+                ? 'bg-electric-purple text-white shadow-md shadow-purple-600/25'
+                : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5'
+                }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Settings className="w-4 h-4 text-purple-400" />
+                <span>Site & Social Settings</span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+            </button>
           </div>
         </aside>
 
@@ -1121,7 +1263,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                 </div>
 
                 {/* Status KPI Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                   <div className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-mono text-light-subtext dark:text-muted-gray">INQUIRIES</span>
@@ -1132,6 +1274,22 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     </div>
                     <div className="text-[11px] text-emerald-500 font-medium mt-1">
                       {inquiries.filter(i => i.status === 'New').length} pending review
+                    </div>
+                  </div>
+
+                  <div
+                    onClick={() => setActiveTab('adoptions')}
+                    className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm cursor-pointer hover:border-purple-500/50 transition-all group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono text-light-subtext dark:text-muted-gray">PLATFORM ADOPTIONS</span>
+                      <Sparkles className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+                    </div>
+                    <div className="text-3xl font-extrabold mt-2 text-light-text dark:text-white">
+                      {adoptions.length}
+                    </div>
+                    <div className="text-[11px] text-amber-500 font-medium mt-1">
+                      {adoptions.filter(a => a.status === 'New').length} pending tie-up specs
                     </div>
                   </div>
 
@@ -1366,6 +1524,222 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                               {inq.description}
                             </div>
                           )}
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB: PLATFORM ADOPTIONS */}
+            {activeTab === 'adoptions' && (
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h1 className="text-xl font-bold text-light-text dark:text-white">Platform Adoption Applications</h1>
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                        {adoptions.length} Requests
+                      </span>
+                    </div>
+                    <p className="text-xs text-light-subtext dark:text-muted-gray">
+                      Clients & organizations requesting turnkey deployment, white-label licensing, or corporate tie-ups for UniVerse, ChatLeads AI, Nexus CRM, or CampXChange.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-light-subtext dark:text-muted-gray" />
+                      <input
+                        type="text"
+                        placeholder="Search applicant, company, usecases..."
+                        value={adoptionsSearch}
+                        onChange={(e) => setAdoptionsSearch(e.target.value)}
+                        className="pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border text-xs focus:ring-1 focus:ring-electric-purple text-light-text dark:text-white"
+                      />
+                    </div>
+
+                    <select
+                      value={adoptionsPlatformFilter}
+                      onChange={(e) => setAdoptionsPlatformFilter(e.target.value)}
+                      className="px-3 py-1.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white"
+                    >
+                      <option value="All">All Platforms</option>
+                      <option value="UniVerse">UniVerse</option>
+                      <option value="ChatLeads AI">ChatLeads AI</option>
+                      <option value="Nexus CRM">Nexus CRM</option>
+                      <option value="CampXChange">CampXChange</option>
+                    </select>
+
+                    <select
+                      value={adoptionsFilter}
+                      onChange={(e) => setAdoptionsFilter(e.target.value)}
+                      className="px-3 py-1.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white"
+                    >
+                      <option value="All">All Statuses</option>
+                      <option value="New">New</option>
+                      <option value="In Review">In Review</option>
+                      <option value="Contacted">Contacted</option>
+                      <option value="Converted">Converted</option>
+                      <option value="Archived">Archived</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* KPI mini-cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="p-3.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border">
+                    <span className="text-[10px] font-mono text-light-subtext dark:text-muted-gray block">TOTAL ADOPTIONS</span>
+                    <span className="text-xl font-bold text-light-text dark:text-white">{adoptions.length}</span>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border">
+                    <span className="text-[10px] font-mono text-amber-500 block">NEW / PENDING</span>
+                    <span className="text-xl font-bold text-amber-500">{adoptions.filter(a => a.status === 'New').length}</span>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border">
+                    <span className="text-[10px] font-mono text-blue-500 block">IN REVIEW</span>
+                    <span className="text-xl font-bold text-blue-500">{adoptions.filter(a => a.status === 'In Review').length}</span>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border">
+                    <span className="text-[10px] font-mono text-emerald-500 block">CONVERTED / SIGNED</span>
+                    <span className="text-xl font-bold text-emerald-500">{adoptions.filter(a => a.status === 'Converted').length}</span>
+                  </div>
+                </div>
+
+                {adoptions.length === 0 ? (
+                  <div className="p-12 text-center bg-white dark:bg-midnight-800 rounded-3xl border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray text-xs space-y-2">
+                    <Sparkles className="w-8 h-8 mx-auto text-electric-purple/40" />
+                    <p className="font-semibold text-sm text-light-text dark:text-white">No platform adoptions yet.</p>
+                    <p>When clients click "Adopt This Platform" on /services and submit their deployment requirements, their data will sync here in real-time.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {adoptions
+                      .filter(a => {
+                        if (adoptionsFilter !== 'All' && a.status !== adoptionsFilter) return false;
+                        if (adoptionsPlatformFilter !== 'All' && !a.platformName.toLowerCase().includes(adoptionsPlatformFilter.toLowerCase())) return false;
+                        if (adoptionsSearch.trim()) {
+                          const q = adoptionsSearch.toLowerCase();
+                          return (
+                            a.fullName.toLowerCase().includes(q) ||
+                            a.email.toLowerCase().includes(q) ||
+                            a.contact.toLowerCase().includes(q) ||
+                            a.companyName.toLowerCase().includes(q) ||
+                            (a.companyContact || '').toLowerCase().includes(q) ||
+                            a.platformName.toLowerCase().includes(q) ||
+                            a.usecases.toLowerCase().includes(q) ||
+                            a.requirements.toLowerCase().includes(q)
+                          );
+                        }
+                        return true;
+                      })
+                      .map((adopt) => (
+                        <div
+                          key={adopt.id}
+                          className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm space-y-4 hover:border-purple-300 dark:hover:border-midnight-border/90 transition-all"
+                        >
+                          {/* Card Header */}
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-light-border dark:border-midnight-border/60 pb-3">
+                            <div className="space-y-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-gradient-to-r from-electric-purple to-deep-violet text-white shadow-sm shadow-purple-500/20">
+                                  {adopt.platformName}
+                                </span>
+                                <h3 className="font-bold text-sm text-light-text dark:text-white">
+                                  {adopt.fullName}
+                                </h3>
+                                <span className="text-xs text-light-subtext dark:text-muted-gray">
+                                  from <strong className="text-light-text dark:text-white">{adopt.companyName}</strong>
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap items-center gap-3 text-xs text-light-subtext dark:text-muted-gray">
+                                <a href={`mailto:${adopt.email}`} className="hover:text-electric-purple flex items-center gap-1">
+                                  <Mail className="w-3 h-3 text-electric-purple" />
+                                  <span>{adopt.email}</span>
+                                </a>
+                                <a href={`tel:${adopt.contact}`} className="hover:text-electric-purple flex items-center gap-1">
+                                  <Phone className="w-3 h-3 text-electric-purple" />
+                                  <span>{adopt.contact}</span>
+                                </a>
+                                {adopt.companyContact && (
+                                  <span className="flex items-center gap-1">
+                                    <Building2 className="w-3 h-3 text-electric-purple" />
+                                    <span>HQ Contact: {adopt.companyContact}</span>
+                                  </span>
+                                )}
+                                <span>• Submitted: {new Date(adopt.createdAt).toLocaleString()}</span>
+                              </div>
+                            </div>
+
+                            {/* Status Selector & Actions */}
+                            <div className="flex items-center gap-2 self-start sm:self-center">
+                              <select
+                                value={adopt.status}
+                                onChange={(e) => handleUpdateAdoptionStatus(adopt.id, e.target.value)}
+                                className={`px-2.5 py-1 rounded-lg text-xs font-semibold border ${
+                                  adopt.status === 'New'
+                                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-500'
+                                    : adopt.status === 'In Review'
+                                    ? 'bg-blue-500/10 border-blue-500/30 text-blue-500'
+                                    : adopt.status === 'Contacted'
+                                    ? 'bg-purple-500/10 border-purple-500/30 text-electric-purple'
+                                    : adopt.status === 'Converted'
+                                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500'
+                                    : 'bg-slate-500/10 border-slate-500/30 text-slate-400'
+                                }`}
+                              >
+                                <option value="New">New</option>
+                                <option value="In Review">In Review</option>
+                                <option value="Contacted">Contacted</option>
+                                <option value="Converted">Converted</option>
+                                <option value="Archived">Archived</option>
+                              </select>
+
+                              <button
+                                onClick={() => {
+                                  setSelectedAdoption(adopt);
+                                  setAdoptionNotes(adopt.notes || '');
+                                }}
+                                className="px-3 py-1 rounded-lg bg-purple-50 dark:bg-midnight-900 border border-purple-200 dark:border-midnight-border text-electric-purple dark:text-lavender-glow hover:bg-purple-100 text-xs font-semibold cursor-pointer"
+                              >
+                                Deep Dive Specs
+                              </button>
+
+                              <button
+                                onClick={() => handleDeleteAdoption(adopt.id)}
+                                className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 transition-colors"
+                                title="Delete application"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Quick Spec Details Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                            <div className="p-3 rounded-xl bg-light-100/70 dark:bg-midnight-900/40 border border-light-border dark:border-midnight-border/50">
+                              <span className="text-[10px] text-light-subtext dark:text-muted-gray uppercase font-mono block">Timeline</span>
+                              <span className="font-semibold text-light-text dark:text-white mt-0.5 block">{adopt.timeline || 'Flexible'}</span>
+                            </div>
+                            <div className="p-3 rounded-xl bg-light-100/70 dark:bg-midnight-900/40 border border-light-border dark:border-midnight-border/50">
+                              <span className="text-[10px] text-light-subtext dark:text-muted-gray uppercase font-mono block">Estimated Scale</span>
+                              <span className="font-semibold text-light-text dark:text-white mt-0.5 block">{adopt.estimatedScale || 'Standard'}</span>
+                            </div>
+                            <div className="sm:col-span-2 p-3 rounded-xl bg-light-100/70 dark:bg-midnight-900/40 border border-light-border dark:border-midnight-border/50">
+                              <span className="text-[10px] text-light-subtext dark:text-muted-gray uppercase font-mono block">Primary Use Case</span>
+                              <p className="text-light-text dark:text-white mt-0.5 line-clamp-2">{adopt.usecases}</p>
+                            </div>
+                          </div>
+
+                          {/* Custom Requirements Snippet */}
+                          <div className="p-3 rounded-xl bg-purple-50/50 dark:bg-midnight-900/70 border border-purple-100 dark:border-midnight-border/60 text-xs">
+                            <span className="font-semibold text-electric-purple dark:text-lavender-glow block mb-1">
+                              Custom Requirements & Technical Specifications:
+                            </span>
+                            <p className="text-light-text dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
+                              {adopt.requirements}
+                            </p>
+                          </div>
                         </div>
                       ))}
                   </div>
@@ -2585,9 +2959,400 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
               </div>
             )}
 
+            {/* TAB: SITE & SOCIAL SETTINGS */}
+            {activeTab === 'settings' && (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h1 className="text-xl font-bold text-light-text dark:text-white">
+                      Site & Social Media Settings
+                    </h1>
+                    <p className="text-xs text-light-subtext dark:text-muted-gray">
+                      Configure your official LinkedIn, Instagram, and Gmail accounts, corporate identity, and footer details.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={handleSaveSettings}
+                    disabled={isSavingSettings}
+                    className="px-5 py-2.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:bg-electric-light flex items-center gap-2 shadow-md shadow-purple-600/30 transition-all cursor-pointer self-start sm:self-center disabled:opacity-50"
+                  >
+                    {isSavingSettings ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Saving Changes...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" />
+                        <span>Save All Settings</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <form onSubmit={handleSaveSettings} className="space-y-6">
+                  {/* Section 1: Social Media Connectivity */}
+                  <div className="p-6 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm space-y-4">
+                    <div className="flex items-center gap-2 pb-3 border-b border-light-border dark:border-midnight-border/60">
+                      <Globe className="w-4 h-4 text-electric-purple" />
+                      <h2 className="text-sm font-bold text-light-text dark:text-white">
+                        Official Social Media & Direct Contact Channels
+                      </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* LinkedIn URL */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-light-subtext dark:text-muted-gray flex items-center justify-between">
+                          <span className="flex items-center gap-1.5">
+                            <Linkedin className="w-3.5 h-3.5 text-[#0A66C2]" />
+                            <span>LinkedIn URL</span>
+                          </span>
+                          {settingsForm.linkedinUrl && (
+                            <a
+                              href={settingsForm.linkedinUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] text-electric-purple hover:underline flex items-center gap-0.5"
+                            >
+                              <span>Test link</span>
+                              <ExternalLink className="w-2.5 h-2.5" />
+                            </a>
+                          )}
+                        </label>
+                        <input
+                          type="url"
+                          placeholder="https://linkedin.com/company/codrix"
+                          value={settingsForm.linkedinUrl}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, linkedinUrl: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white focus:outline-none focus:border-electric-purple"
+                        />
+                      </div>
+
+                      {/* Instagram URL */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-light-subtext dark:text-muted-gray flex items-center justify-between">
+                          <span className="flex items-center gap-1.5">
+                            <Instagram className="w-3.5 h-3.5 text-[#E4405F]" />
+                            <span>Instagram URL</span>
+                          </span>
+                          {settingsForm.instagramUrl && (
+                            <a
+                              href={settingsForm.instagramUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] text-electric-purple hover:underline flex items-center gap-0.5"
+                            >
+                              <span>Test link</span>
+                              <ExternalLink className="w-2.5 h-2.5" />
+                            </a>
+                          )}
+                        </label>
+                        <input
+                          type="url"
+                          placeholder="https://instagram.com/codrix.tech"
+                          value={settingsForm.instagramUrl}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, instagramUrl: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white focus:outline-none focus:border-electric-purple"
+                        />
+                      </div>
+
+                      {/* Gmail / Contact Email */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-light-subtext dark:text-muted-gray flex items-center justify-between">
+                          <span className="flex items-center gap-1.5">
+                            <Mail className="w-3.5 h-3.5 text-[#EA4335]" />
+                            <span>Gmail / Email Address</span>
+                          </span>
+                          {settingsForm.contactEmail && (
+                            <a
+                              href={`mailto:${settingsForm.contactEmail}`}
+                              className="text-[10px] text-electric-purple hover:underline flex items-center gap-0.5"
+                            >
+                              <span>Compose</span>
+                              <ExternalLink className="w-2.5 h-2.5" />
+                            </a>
+                          )}
+                        </label>
+                        <input
+                          type="email"
+                          placeholder="codrixsoftwares@gmail.com"
+                          value={settingsForm.contactEmail}
+                          onChange={(e) => setSettingsForm({
+                            ...settingsForm,
+                            contactEmail: e.target.value,
+                            gmailUrl: `mailto:${e.target.value}`
+                          })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white focus:outline-none focus:border-electric-purple"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Live Preview Box */}
+                    <div className="p-4 rounded-xl bg-purple-50/30 dark:bg-midnight-900/60 border border-dashed border-purple-200 dark:border-midnight-border/70 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                      <span className="text-light-subtext dark:text-muted-gray">Footer Button Preview:</span>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={settingsForm.linkedinUrl || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#0A66C2] shadow-sm flex items-center gap-1.5 font-mono text-[11px]"
+                        >
+                          <Linkedin className="w-3.5 h-3.5 text-[#0A66C2]" />
+                          <span>LinkedIn</span>
+                        </a>
+                        <a
+                          href={settingsForm.instagramUrl || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 rounded-xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#E4405F] shadow-sm flex items-center gap-1.5 font-mono text-[11px]"
+                        >
+                          <Instagram className="w-3.5 h-3.5 text-[#E4405F]" />
+                          <span>Instagram</span>
+                        </a>
+                        <a
+                          href={`mailto:${settingsForm.contactEmail || 'codrixsoftwares@gmail.com'}`}
+                          className="p-2 rounded-xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#EA4335] shadow-sm flex items-center gap-1.5 font-mono text-[11px]"
+                        >
+                          <Mail className="w-3.5 h-3.5 text-[#EA4335]" />
+                          <span>Gmail</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section 2: Corporate & Footer Identity */}
+                  <div className="p-6 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm space-y-4">
+                    <div className="flex items-center gap-2 pb-3 border-b border-light-border dark:border-midnight-border/60">
+                      <Shield className="w-4 h-4 text-electric-purple" />
+                      <h2 className="text-sm font-bold text-light-text dark:text-white">
+                        Corporate Identity & Legal Information
+                      </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Company Name */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-light-subtext dark:text-muted-gray">
+                          Company / Brand Name
+                        </label>
+                        <input
+                          type="text"
+                          value={settingsForm.companyName}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, companyName: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white focus:outline-none focus:border-electric-purple"
+                        />
+                      </div>
+
+                      {/* Contact Phone */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-light-subtext dark:text-muted-gray">
+                          Official Phone Number
+                        </label>
+                        <input
+                          type="text"
+                          value={settingsForm.contactPhone}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, contactPhone: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white focus:outline-none focus:border-electric-purple"
+                        />
+                      </div>
+
+                      {/* Legal Headquarters */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-light-subtext dark:text-muted-gray">
+                          Legal Headquarters Notice
+                        </label>
+                        <input
+                          type="text"
+                          value={settingsForm.legalHeadquarters}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, legalHeadquarters: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white focus:outline-none focus:border-electric-purple"
+                        />
+                      </div>
+
+                      {/* Copyright Notice */}
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-light-subtext dark:text-muted-gray">
+                          Copyright Text
+                        </label>
+                        <input
+                          type="text"
+                          value={settingsForm.copyrightNotice}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, copyrightNotice: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white focus:outline-none focus:border-electric-purple"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-2">
+                    <button
+                      type="submit"
+                      disabled={isSavingSettings}
+                      className="px-6 py-2.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:bg-electric-light flex items-center gap-2 shadow-md shadow-purple-600/30 transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      {isSavingSettings ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Saving Changes...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          <span>Save All Settings</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
           </div>
         </main>
       </div>
+
+      {/* Selected Platform Adoption Deep-Dive Modal */}
+      {selectedAdoption && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
+          <div
+            className="w-full max-w-2xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-midnight-border rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl overflow-y-auto max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between border-b border-light-border dark:border-midnight-border/70 pb-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-gradient-to-r from-electric-purple to-deep-violet text-white">
+                    {selectedAdoption.platformName}
+                  </span>
+                  <span className="text-xs font-mono text-light-subtext dark:text-muted-gray">
+                    ID: {selectedAdoption.id}
+                  </span>
+                </div>
+                <h2 className="text-2xl font-bold text-light-text dark:text-white mt-1">
+                  {selectedAdoption.fullName}
+                </h2>
+                <p className="text-xs text-light-subtext dark:text-muted-gray">
+                  Organization: <strong className="text-light-text dark:text-white">{selectedAdoption.companyName}</strong>
+                </p>
+              </div>
+
+              <button
+                onClick={() => setSelectedAdoption(null)}
+                className="p-2 rounded-xl text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Direct Contact Links */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+              <a
+                href={`mailto:${selectedAdoption.email}`}
+                className="p-3 rounded-xl bg-purple-50 dark:bg-midnight-900 border border-purple-100 dark:border-midnight-border flex items-center gap-2 hover:border-electric-purple transition-all"
+              >
+                <Mail className="w-4 h-4 text-electric-purple shrink-0" />
+                <span className="truncate">{selectedAdoption.email}</span>
+              </a>
+              <a
+                href={`tel:${selectedAdoption.contact}`}
+                className="p-3 rounded-xl bg-purple-50 dark:bg-midnight-900 border border-purple-100 dark:border-midnight-border flex items-center gap-2 hover:border-electric-purple transition-all"
+              >
+                <Phone className="w-4 h-4 text-electric-purple shrink-0" />
+                <span>{selectedAdoption.contact}</span>
+              </a>
+              <div className="p-3 rounded-xl bg-purple-50 dark:bg-midnight-900 border border-purple-100 dark:border-midnight-border flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-electric-purple shrink-0" />
+                <span className="truncate">{selectedAdoption.companyContact || 'HQ: Not provided'}</span>
+              </div>
+            </div>
+
+            {/* Scale & Timeline Details */}
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="p-3 rounded-xl bg-light-100 dark:bg-midnight-surface border border-light-border dark:border-midnight-border">
+                <span className="text-[10px] uppercase font-mono text-light-subtext dark:text-muted-gray block">Target Timeline</span>
+                <span className="font-semibold text-light-text dark:text-white mt-0.5 block">{selectedAdoption.timeline || 'Flexible'}</span>
+              </div>
+              <div className="p-3 rounded-xl bg-light-100 dark:bg-midnight-surface border border-light-border dark:border-midnight-border">
+                <span className="text-[10px] uppercase font-mono text-light-subtext dark:text-muted-gray block">Estimated Users / Scale</span>
+                <span className="font-semibold text-light-text dark:text-white mt-0.5 block">{selectedAdoption.estimatedScale || 'Standard'}</span>
+              </div>
+            </div>
+
+            {/* Primary Use Cases */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-light-subtext dark:text-muted-gray">
+                Primary Use Cases & Operational Goals
+              </label>
+              <div className="p-4 rounded-xl bg-light-100 dark:bg-midnight-surface border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white whitespace-pre-wrap leading-relaxed">
+                {selectedAdoption.usecases}
+              </div>
+            </div>
+
+            {/* Custom Specifications & Requirements */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-light-subtext dark:text-muted-gray">
+                Custom Requirements & Technical Specifications
+              </label>
+              <div className="p-4 rounded-xl bg-light-100 dark:bg-midnight-surface border border-light-border dark:border-midnight-border text-xs text-light-text dark:text-white whitespace-pre-wrap leading-relaxed">
+                {selectedAdoption.requirements}
+              </div>
+            </div>
+
+            {/* Internal Admin Notes */}
+            <div className="space-y-2 pt-2 border-t border-light-border dark:border-midnight-border/70">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-light-subtext dark:text-muted-gray">
+                  Internal Administrative Notes & Follow-up Actions
+                </label>
+                <button
+                  type="button"
+                  onClick={() => handleUpdateAdoptionStatus(selectedAdoption.id, selectedAdoption.status, adoptionNotes)}
+                  className="px-3 py-1 rounded-lg bg-electric-purple text-white text-xs font-semibold hover:bg-electric-light flex items-center gap-1 cursor-pointer shadow-sm"
+                >
+                  <Save className="w-3 h-3" />
+                  <span>Save Notes</span>
+                </button>
+              </div>
+              <textarea
+                rows={3}
+                placeholder="Record meeting notes, client agreement terms, proposed pricing, or SLA commitments..."
+                value={adoptionNotes}
+                onChange={(e) => setAdoptionNotes(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl bg-light-100 dark:bg-midnight-surface border border-purple-100 dark:border-midnight-border text-xs text-light-text dark:text-white placeholder:text-light-subtext/60 focus:outline-none focus:border-electric-purple"
+              />
+            </div>
+
+            {/* Status Selector & Footer */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-light-border dark:border-midnight-border/70">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-light-subtext dark:text-muted-gray">Application Status:</span>
+                <select
+                  value={selectedAdoption.status}
+                  onChange={(e) => handleUpdateAdoptionStatus(selectedAdoption.id, e.target.value, adoptionNotes)}
+                  className="px-3 py-1.5 rounded-xl bg-purple-50 dark:bg-midnight-900 border border-purple-200 dark:border-midnight-border text-xs font-semibold text-electric-purple dark:text-lavender-glow"
+                >
+                  <option value="New">New</option>
+                  <option value="In Review">In Review</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Converted">Converted</option>
+                  <option value="Archived">Archived</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSelectedAdoption(null)}
+                  className="px-4 py-2 rounded-xl border border-light-border dark:border-midnight-border text-xs font-semibold text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white cursor-pointer"
+                >
+                  Close Spec
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

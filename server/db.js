@@ -46,6 +46,26 @@ const planRegistrationSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// 2.5 Platform Adoption Schema (Enterprise Platform Licensing & Service Tie-Ups)
+const platformAdoptionSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  platformId: { type: String, required: true },
+  platformName: { type: String, required: true },
+  fullName: { type: String, required: true },
+  email: { type: String, required: true },
+  contact: { type: String, required: true },
+  companyName: { type: String, required: true },
+  companyContact: { type: String, default: '' },
+  usecases: { type: String, required: true },
+  requirements: { type: String, required: true },
+  timeline: { type: String, default: 'Flexible' },
+  estimatedScale: { type: String, default: '' },
+  status: { type: String, default: 'New' },
+  notes: { type: String, default: '' },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
 // 3. Service Schema
 const serviceSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
@@ -201,13 +221,17 @@ const siteContentSchema = new mongoose.Schema({
     legalHeadquarters: { type: String, default: 'Corporate Headquarters: India' },
     contactEmail: { type: String, default: 'codrixsoftwares@gmail.com' },
     contactPhone: { type: String, default: '+91 99999 99999' },
-    copyrightNotice: { type: String, default: 'All rights reserved.' }
+    copyrightNotice: { type: String, default: 'All rights reserved.' },
+    linkedinUrl: { type: String, default: 'https://linkedin.com/company/codrix' },
+    instagramUrl: { type: String, default: 'https://instagram.com/codrix.tech' },
+    gmailUrl: { type: String, default: 'mailto:codrixsoftwares@gmail.com' }
   },
   updatedAt: { type: Date, default: Date.now }
 });
 
 export const Inquiry = mongoose.models.Inquiry || mongoose.model('Inquiry', inquirySchema);
 export const PlanRegistration = mongoose.models.PlanRegistration || mongoose.model('PlanRegistration', planRegistrationSchema);
+export const PlatformAdoption = mongoose.models.PlatformAdoption || mongoose.model('PlatformAdoption', platformAdoptionSchema);
 export const ServiceModel = mongoose.models.Service || mongoose.model('Service', serviceSchema);
 export const ProductModel = mongoose.models.Product || mongoose.model('Product', productSchema);
 export const TeamModel = mongoose.models.TeamMember || mongoose.model('TeamMember', teamMemberSchema);

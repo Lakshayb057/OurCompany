@@ -115,9 +115,11 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
 
   return (
     <div
+      onClick={handleFinish}
+      title="Click anywhere to skip intro"
       className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center select-none overflow-hidden transition-opacity duration-300 ${
         isMorphing ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      } bg-[#FBFBFE] dark:bg-[#09090B]`}
+      } bg-[#FBFBFE] dark:bg-[#09090B] cursor-pointer`}
       style={{
         perspective: '1400px',
       }}

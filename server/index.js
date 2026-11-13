@@ -9,7 +9,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { Server as SocketIOServer } from 'socket.io';
 import { 
   connectDB, isConnected, 
-  Inquiry, PlanRegistration, ServiceModel, ProductModel, TeamModel, PlanModel, SiteContentModel 
+  Inquiry, PlanRegistration, PlatformAdoption, ServiceModel, ProductModel, TeamModel, PlanModel, SiteContentModel 
 } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -110,6 +110,7 @@ function getInitialEmptyStore() {
   return { 
     inquiries: [], 
     planRegistrations: [], 
+    platformAdoptions: [],
     services: [], 
     products: [], 
     team: [], 
@@ -192,7 +193,10 @@ function getDefaultSiteContent() {
       legalHeadquarters: 'Corporate Headquarters: India',
       contactEmail: 'codrixsoftwares@gmail.com',
       contactPhone: '+91 99999 99999',
-      copyrightNotice: 'All rights reserved.'
+      copyrightNotice: 'All rights reserved.',
+      linkedinUrl: 'https://linkedin.com/company/codrix',
+      instagramUrl: 'https://instagram.com/codrix.tech',
+      gmailUrl: 'mailto:codrixsoftwares@gmail.com'
     }
   };
 }
@@ -495,6 +499,94 @@ app.post('/api/v1/plan-registrations', async (req, res) => {
   });
 });
 
+// Platform Adoption Application (Turnkey In-House Platform Tie-Ups & Licensing)
+app.post('/api/v1/platform-adoptions', async (req, res) => {
+  const {
+    platformId,
+    platformName,
+    name,
+    fullName,
+    contact,
+    phone,
+    email,
+    companyName,
+    company,
+    companyContact,
+    usecases,
+    useCases,
+    requirements,
+    timeline,
+    estimatedScale
+  } = req.body;
+
+  const resolvedName = (fullName || name || '').trim();
+  const resolvedContact = (contact || phone || '').trim();
+  const resolvedEmail = (email || '').trim().toLowerCase();
+  const resolvedCompany = (companyName || company || '').trim();
+  const resolvedCompanyContact = (companyContact || '').trim();
+  const resolvedUseCases = (usecases || useCases || '').trim();
+  const resolvedRequirements = (requirements || '').trim();
+
+  if (!resolvedName) {
+    return res.status(400).json({ success: false, message: 'Please provide your full name.' });
+  }
+  if (!resolvedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(resolvedEmail)) {
+    return res.status(400).json({ success: false, message: 'A valid email address is required.' });
+  }
+  if (!resolvedContact) {
+    return res.status(400).json({ success: false, message: 'A contact phone number is required.' });
+  }
+  if (!resolvedCompany) {
+    return res.status(400).json({ success: false, message: 'Please provide your company or institution name.' });
+  }
+  if (!resolvedUseCases) {
+    return res.status(400).json({ success: false, message: 'Please outline your primary platform use cases.' });
+  }
+  if (!resolvedRequirements) {
+    return res.status(400).json({ success: false, message: 'Please specify your technical requirements or custom specifications.' });
+  }
+
+  const data = readData();
+  data.platformAdoptions = data.platformAdoptions || [];
+
+  const newAdoption = {
+    id: `adopt-${Date.now()}`,
+    platformId: (platformId || 'platform').trim(),
+    platformName: (platformName || 'In-House Platform').trim(),
+    fullName: resolvedName,
+    contact: resolvedContact,
+    email: resolvedEmail,
+    companyName: resolvedCompany,
+    companyContact: resolvedCompanyContact,
+    usecases: resolvedUseCases,
+    requirements: resolvedRequirements,
+    timeline: (timeline || 'Flexible').trim(),
+    estimatedScale: (estimatedScale || 'Standard').trim(),
+    status: 'New',
+    notes: '',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+
+  data.platformAdoptions.unshift(newAdoption);
+  writeData(data);
+
+  if (isConnected()) {
+    try {
+      await PlatformAdoption.create(newAdoption);
+      console.log(`[MongoDB Atlas] Platform adoption recorded: ${newAdoption.platformName} by ${newAdoption.fullName}`);
+    } catch (dbErr) {
+      console.error('[MongoDB Atlas] Error saving platform adoption:', dbErr.message);
+    }
+  }
+
+  return res.status(201).json({
+    success: true,
+    message: `Thank you, ${resolvedName}! Your platform adoption request for ${newAdoption.platformName} has been received. Our solutions team will review your specifications and contact you shortly.`,
+    data: newAdoption
+  });
+});
+
 // -------------------------------------------------------------
 // ADMIN AUTHENTICATION & CONTROL APIS
 // -------------------------------------------------------------
@@ -538,6 +630,7 @@ app.get('/api/v1/admin/status', async (req, res) => {
     counts: {
       inquiries: store.inquiries?.length || 0,
       planRegistrations: store.planRegistrations?.length || 0,
+      platformAdoptions: store.platformAdoptions?.length || 0,
       services: store.services?.length || 0,
       products: store.products?.length || 0,
       team: store.team?.length || 0,
@@ -549,6 +642,7 @@ app.get('/api/v1/admin/status', async (req, res) => {
     try {
       dbInfo.counts.inquiries = await Inquiry.countDocuments();
       dbInfo.counts.planRegistrations = await PlanRegistration.countDocuments();
+      dbInfo.counts.platformAdoptions = await PlatformAdoption.countDocuments();
       dbInfo.counts.services = await ServiceModel.countDocuments();
       dbInfo.counts.products = await ProductModel.countDocuments();
       dbInfo.counts.team = await TeamModel.countDocuments();
@@ -1051,6 +1145,93 @@ app.delete('/api/v1/admin/plan-registrations/:id', async (req, res) => {
   res.json({ success: true, message: 'Plan registration deleted.' });
 });
 
+// Platform Adoptions Management
+app.get('/api/v1/admin/platform-adoptions', async (req, res) => {
+  let adoptions = [];
+  if (isConnected()) {
+    try {
+      adoptions = await PlatformAdoption.find().sort({ createdAt: -1 }).lean();
+    } catch (e) {
+      console.warn('Atlas adoptions fetch error:', e.message);
+    }
+  }
+  if (!adoptions || !adoptions.length) {
+    const data = readData();
+    adoptions = data.platformAdoptions || [];
+  }
+
+  const { status, platform, search } = req.query;
+  if (status && status !== 'All') {
+    adoptions = adoptions.filter(a => (a.status || '').toLowerCase() === status.toLowerCase());
+  }
+  if (platform && platform !== 'All') {
+    adoptions = adoptions.filter(a =>
+      (a.platformName || '').toLowerCase().includes(platform.toLowerCase()) ||
+      (a.platformId || '').toLowerCase() === platform.toLowerCase()
+    );
+  }
+  if (search) {
+    const q = search.toLowerCase();
+    adoptions = adoptions.filter(a =>
+      (a.fullName || '').toLowerCase().includes(q) ||
+      (a.email || '').toLowerCase().includes(q) ||
+      (a.contact || '').toLowerCase().includes(q) ||
+      (a.companyName || '').toLowerCase().includes(q) ||
+      (a.companyContact || '').toLowerCase().includes(q) ||
+      (a.platformName || '').toLowerCase().includes(q) ||
+      (a.usecases || '').toLowerCase().includes(q) ||
+      (a.requirements || '').toLowerCase().includes(q)
+    );
+  }
+
+  res.json({ success: true, data: adoptions });
+});
+
+app.patch('/api/v1/admin/platform-adoptions/:id', async (req, res) => {
+  const { id } = req.params;
+  const { status, notes } = req.body;
+  const store = readData();
+  store.platformAdoptions = store.platformAdoptions || [];
+  const idx = store.platformAdoptions.findIndex(a => a.id === id);
+  if (idx !== -1) {
+    if (status !== undefined) store.platformAdoptions[idx].status = status;
+    if (notes !== undefined) store.platformAdoptions[idx].notes = notes;
+    store.platformAdoptions[idx].updatedAt = new Date().toISOString();
+    writeData(store);
+  }
+
+  if (isConnected()) {
+    try {
+      const updateData = {};
+      if (status !== undefined) updateData.status = status;
+      if (notes !== undefined) updateData.notes = notes;
+      updateData.updatedAt = new Date();
+      await PlatformAdoption.findOneAndUpdate({ id }, updateData);
+    } catch (e) {
+      console.warn('Atlas adoption update error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Platform adoption status updated successfully.' });
+});
+
+app.delete('/api/v1/admin/platform-adoptions/:id', async (req, res) => {
+  const { id } = req.params;
+  const store = readData();
+  store.platformAdoptions = (store.platformAdoptions || []).filter(a => a.id !== id);
+  writeData(store);
+
+  if (isConnected()) {
+    try {
+      await PlatformAdoption.deleteOne({ id });
+    } catch (e) {
+      console.warn('Atlas adoption delete error:', e.message);
+    }
+  }
+
+  res.json({ success: true, message: 'Platform adoption deleted successfully.' });
+});
+
 // -------------------------------------------------------------
 // CLOUDINARY MEDIA ASSETS CONTROLLERS
 // -------------------------------------------------------------
@@ -1146,6 +1327,7 @@ app.get('/api/v1/admin/analytics', (req, res) => {
       totalProjects: (data.products || []).length,
       totalServices: (data.services || []).length,
       totalPlanRegistrations: (data.planRegistrations || []).length,
+      totalPlatformAdoptions: (data.platformAdoptions || []).length,
       recentInquiries: inquiries.slice(0, 5)
     }
   });
