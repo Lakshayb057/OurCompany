@@ -189,10 +189,10 @@ function getDefaultSiteContent() {
     },
     siteSettings: {
       companyName: 'Codrix',
-      legalHeadquarters: 'Corporate Headquarters: India • Global Remote Delivery',
-      contactEmail: 'leadership@codrix.tech',
+      legalHeadquarters: 'Corporate Headquarters: India',
+      contactEmail: 'codrixsoftwares@gmail.com',
       contactPhone: '+91 99999 99999',
-      copyrightNotice: '© 2026 Codrix. All rights reserved.'
+      copyrightNotice: 'All rights reserved.'
     }
   };
 }

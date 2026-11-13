@@ -193,10 +193,10 @@ const siteContentSchema = new mongoose.Schema({
   },
   siteSettings: {
     companyName: { type: String, default: 'Codrix' },
-    legalHeadquarters: { type: String, default: 'Corporate Headquarters: India • Global Remote Delivery' },
-    contactEmail: { type: String, default: 'leadership@codrix.tech' },
+    legalHeadquarters: { type: String, default: 'Corporate Headquarters: India' },
+    contactEmail: { type: String, default: 'codrixsoftwares@gmail.com' },
     contactPhone: { type: String, default: '+91 99999 99999' },
-    copyrightNotice: { type: String, default: '© 2026 Codrix. All rights reserved.' }
+    copyrightNotice: { type: String, default: 'All rights reserved.' }
   },
   updatedAt: { type: Date, default: Date.now }
 });

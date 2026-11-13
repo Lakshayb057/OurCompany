@@ -33,11 +33,15 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
         {/* Bottom copyright bar */}
         <div className="pt-3 sm:pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono text-light-subtext dark:text-muted-gray">
           <div className="text-center sm:text-left font-medium">
-            © {new Date().getFullYear()} {settings?.companyName || 'Codrix'}. {settings?.copyrightNotice || 'All rights reserved.'}
+            © {new Date().getFullYear()} {settings?.companyName || 'Codrix'}. {
+              (settings?.copyrightNotice || 'All rights reserved.')
+                .replace(/^©\s*\d{4}\s+[^.]*\.\s*/i, '')
+                .trim() || 'All rights reserved.'
+            }
           </div>
           {settings?.legalHeadquarters && (
             <div className="text-[11px] text-light-subtext/80 dark:text-muted-gray/80 text-center sm:text-right truncate max-w-md">
-              {settings.legalHeadquarters}
+              {settings.legalHeadquarters.replace(/\s*•\s*Global Remote Delivery/gi, '').trim()}
             </div>
           )}
         </div>
