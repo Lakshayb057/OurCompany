@@ -29,6 +29,9 @@ let lastSyncTimestamp = Date.now();
 
 export function broadcastSync(type, action, data) {
   lastSyncTimestamp = Date.now();
+  if (isConnected()) {
+    SiteContentModel.updateOne({ id: 'site_singleton' }, { $set: { updatedAt: new Date() } }).catch(() => {});
+  }
   if (io) {
     try {
       io.emit('codrix:sync', { type, action, data, timestamp: lastSyncTimestamp });
@@ -314,8 +317,21 @@ app.get('/api/v1/products', async (req, res) => {
 });
 
 // Real-Time Sync Status Check
-app.get('/api/v1/sync/status', (req, res) => {
-  res.json({ success: true, timestamp: lastSyncTimestamp });
+app.get('/api/v1/sync/status', async (req, res) => {
+  let timestamp = lastSyncTimestamp;
+  if (isConnected()) {
+    try {
+      const latestContent = await SiteContentModel.findOne({ id: 'site_singleton' }, 'updatedAt').lean();
+      if (latestContent && latestContent.updatedAt) {
+        const dbTime = new Date(latestContent.updatedAt).getTime();
+        if (dbTime > timestamp) {
+          timestamp = dbTime;
+          lastSyncTimestamp = dbTime;
+        }
+      }
+    } catch {}
+  }
+  res.json({ success: true, timestamp });
 });
 
 // Team / Leadership

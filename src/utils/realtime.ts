@@ -37,17 +37,23 @@ class RealtimeSyncManager {
     try {
       if (typeof window === 'undefined') return;
 
-      // Connect to the appropriate server URL
-      const socketUrl = window.location.hostname === 'localhost' 
-        ? 'http://localhost:5000' 
-        : window.location.origin;
+      const customSocketUrl = (import.meta as any).env?.VITE_SOCKET_URL;
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+      // If on serverless production (e.g. Vercel) and no dedicated external socket server is configured,
+      // skip attempting wss:// on the static domain to prevent browser console 404/WebSocket connection errors.
+      if (!customSocketUrl && !isLocal) {
+        return;
+      }
+
+      const socketUrl = customSocketUrl || 'http://localhost:5000';
 
       this.socket = io(socketUrl, {
         transports: ['websocket', 'polling'],
         reconnection: true,
-        reconnectionAttempts: 10,
-        reconnectionDelay: 2000,
-        timeout: 10000,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 3000,
+        timeout: 8000,
       });
 
       this.socket.on('codrix:sync', (data) => {
@@ -60,12 +66,16 @@ class RealtimeSyncManager {
       this.socket.on('connect', () => {
         console.log('[Realtime] Socket connected to Codrix server:', this.socket?.id);
       });
+
+      this.socket.on('connect_error', () => {
+        // Silently fall back to cloud polling without spamming console
+      });
     } catch (e) {
-      console.warn('[Realtime] Socket connection initialized with polling fallback');
+      // Graceful fallback to cloud polling
     }
   }
 
-  // 3. Tab focus & visibility change trigger
+  // 3. Tab focus & visibility change trigger + Cross-window storage listener
   private initFocusAndVisibilityListeners() {
     if (typeof window === 'undefined') return;
 
@@ -77,6 +87,12 @@ class RealtimeSyncManager {
 
     window.addEventListener('focus', onVisible);
     document.addEventListener('visibilitychange', onVisible);
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'codrix_realtime_sync_ping') {
+        this.checkSyncStatus();
+      }
+    });
   }
 
   // 4. Polling loop (ensures serverless deployments on Vercel stay synchronized)
@@ -85,7 +101,7 @@ class RealtimeSyncManager {
 
     this.pollInterval = setInterval(() => {
       this.checkSyncStatus();
-    }, 4000);
+    }, 3000);
   }
 
   public async checkSyncStatus() {
@@ -113,6 +129,12 @@ class RealtimeSyncManager {
         this.broadcastChannel.postMessage(payload);
       } catch (e) {}
     }
+
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('codrix_realtime_sync_ping', String(Date.now()));
+      }
+    } catch (e) {}
 
     if (this.socket && this.socket.connected) {
       try {
