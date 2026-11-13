@@ -26,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [projectsDropdownOpen, setProjectsDropdownOpen] = useState(false);
   const [mobileProjectsOpen, setMobileProjectsOpen] = useState(false);
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const projectsDropdownRef = useRef<HTMLDivElement | null>(null);
   const [scrollY, setScrollY] = useState(0);
 
   const isDedicatedPage = currentRoute === 'projects' || currentRoute === 'services' || currentRoute === 'plan';
@@ -45,7 +46,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (projectsDropdownRef.current && !projectsDropdownRef.current.contains(e.target as Node)) {
+        setProjectsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
       if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
     };
   }, []);
@@ -111,13 +119,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               return (
                 <div
                   key={item.target}
+                  ref={projectsDropdownRef}
                   className="relative flex-shrink-0"
                   onMouseEnter={handleMouseEnterProjects}
                   onMouseLeave={handleMouseLeaveProjects}
                 >
                   <button
-                    onClick={() => handleLinkClick('projects')}
-                    className="px-2.5 xl:px-3.5 py-1.5 text-[13px] xl:text-sm font-semibold transition-all duration-200 rounded-full text-slate-800 dark:text-gray-100 hover:text-electric-purple dark:hover:text-white hover:bg-purple-200/50 dark:hover:bg-white/10 flex items-center gap-1 group/btn whitespace-nowrap flex-shrink-0"
+                    type="button"
+                    onClick={() => {
+                      handleLinkClick('projects');
+                      setProjectsDropdownOpen(false);
+                    }}
+                    className="px-2.5 xl:px-3.5 py-1.5 text-[13px] xl:text-sm font-semibold transition-all duration-200 rounded-full text-slate-800 dark:text-gray-100 hover:text-electric-purple dark:hover:text-white hover:bg-purple-200/50 dark:hover:bg-white/10 flex items-center gap-1 group/btn whitespace-nowrap flex-shrink-0 cursor-pointer"
                     aria-expanded={projectsDropdownOpen}
                   >
                     <span className="whitespace-nowrap">{item.label}</span>
@@ -141,8 +154,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="w-64 rounded-2xl bg-white/95 dark:bg-midnight-950/95 backdrop-blur-2xl border border-purple-200/90 dark:border-white/15 p-2 shadow-[0_20px_50px_rgba(124,44,245,0.18)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.85)] ring-1 ring-purple-500/10 dark:ring-white/5 space-y-1">
                       {/* Option 1: Explore Projects */}
                       <button
+                        type="button"
                         onClick={() => {
-                          handleLinkClick('projects');
+                          handleLinkClick('explore-projects');
                           setProjectsDropdownOpen(false);
                         }}
                         className="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-purple-50/80 dark:hover:bg-white/10 transition-all flex flex-col group/opt cursor-pointer"
@@ -158,8 +172,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
                       {/* Option 2: Explore Services */}
                       <button
+                        type="button"
                         onClick={() => {
-                          handleLinkClick('services');
+                          handleLinkClick('explore-services');
                           setProjectsDropdownOpen(false);
                         }}
                         className="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-purple-50/80 dark:hover:bg-white/10 transition-all flex flex-col group/opt cursor-pointer"
@@ -265,30 +280,48 @@ export const Navbar: React.FC<NavbarProps> = ({
             if (item.target === 'projects') {
               return (
                 <div key={item.target} className="space-y-1">
-                  <button
-                    onClick={() => setMobileProjectsOpen(!mobileProjectsOpen)}
-                    className="w-full flex items-center justify-between py-2.5 px-4 text-sm font-semibold rounded-xl transition-colors text-light-text dark:text-gray-300 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/60 dark:hover:bg-white/5"
-                  >
-                    <span>{item.label}</span>
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        mobileProjectsOpen ? 'rotate-180 text-electric-purple' : 'opacity-60'
-                      }`}
-                    />
-                  </button>
+                  <div className="w-full flex items-center justify-between py-2.5 px-4 text-sm font-semibold rounded-xl transition-colors text-light-text dark:text-gray-300 hover:text-electric-purple dark:hover:text-white hover:bg-lavender-soft/60 dark:hover:bg-white/5">
+                    <button
+                      onClick={() => handleLinkClick('projects')}
+                      className="flex-1 text-left cursor-pointer"
+                    >
+                      {item.label}
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMobileProjectsOpen(!mobileProjectsOpen);
+                      }}
+                      className="p-1 -mr-1 cursor-pointer"
+                      aria-label="Toggle submenu"
+                    >
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          mobileProjectsOpen ? 'rotate-180 text-electric-purple' : 'opacity-60'
+                        }`}
+                      />
+                    </button>
+                  </div>
 
                   {mobileProjectsOpen && (
                     <div className="pl-4 pr-1 py-1 space-y-1 border-l-2 border-purple-200 dark:border-midnight-border ml-4">
                       <button
                         onClick={() => handleLinkClick('projects')}
-                        className="w-full text-left py-2 px-3 text-xs font-semibold rounded-lg flex items-center justify-between text-light-text dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5"
+                        className="w-full text-left py-2 px-3 text-xs font-semibold rounded-lg flex items-center justify-between text-light-text dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5 cursor-pointer"
+                      >
+                        <span>Top Flagship Services</span>
+                        <ArrowRight className="w-3.5 h-3.5 text-electric-purple" />
+                      </button>
+                      <button
+                        onClick={() => handleLinkClick('explore-projects')}
+                        className="w-full text-left py-2 px-3 text-xs font-semibold rounded-lg flex items-center justify-between text-light-text dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5 cursor-pointer"
                       >
                         <span>Explore Projects</span>
                         <ArrowRight className="w-3.5 h-3.5 text-electric-purple" />
                       </button>
                       <button
-                        onClick={() => handleLinkClick('services')}
-                        className="w-full text-left py-2 px-3 text-xs font-semibold rounded-lg flex items-center justify-between text-light-text dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5"
+                        onClick={() => handleLinkClick('explore-services')}
+                        className="w-full text-left py-2 px-3 text-xs font-semibold rounded-lg flex items-center justify-between text-light-text dark:text-gray-200 hover:text-electric-purple dark:hover:text-white hover:bg-purple-50 dark:hover:bg-white/5 cursor-pointer"
                       >
                         <span>Explore Services</span>
                         <ArrowRight className="w-3.5 h-3.5 text-electric-purple" />

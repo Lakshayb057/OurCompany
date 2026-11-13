@@ -53,6 +53,11 @@ export interface Product {
   architecture?: string;
   image?: string;
   previewUrl?: string;
+  videoUrl?: string;
+  video?: string;
+  mediaType?: 'image' | 'video' | 'both';
+  imageAlignment?: 'center' | 'top' | 'bottom';
+  videoAlignment?: 'cover' | 'contain';
   liveUrl?: string;
   githubUrl?: string;
   isVisible?: boolean;

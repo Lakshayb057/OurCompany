@@ -1,5 +1,5 @@
-import React from 'react';
-import { X, Github, Laptop, BarChart3, Zap, Check, Database } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Github, Laptop, BarChart3, Zap, Check, Database, Play, Image as ImageIcon, Video } from 'lucide-react';
 import { Product } from '../types';
 
 interface CaseStudyModalProps {
@@ -10,6 +10,26 @@ interface CaseStudyModalProps {
 
 export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ product, onClose, onInquireSimilar }) => {
   if (!product) return null;
+
+  const isUniverse = product.slug === 'universe' || product.id === 'prod-01' || product.name.toLowerCase().includes('universe');
+  const isNexus = product.slug === 'nexus-crm' || product.id === 'prod-04' || product.name.toLowerCase().includes('nexus');
+  const videoSrc = product.videoUrl || (product as any).video || (isUniverse ? '/universe_video.webp' : (isNexus ? '/CRM.webm' : ''));
+  const imgSrc = (product as any).image || (product as any).previewUrl || (isUniverse ? '/universe-banner.jpg' : (isNexus ? '/CRM.jpeg' : ''));
+  const hasVideo = Boolean(videoSrc);
+  const hasImage = Boolean(imgSrc);
+
+  const initialMode = (product.mediaType === 'image' || !hasVideo) ? 'photo' : 'video';
+  const [activeMedia, setActiveMedia] = useState<'video' | 'photo'>(initialMode);
+
+  // Vertical alignment for image
+  const imageAlignClass = product.imageAlignment === 'top'
+    ? 'object-top'
+    : product.imageAlignment === 'bottom'
+    ? 'object-bottom'
+    : 'object-center';
+
+  // Video aspect fit
+  const videoAlignClass = product.videoAlignment === 'contain' ? 'object-contain' : 'object-cover';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 dark:bg-black/80 backdrop-blur-md">
@@ -57,6 +77,73 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ product, onClose
               <span>{product.lead}</span>
             </div>
           </div>
+
+          {/* Media Showcase: Aligned Image / Video Demo */}
+          {(hasVideo || hasImage) && (
+            <div className="space-y-2">
+              {hasVideo && hasImage && product.mediaType !== 'image' && product.mediaType !== 'video' && (
+                <div className="flex items-center justify-end gap-2 mb-2">
+                  <div className="inline-flex p-1 rounded-xl bg-purple-50 dark:bg-midnight-card border border-purple-200 dark:border-midnight-border">
+                    <button
+                      type="button"
+                      onClick={() => setActiveMedia('video')}
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono transition-all ${
+                        activeMedia === 'video'
+                          ? 'bg-electric-purple text-white font-semibold shadow-sm'
+                          : 'text-light-subtext hover:text-light-text dark:hover:text-white'
+                      }`}
+                    >
+                      <Video className="w-3.5 h-3.5" />
+                      <span>Video Demo</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveMedia('photo')}
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono transition-all ${
+                        activeMedia === 'photo'
+                          ? 'bg-electric-purple text-white font-semibold shadow-sm'
+                          : 'text-light-subtext hover:text-light-text dark:hover:text-white'
+                      }`}
+                    >
+                      <ImageIcon className="w-3.5 h-3.5" />
+                      <span>Showcase Image</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="relative rounded-2xl overflow-hidden border border-purple-200/80 dark:border-midnight-border bg-slate-950 shadow-xl max-h-[380px] flex items-center justify-center">
+                {activeMedia === 'video' && hasVideo ? (
+                  videoSrc.endsWith('.webp') ? (
+                    <img
+                      src={videoSrc}
+                      alt={`${product.name} demo`}
+                      className={`w-full max-h-[380px] ${videoAlignClass}`}
+                    />
+                  ) : (
+                    <video
+                      key={videoSrc}
+                      controls
+                      autoPlay
+                      loop
+                      playsInline
+                      poster={imgSrc || undefined}
+                      className={`w-full max-h-[380px] ${videoAlignClass}`}
+                    >
+                      <source src={videoSrc} type={videoSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+                      {videoSrc.endsWith('.webm') && <source src="/CRM.mp4" type="video/mp4" />}
+                    </video>
+                  )
+                ) : hasImage ? (
+                  <img
+                    src={imgSrc}
+                    alt={`${product.name} showcase`}
+                    className={`w-full max-h-[380px] object-cover ${imageAlignClass}`}
+                  />
+                ) : null}
+              </div>
+            </div>
+          )}
 
           {/* Key Impact Metrics Grid */}
           <div>

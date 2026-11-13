@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Github, ExternalLink, BookOpen, Layers, Check, ArrowRight } from 'lucide-react';
+import { Search, Github, ExternalLink, BookOpen, Layers, Check, ArrowRight, Video } from 'lucide-react';
 import { Product } from '../types';
 
 interface ProjectsPageProps {
@@ -20,27 +20,36 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
 
   const categories = [
     'All',
-    'AI & Intelligent Agents',
-    'Distributed Cloud & Systems',
-    'ERP & Agri-Commerce',
-    'P2P & Community'
+    'Enterprise & Institutional ERP',
+    'Agri-Commerce & D2C',
+    'Client Collaborations'
   ];
 
-  // Filter projects based on category, search query, and visibility
+  // Filter projects to only display client collaborations & freelance projects:
+  // ABV — SkillPort, SachiKheti, and external client collaborations
   const filteredProducts = useMemo(() => {
+    const inHouseSlugs = ['universe', 'chatleads-ai', 'nexus-crm', 'campxchange'];
+
     return products.filter((prod) => {
       // Visibility filter: hide projects toggled off in admin portal
       if (prod.isVisible === false) return false;
+
+      // Exclude in-house projects (which are presented in /services)
+      const isInHouse = inHouseSlugs.includes(prod.slug || '') ||
+        prod.name.toLowerCase().includes('universe') ||
+        prod.name.toLowerCase().includes('chatleads') ||
+        prod.name.toLowerCase().includes('nexus') ||
+        prod.name.toLowerCase().includes('campxchange');
+      if (isInHouse) return false;
+
       // Category filter matching
       let matchesCat = true;
-      if (selectedCategory === 'AI & Intelligent Agents') {
-        matchesCat = prod.name.includes('ChatLeads') || prod.technologies.some(t => t.toLowerCase().includes('ai') || t.toLowerCase().includes('groq'));
-      } else if (selectedCategory === 'Distributed Cloud & Systems') {
-        matchesCat = prod.name.includes('UniVerse') || prod.name.includes('Nexus') || prod.technologies.some(t => t.toLowerCase().includes('aws') || t.toLowerCase().includes('redis'));
-      } else if (selectedCategory === 'ERP & Agri-Commerce') {
-        matchesCat = prod.name.includes('SachiKheti') || prod.name.includes('Nexus') || prod.subtitle.toLowerCase().includes('erp');
-      } else if (selectedCategory === 'P2P & Community') {
-        matchesCat = prod.name.includes('CampXChange') || prod.name.includes('SkillPort') || prod.subtitle.toLowerCase().includes('campus');
+      if (selectedCategory === 'Enterprise & Institutional ERP') {
+        matchesCat = prod.name.includes('SkillPort') || prod.name.includes('ABV') || prod.subtitle.toLowerCase().includes('erp') || prod.technologies.some(t => t.toLowerCase().includes('jwt') || t.toLowerCase().includes('pdf'));
+      } else if (selectedCategory === 'Agri-Commerce & D2C') {
+        matchesCat = prod.name.includes('SachiKheti') || prod.subtitle.toLowerCase().includes('agri') || prod.technologies.some(t => t.toLowerCase().includes('razorpay'));
+      } else if (selectedCategory === 'Client Collaborations') {
+        matchesCat = true;
       }
 
       // Search query matching
@@ -70,11 +79,11 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
         {/* Page Header */}
         <div className="max-w-3xl space-y-3 sm:space-y-4 mb-6 sm:mb-12">
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-light-text dark:text-white leading-[1.12]">
-            Engineering <span className="text-gradient-purple">Projects</span>
+            Client & Freelance <span className="text-gradient-purple">Projects</span>
           </h1>
 
           <p className="text-base sm:text-lg text-light-subtext dark:text-muted-gray leading-relaxed max-w-2xl font-medium">
-            A comprehensive showcase of production platforms, distributed microservices, and 0-to-1 startups engineered and shipped with verified impact, high concurrency, and measurable business ROI.
+            Production platforms, digital verification portals, and custom web applications engineered as client collaborations and freelance software engineering for external organizations and businesses.
           </p>
         </div>
 
@@ -132,12 +141,53 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((prod) => (
-              <div
-                key={prod.id}
-                className="glass-card-interactive rounded-2xl flex flex-col justify-between overflow-hidden group border border-purple-100 dark:border-midnight-border/80 shadow-none hover:shadow-none transition-all duration-300 bg-white/80 dark:bg-midnight-card/80"
-              >
-                <div className="p-7 space-y-5">
+            {filteredProducts.map((prod) => {
+              const isUniverse = prod.slug === 'universe' || prod.id === 'prod-01' || prod.name.toLowerCase().includes('universe');
+              const isNexus = prod.slug === 'nexus-crm' || prod.id === 'prod-04' || prod.name.toLowerCase().includes('nexus');
+              const videoSrc = prod.videoUrl || (prod as any).video || (isUniverse ? '/universe_video.webp' : (isNexus ? '/CRM.webm' : ''));
+              const imgSrc = (prod as any).image || (prod as any).previewUrl || (isUniverse ? '/universe-banner.jpg' : (isNexus ? '/CRM.jpeg' : '/services/crm-automation.jpg'));
+              const hasVideo = Boolean(videoSrc);
+
+              const imageAlignClass = prod.imageAlignment === 'top'
+                ? 'object-top'
+                : prod.imageAlignment === 'bottom'
+                ? 'object-bottom'
+                : 'object-center';
+
+              const videoAlignClass = prod.videoAlignment === 'contain' ? 'object-contain' : 'object-cover';
+
+              return (
+                <div
+                  key={prod.id}
+                  className="glass-card-interactive rounded-2xl flex flex-col justify-between overflow-hidden group border border-purple-100 dark:border-midnight-border/80 shadow-none hover:shadow-none transition-all duration-300 bg-white/80 dark:bg-midnight-card/80"
+                >
+                  {/* Card Showcase Media (Image / Video Demo) */}
+                  <div className="relative w-full h-44 sm:h-48 overflow-hidden bg-slate-900 border-b border-purple-100 dark:border-midnight-border/60">
+                    {prod.mediaType === 'video' && hasVideo ? (
+                      videoSrc.endsWith('.webp') ? (
+                        <img src={videoSrc} alt={prod.name} className={`w-full h-full ${videoAlignClass}`} />
+                      ) : (
+                        <video key={videoSrc} muted autoPlay loop playsInline className={`w-full h-full ${videoAlignClass}`}>
+                          <source src={videoSrc} type={videoSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+                          {videoSrc.endsWith('.webm') && <source src="/CRM.mp4" type="video/mp4" />}
+                        </video>
+                      )
+                    ) : (
+                      <img
+                        src={imgSrc}
+                        alt={prod.name}
+                        className={`w-full h-full object-cover ${imageAlignClass} group-hover:scale-105 transition-transform duration-500`}
+                      />
+                    )}
+                    {hasVideo && (
+                      <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-md text-[10px] font-mono text-white flex items-center gap-1 shadow-md">
+                        <Video className="w-3 h-3 text-electric-purple" />
+                        <span>Video Demo</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-7 space-y-5">
                   {/* Badge & Status Row */}
                   <div className="flex items-center justify-between gap-2">
                     <span className="px-2.5 py-1 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider bg-purple-50 dark:bg-midnight-surface text-electric-purple dark:text-lavender-glow border border-purple-200/60 dark:border-midnight-border">
@@ -242,7 +292,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
                   </div>
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
         )}
 

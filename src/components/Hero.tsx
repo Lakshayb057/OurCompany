@@ -32,9 +32,15 @@ export const Hero: React.FC<HeroProps> = ({
   const line1 = (content?.line1 || 'CODRIX').replace(/CODEVERSE/gi, 'CODRIX');
   const line2 = content?.line2 || 'TURNING IDEAS INTO';
   const line3 = content?.line3 || 'TECHNOLOGY';
-  const badge1 = content?.badge1 || 'PERN / Microservices';
-  const badge2 = content?.badge2 || 'WebSockets & Real-Time';
-  const statCode = content?.statCode || 'Distributed Architecture';
+  const badge1 = (!content?.badge1 || content.badge1.includes('Production-Grade') || content.badge1.includes('Distributed Cloud'))
+    ? 'PERN / Microservices'
+    : content.badge1;
+  const badge2 = (!content?.badge2 || content.badge2.includes('Zero-Downtime') || content.badge2.includes('Deployments'))
+    ? 'WebSockets & Real-Time'
+    : content.badge2;
+  const statCode = (!content?.statCode || content.statCode.includes('Type-Safe') || content.statCode === 'Distributed Architecture')
+    ? 'Gemini 2.5 Flash OCR'
+    : content.statCode;
   const [isEntered, setIsEntered] = useState(false);
   const heroSectionRef = useRef<HTMLElement>(null);
   const hasExitedRef = useRef(false);
@@ -357,3 +363,5 @@ export const Hero: React.FC<HeroProps> = ({
     </section>
   );
 };
+
+export default Hero;

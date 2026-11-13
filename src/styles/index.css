@@ -192,3 +192,24 @@
   animation: splashGlowPulse 2.4s ease-in-out infinite;
 }
 
+/* ═══════════════════════════════════════════════════ */
+/* ══════════ Tech Stack Infinite Revolving Marquee ═ */
+/* ═══════════════════════════════════════════════════ */
+
+@keyframes techMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-tech-marquee {
+  display: flex;
+  width: max-content;
+  animation: techMarquee 42s linear infinite;
+  will-change: transform;
+}
+
+

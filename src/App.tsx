@@ -180,9 +180,9 @@ export const App: React.FC = () => {
   };
 
   const handleNav = (target: string) => {
-    if (target === 'projects') {
+    if (target === 'explore-projects' || target === 'projects-page') {
       navigateToProjects();
-    } else if (target === 'services') {
+    } else if (target === 'explore-services' || target === 'services-page') {
       navigateToServices();
     } else if (target === 'plans') {
       navigateToPlans();
@@ -407,9 +407,11 @@ export const App: React.FC = () => {
         ) : currentRoute === 'services' ? (
           <ServicesPage
             services={services}
+            products={products}
+            onOpenCaseStudy={(prod) => setSelectedCaseStudy(prod)}
             onBackToHome={(sectionId) => navigateToHome(sectionId)}
             onInquire={(domain) => {
-              setInquiryDomain(domain || 'Architecture inspired by Services');
+              setInquiryDomain(domain || 'Platform Tie-Up / In-House Service');
               navigateToHome('contact');
             }}
             onExploreProjects={navigateToProjects}

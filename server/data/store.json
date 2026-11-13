@@ -213,6 +213,13 @@
       "subtitle": "Campus Dining & Multi-Vendor OS",
       "badge": "FLAGSHIP STARTUP • 0-TO-1",
       "status": "Live",
+      "image": "/universe-banner.jpg",
+      "previewUrl": "/universe-banner.jpg",
+      "videoUrl": "/universe_video.webp",
+      "video": "/universe_video.webp",
+      "mediaType": "both",
+      "imageAlignment": "center",
+      "videoAlignment": "cover",
       "tagline": "Eliminating campus dining wait times with real-time QR ordering, automated kitchen dispatching, and vendor split settlements.",
       "lead": "Architected & Built as Co-Founder (Engineering, Growth & Finance)",
       "technologies": [
@@ -360,6 +367,13 @@
       "subtitle": "High-Performance Multi-Tenant Event Engine",
       "badge": "ENTERPRISE CRM • MAY ’26",
       "status": "Live",
+      "image": "/CRM.jpeg",
+      "previewUrl": "/CRM.jpeg",
+      "videoUrl": "/CRM.webm",
+      "video": "/CRM.webm",
+      "mediaType": "both",
+      "imageAlignment": "center",
+      "videoAlignment": "cover",
       "tagline": "High-performance multi-tenant CRM with Redis event bus, chunked bulk imports, and automated appointment reminders.",
       "lead": "Distributed Event Engine & High-Capacity Pipelines",
       "technologies": [
@@ -618,12 +632,9 @@
   "plans": [],
   "siteContent": {
     "hero": {
-      "line1": "CODRIX",
-      "line2": "TURNING IDEAS INTO",
-      "line3": "TECHNOLOGY",
-      "badge1": "Production-Grade Distributed Cloud Systems",
-      "badge2": "Zero-Downtime Mission-Critical Deployments",
-      "statCode": "100% Type-Safe Architecture"
+      "badge1": "PERN / Microservices",
+      "badge2": "WebSockets & Real-Time",
+      "statCode": "Gemini 2.5 Flash OCR"
     },
     "story": {
       "heading": "Engineered for Performance. Built for Reliability.",
@@ -731,6 +742,6 @@
       "contactPhone": "+91 99999 99999",
       "copyrightNotice": "All rights reserved."
     },
-    "updatedAt": "2026-11-12T14:54:54.859Z"
+    "updatedAt": "2026-11-13T18:03:56.371Z"
   }
 }

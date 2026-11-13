@@ -78,6 +78,11 @@ const productSchema = new mongoose.Schema({
   coverImage: { type: String, default: '' },
   image: { type: String, default: '' },
   previewUrl: { type: String, default: '' },
+  videoUrl: { type: String, default: '' },
+  video: { type: String, default: '' },
+  mediaType: { type: String, default: 'both' },
+  imageAlignment: { type: String, default: 'center' },
+  videoAlignment: { type: String, default: 'cover' },
   isVisible: { type: Boolean, default: true },
   updatedAt: { type: Date, default: Date.now }
 }, { strict: false });
@@ -129,9 +134,9 @@ const siteContentSchema = new mongoose.Schema({
     line1: { type: String, default: 'CODRIX' },
     line2: { type: String, default: 'TURNING IDEAS INTO' },
     line3: { type: String, default: 'TECHNOLOGY' },
-    badge1: { type: String, default: 'Production-Grade Distributed Cloud Systems' },
-    badge2: { type: String, default: 'Zero-Downtime Mission-Critical Deployments' },
-    statCode: { type: String, default: '100% Type-Safe Architecture' }
+    badge1: { type: String, default: 'PERN / Microservices' },
+    badge2: { type: String, default: 'WebSockets & Real-Time' },
+    statCode: { type: String, default: 'Gemini 2.5 Flash OCR' }
   },
   story: {
     heading: { type: String, default: 'Engineered for Performance. Built for Reliability.' },

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Github, ArrowUpRight, BookOpen, ArrowRight, Play, Image as ImageIcon } from 'lucide-react';
 import { Product } from '../types';
 import { getOptimizedImageUrl } from '../utils/imageOptimizer';
+import { TechStackMarquee } from './TechStackMarquee';
 
 interface PortfolioSectionProps {
   products: Product[];
@@ -14,13 +15,13 @@ const PROJECT_IMAGES: Record<string, string> = {
   'prod-01': '/universe-banner.jpg',
   'prod-02': '/services/ai-agents.jpg',
   'prod-03': '/services/institutional-erp.jpg',
-  'prod-04': '/services/crm-automation.jpg',
+  'prod-04': '/CRM.jpeg',
   'prod-05': '/services/campus-marketplaces.jpg',
   'prod-06': '/services/agri-commerce.jpg',
   'universe': '/universe-banner.jpg',
   'chatleads-ai': '/services/ai-agents.jpg',
   'abv-skillport': '/services/institutional-erp.jpg',
-  'nexus-crm': '/services/crm-automation.jpg',
+  'nexus-crm': '/CRM.jpeg',
   'campxchange': '/services/campus-marketplaces.jpg',
   'sachikheti': '/services/agri-commerce.jpg',
 };
@@ -37,8 +38,22 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   const nexusProduct = visibleProducts.find(p => p.slug === 'nexus-crm' || p.id === 'prod-04') || visibleProducts.find(p => p.name.toLowerCase().includes('nexus')) || visibleProducts[1];
   const displayProducts = [universeProduct, nexusProduct].filter(Boolean);
 
-  // UniVerse Interactive Media state (seamlessly toggle between WebP Video & High-Res Banner)
-  const [universeMediaMode, setUniverseMediaMode] = useState<'video' | 'photo'>('video');
+  // Dynamic Interactive Media state for each project (seamlessly toggle between Video & Photo)
+  const [mediaModes, setMediaModes] = useState<Record<string, 'video' | 'photo'>>({});
+
+  const getMediaMode = (prod: Product): 'video' | 'photo' => {
+    if (mediaModes[prod.id]) return mediaModes[prod.id];
+    const isUniverse = prod.slug === 'universe' || prod.id === 'prod-01' || prod.name.toLowerCase().includes('universe');
+    const isNexus = prod.slug === 'nexus-crm' || prod.id === 'prod-04' || prod.name.toLowerCase().includes('nexus');
+    const hasVideo = Boolean(prod.videoUrl || prod.video || (isUniverse ? '/universe_video.webp' : (isNexus ? '/CRM.webm' : null)));
+    if (prod.mediaType === 'image') return 'photo';
+    if (prod.mediaType === 'video') return 'video';
+    return hasVideo ? 'video' : 'photo';
+  };
+
+  const setProjectMedia = (prodId: string, mode: 'video' | 'photo') => {
+    setMediaModes(prev => ({ ...prev, [prodId]: mode }));
+  };
 
   return (
     <section id="projects" className="scroll-mt-12 sm:scroll-mt-16 pt-8 pb-8 sm:py-16 md:py-24 relative overflow-hidden bg-light-100/50 dark:bg-midnight-900/40 transition-colors duration-300">
@@ -52,7 +67,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-6 sm:mb-16">
+        <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-4 sm:mb-6">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
             Top Flagship <span className="text-gradient-purple">Services</span>
           </h2>
@@ -61,11 +76,34 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
           </p>
         </div>
 
+      </div>
+
+      {/* Full-Bleed Revolving Tech Stack Band - Positioned right after header text */}
+      <div className="mb-8 sm:mb-12 w-full relative z-10 overflow-hidden">
+        <TechStackMarquee />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
         {/* Portfolio Cards Grid (Wider Showcase for UniVerse with Properly Aligned Widescreen Video) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto items-stretch">
           {displayProducts.map((prod) => {
             const isUniverse = prod.slug === 'universe' || prod.id === 'prod-01' || prod.name.toLowerCase().includes('universe');
-            const imgSrc = (prod as any).image || (prod as any).previewUrl || PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || '/services/crm-automation.jpg';
+            const isNexus = prod.slug === 'nexus-crm' || prod.id === 'prod-04' || prod.name.toLowerCase().includes('nexus');
+            const videoSrc = prod.videoUrl || prod.video || (isUniverse ? '/universe_video.webp' : (isNexus ? '/CRM.webm' : ''));
+            const imgSrc = (prod as any).image || (prod as any).previewUrl || PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || (isUniverse ? '/universe-banner.jpg' : (isNexus ? '/CRM.jpeg' : '/services/crm-automation.jpg'));
+            const hasVideo = Boolean(videoSrc);
+            const currentMode = getMediaMode(prod);
+            const canToggle = hasVideo && Boolean(imgSrc) && prod.mediaType !== 'image' && prod.mediaType !== 'video';
+
+            // Alignment styles
+            const imageAlignClass = prod.imageAlignment === 'top'
+              ? 'object-top'
+              : prod.imageAlignment === 'bottom'
+              ? 'object-bottom'
+              : 'object-center';
+
+            const videoAlignClass = prod.videoAlignment === 'contain' ? 'object-contain' : 'object-cover';
 
             return (
               <div
@@ -78,50 +116,55 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               >
                 {/* 1. Full-Bleed Background Media covering the ENTIRE div (100% Crisp, Zero Overlay Wash) */}
                 <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-black flex items-center justify-center">
-                  {isUniverse ? (
-                    universeMediaMode === 'video' ? (
+                  {hasVideo && currentMode === 'video' ? (
+                    videoSrc.endsWith('.webp') || videoSrc.endsWith('.jpg') || videoSrc.endsWith('.png') ? (
                       <img
-                        src="/universe_video.webp"
-                        alt="UniVerse Platform Demo Video"
-                        className="w-full h-full object-cover object-top sm:object-[center_8%] transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+                        src={videoSrc}
+                        alt={`${prod.name} Platform Demo`}
+                        className={`w-full h-full ${videoAlignClass} transition-transform duration-700 ease-out group-hover:scale-[1.02]`}
                         loading="lazy"
                         decoding="async"
                       />
                     ) : (
-                      <img
-                        src="/universe-banner.jpg"
-                        alt={prod.name}
-                        className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-                        loading="eager"
-                        decoding="async"
-                      />
+                      <video
+                        key={videoSrc}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        poster={imgSrc}
+                        className={`w-full h-full ${videoAlignClass} transition-transform duration-700 ease-out group-hover:scale-[1.02]`}
+                      >
+                        <source src={videoSrc} type={videoSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+                        {videoSrc.endsWith('.webm') && <source src="/CRM.mp4" type="video/mp4" />}
+                      </video>
                     )
                   ) : (
                     <img
                       src={getOptimizedImageUrl(imgSrc, 900)}
                       alt={prod.name}
-                      className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                      className={`w-full h-full ${imageAlignClass} transition-transform duration-700 ease-out group-hover:scale-105`}
                       loading="lazy"
                       decoding="async"
                     />
                   )}
                 </div>
 
-                {/* 2. Minimal Crisp Bottom Fade ONLY behind text - completely removes inner blue/dark shadow effect */}
+                {/* 2. Minimal Crisp Bottom Fade ONLY behind text */}
                 <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none z-10" />
 
-                {/* 3. Card Top Row: UniVerse Media Toggle (Right) */}
+                {/* 3. Card Top Row: Interactive Media Toggle (Video / Photo) */}
                 <div className="relative z-20 p-5 sm:p-6 flex items-center justify-end">
-                  {isUniverse && (
+                  {canToggle && (
                     <div className="flex items-center bg-black/60 backdrop-blur-md p-1 rounded-full border border-white/20">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setUniverseMediaMode('video');
+                          setProjectMedia(prod.id, 'video');
                         }}
-                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${universeMediaMode === 'video'
-                          ? 'bg-electric-purple text-white'
+                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${currentMode === 'video'
+                          ? 'bg-electric-purple text-white shadow-sm'
                           : 'text-white/75 hover:text-white'
                           }`}
                       >
@@ -132,15 +175,15 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setUniverseMediaMode('photo');
+                          setProjectMedia(prod.id, 'photo');
                         }}
-                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${universeMediaMode === 'photo'
-                          ? 'bg-electric-purple text-white'
+                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${currentMode === 'photo'
+                          ? 'bg-electric-purple text-white shadow-sm'
                           : 'text-white/75 hover:text-white'
                           }`}
                       >
                         <ImageIcon className="w-3 h-3" />
-                        <span>Banner</span>
+                        <span>Photo</span>
                       </button>
                     </div>
                   )}

@@ -55,8 +55,8 @@ cloudinary.config({
 });
 
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Serverless-ready MongoDB Atlas connection middleware
 // Ensures online Atlas DB is connected before resolving any API endpoint on Vercel or local
@@ -125,9 +125,9 @@ function getDefaultSiteContent() {
       line1: 'CODRIX',
       line2: 'TURNING IDEAS INTO',
       line3: 'TECHNOLOGY',
-      badge1: 'Production-Grade Distributed Cloud Systems',
-      badge2: 'Zero-Downtime Mission-Critical Deployments',
-      statCode: '100% Type-Safe Architecture'
+      badge1: 'PERN / Microservices',
+      badge2: 'WebSockets & Real-Time',
+      statCode: 'Gemini 2.5 Flash OCR'
     },
     story: {
       heading: 'Engineered for Performance. Built for Reliability.',
@@ -1071,11 +1071,12 @@ app.get('/api/v1/admin/cloudinary-status', (req, res) => {
   });
 });
 
-// Upload image to Cloudinary (Folder-based: leadership, projects, process)
-app.post('/api/v1/admin/upload-image', async (req, res) => {
-  const { image, folder = 'codrix' } = req.body;
-  if (!image) {
-    return res.status(400).json({ success: false, message: 'No image data provided.' });
+// Upload media (image/video) to Cloudinary (Folder-based: leadership, projects, process)
+const handleUploadMedia = async (req, res) => {
+  const { image, media, folder = 'codrix' } = req.body;
+  const fileData = image || media;
+  if (!fileData) {
+    return res.status(400).json({ success: false, message: 'No media data provided.' });
   }
 
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME || DEFAULT_CLOUD_NAME;
@@ -1090,12 +1091,9 @@ app.post('/api/v1/admin/upload-image', async (req, res) => {
   }
 
   try {
-    const uploadRes = await cloudinary.uploader.upload(image, {
+    const uploadRes = await cloudinary.uploader.upload(fileData, {
       folder: folder,
-      resource_type: 'image',
-      transformation: [
-        { quality: 'auto', fetch_format: 'auto' }
-      ]
+      resource_type: 'auto',
     });
 
     return res.json({
@@ -1105,27 +1103,19 @@ app.post('/api/v1/admin/upload-image', async (req, res) => {
         url: uploadRes.secure_url,
         publicId: uploadRes.public_id,
         format: uploadRes.format,
+        resourceType: uploadRes.resource_type,
         width: uploadRes.width,
         height: uploadRes.height,
       }
     });
-
-    return res.json({
-      success: true,
-      url: uploadRes.secure_url,
-      publicId: uploadRes.public_id,
-      format: uploadRes.format,
-      width: uploadRes.width,
-      height: uploadRes.height,
-    });
   } catch (err) {
-    console.error('[Cloudinary] Upload error:', err);
-    return res.status(500).json({ 
-      success: false, 
-      message: err.message || 'Image upload to Cloudinary failed.' 
-    });
+    console.error('Cloudinary upload error:', err.message);
+    return res.status(500).json({ success: false, message: 'Cloudinary upload failed: ' + err.message });
   }
-});
+};
+
+app.post('/api/v1/admin/upload-image', handleUploadMedia);
+app.post('/api/v1/admin/upload-media', handleUploadMedia);
 
 // Delete image from Cloudinary by public ID
 app.delete('/api/v1/admin/delete-image', async (req, res) => {

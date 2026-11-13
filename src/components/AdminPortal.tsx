@@ -5,7 +5,8 @@ import {
   ExternalLink, Download, RefreshCw, LogOut, Check, Layers,
   Database, Users, Sparkles, Plus, Trash2, Edit3, Save, Globe,
   Briefcase, Activity, CheckCircle, ArrowLeft, Sun, Moon, ChevronRight,
-  Phone, Mail, MapPin, Code, Cpu, Eye, EyeOff, Upload, Image as ImageIcon, Cloud, Loader2
+  Phone, Mail, MapPin, Code, Cpu, Eye, EyeOff, Upload, Image as ImageIcon, Cloud, Loader2,
+  Video, Film, Play
 } from 'lucide-react';
 import {
   Inquiry, Product, Service, TeamMember,
@@ -22,6 +23,7 @@ interface CloudinaryUploaderProps {
   setIsUploading: (val: boolean) => void;
   showToast: (msg: string) => void;
   placeholder?: string;
+  mediaKind?: 'image' | 'video' | 'any';
 }
 
 const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
@@ -32,16 +34,20 @@ const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
   isUploading,
   setIsUploading,
   showToast,
-  placeholder = 'https://res.cloudinary.com/... or paste image URL'
+  placeholder,
+  mediaKind = 'image'
 }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const isVideo = mediaKind === 'video' || Boolean(value && (/\.(mp4|webm|ogg|mov)(\?|$)/i.test(value) || value.includes('/video/upload/')));
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 8 * 1024 * 1024) {
-      alert('Image file size exceeds 8MB. Please select an image under 8MB.');
+    const isVideoFile = file.type.startsWith('video/') || mediaKind === 'video';
+    const maxSizeMB = isVideoFile ? 40 : 10;
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      alert(`${isVideoFile ? 'Video' : 'Image'} file size exceeds ${maxSizeMB}MB. Please select a smaller file or paste a direct CDN URL.`);
       return;
     }
 
@@ -57,24 +63,37 @@ const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
       const res = await fetch('/api/v1/admin/upload-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: base64Data, folder })
+        body: JSON.stringify({ 
+          image: base64Data, 
+          folder: folder || (isVideoFile ? 'codrix/projects/videos' : 'codrix/projects')
+        })
       });
 
       const data = await res.json();
       if (res.ok && data.success && data.data?.url) {
         onChange(data.data.url);
-        showToast('Image uploaded to Cloudinary CDN successfully!');
+        showToast(`${isVideoFile ? 'Video' : 'Image'} uploaded to Cloudinary CDN successfully!`);
       } else {
-        alert(data.message || 'Image upload failed. Ensure Cloudinary credentials are set in .env / Vercel.');
+        alert(data.message || 'Media upload failed. Ensure Cloudinary credentials are set in .env / Vercel.');
       }
     } catch (err: any) {
       console.error('Cloudinary upload error:', err);
-      alert('Network or server error during image upload. You can also paste an image URL directly.');
+      alert('Network or server error during media upload. You can also paste an HTTPS URL directly.');
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
+
+  const defaultPlaceholder = mediaKind === 'video' 
+    ? 'https://res.cloudinary.com/... or paste .mp4/.webm video URL'
+    : 'https://res.cloudinary.com/... or paste image URL';
+
+  const acceptPattern = mediaKind === 'video'
+    ? 'video/mp4,video/webm,video/ogg,video/quicktime'
+    : mediaKind === 'any'
+    ? 'image/*,video/mp4,video/webm,video/ogg,video/quicktime'
+    : 'image/*';
 
   return (
     <div className="space-y-1.5">
@@ -88,11 +107,20 @@ const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
       <div className="flex items-center gap-3">
         {value ? (
           <div className="relative group w-14 h-14 rounded-xl overflow-hidden border border-purple-300 dark:border-white/20 bg-black/10 flex-shrink-0">
-            <img src={value} alt="Preview" className="w-full h-full object-cover" />
+            {isVideo ? (
+              <>
+                <video src={value} muted autoPlay loop playsInline className="w-full h-full object-cover" />
+                <span className="absolute bottom-1 right-1 p-0.5 rounded bg-black/60 text-white">
+                  <Film className="w-2.5 h-2.5" />
+                </span>
+              </>
+            ) : (
+              <img src={value} alt="Preview" className="w-full h-full object-cover" />
+            )}
             <button
               type="button"
               onClick={() => onChange('')}
-              title="Remove image"
+              title={`Remove ${isVideo ? 'video' : 'image'}`}
               className="absolute inset-0 bg-red-600/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
             >
               <Trash2 className="w-4 h-4" />
@@ -100,7 +128,11 @@ const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
           </div>
         ) : (
           <div className="w-14 h-14 rounded-xl border border-dashed border-light-border dark:border-midnight-border bg-purple-50/30 dark:bg-white/5 flex items-center justify-center text-light-subtext flex-shrink-0">
-            <ImageIcon className="w-5 h-5 opacity-40" />
+            {mediaKind === 'video' ? (
+              <Video className="w-5 h-5 opacity-40 text-electric-purple" />
+            ) : (
+              <ImageIcon className="w-5 h-5 opacity-40" />
+            )}
           </div>
         )}
 
@@ -110,13 +142,13 @@ const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
               type="text"
               value={value || ''}
               onChange={(e) => onChange(e.target.value)}
-              placeholder={placeholder}
+              placeholder={placeholder || defaultPlaceholder}
               className="flex-1 px-3 py-1.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs focus:border-electric-purple focus:outline-none"
             />
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept={acceptPattern}
               onChange={handleFileChange}
               className="hidden"
             />
@@ -134,13 +166,15 @@ const CloudinaryUploader: React.FC<CloudinaryUploaderProps> = ({
               ) : (
                 <>
                   <Upload className="w-3.5 h-3.5" />
-                  <span>Upload</span>
+                  <span>Upload {mediaKind === 'video' ? 'Video' : 'Media'}</span>
                 </>
               )}
             </button>
           </div>
           <p className="text-[10px] text-light-subtext font-mono">
-            Click Upload to upload from device to Cloudinary, or paste an HTTPS image URL.
+            {mediaKind === 'video' 
+              ? 'Upload .mp4 / .webm video (up to 40MB) or paste video CDN URL.'
+              : 'Click Upload to upload from device to Cloudinary, or paste an HTTPS URL.'}
           </p>
         </div>
       </div>
@@ -386,6 +420,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     techStack: ['React 19', 'TypeScript', 'Node.js', 'MongoDB'],
     architecture: 'Microservices & Event-Driven Pipeline',
     previewUrl: 'https://codrix.tech',
+    image: '',
+    videoUrl: '',
+    video: '',
+    mediaType: 'both',
+    imageAlignment: 'center',
+    videoAlignment: 'cover',
     githubUrl: 'https://github.com/codrix-technologies',
     badge: 'LIVE PRODUCTION',
     isVisible: true
@@ -422,8 +462,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       metric: newProduct.metric || '4x Scale',
       techStack: newProduct.techStack || ['React', 'TypeScript', 'Node.js'],
       architecture: newProduct.architecture || 'Distributed Microservices',
-      previewUrl: newProduct.previewUrl || 'https://codrix.tech',
-      image: newProduct.image || newProduct.previewUrl,
+      previewUrl: newProduct.previewUrl || newProduct.image || 'https://codrix.tech',
+      image: newProduct.image || newProduct.previewUrl || '',
+      videoUrl: newProduct.videoUrl || (newProduct as any).video || '',
+      video: newProduct.videoUrl || (newProduct as any).video || '',
+      mediaType: newProduct.mediaType || 'both',
+      imageAlignment: newProduct.imageAlignment || 'center',
+      videoAlignment: newProduct.videoAlignment || 'cover',
       githubUrl: newProduct.githubUrl || 'https://github.com/codrix-technologies',
       badge: newProduct.badge || 'PRODUCTION',
       isVisible: newProduct.isVisible !== false
@@ -452,6 +497,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       architecture: 'Microservices & Event-Driven Pipeline',
       previewUrl: 'https://codrix.tech',
       image: '',
+      videoUrl: '',
+      video: '',
+      mediaType: 'both',
+      imageAlignment: 'center',
+      videoAlignment: 'cover',
       githubUrl: 'https://github.com/codrix-technologies',
       badge: 'LIVE PRODUCTION',
       isVisible: true
@@ -462,6 +512,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   const handleSaveExistingProduct = async (prod: Product) => {
     const updated = {
       ...prod,
+      image: (prod as any).image || prod.previewUrl || '',
+      previewUrl: prod.previewUrl || (prod as any).image || '',
+      videoUrl: prod.videoUrl || (prod as any).video || '',
+      video: prod.videoUrl || (prod as any).video || '',
+      mediaType: prod.mediaType || 'both',
+      imageAlignment: prod.imageAlignment || 'center',
+      videoAlignment: prod.videoAlignment || 'cover',
       isVisible: prod.isVisible !== false
     };
     try {
@@ -1502,17 +1559,101 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                       </div>
                     </div>
 
+                    {/* Media Management: Showcase Image + Vertical Alignment */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                      <div className="md:col-span-2">
+                        <CloudinaryUploader
+                          label="Project Showcase Image / Banner"
+                          value={newProduct.previewUrl || (newProduct as any).image || ''}
+                          folder="codrix/projects"
+                          isUploading={isUploadingImage}
+                          setIsUploading={setIsUploadingImage}
+                          showToast={showToast}
+                          mediaKind="image"
+                          placeholder="https://res.cloudinary.com/... or upload image"
+                          onChange={(url) => setNewProduct({ ...newProduct, previewUrl: url, image: url } as any)}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-mono text-light-subtext font-semibold mb-1">Image Vertical Alignment</label>
+                        <select
+                          value={newProduct.imageAlignment || 'center'}
+                          onChange={(e) => setNewProduct({ ...newProduct, imageAlignment: e.target.value as any })}
+                          className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs font-mono text-light-text dark:text-white"
+                        >
+                          <option value="center">Center (Default)</option>
+                          <option value="top">Top (Header Focus)</option>
+                          <option value="bottom">Bottom (Footer Focus)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Media Management: Demo Video + Aspect Fit */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                      <div className="md:col-span-2">
+                        <CloudinaryUploader
+                          label="Project Demo Video (.mp4, .webm, webp)"
+                          value={newProduct.videoUrl || (newProduct as any).video || ''}
+                          folder="codrix/projects/videos"
+                          isUploading={isUploadingImage}
+                          setIsUploading={setIsUploadingImage}
+                          showToast={showToast}
+                          mediaKind="video"
+                          placeholder="https://res.cloudinary.com/... or upload .mp4/.webm"
+                          onChange={(url) => setNewProduct({ ...newProduct, videoUrl: url, video: url } as any)}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-mono text-light-subtext font-semibold mb-1">Video Aspect Fit</label>
+                        <select
+                          value={newProduct.videoAlignment || 'cover'}
+                          onChange={(e) => setNewProduct({ ...newProduct, videoAlignment: e.target.value as any })}
+                          className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs font-mono text-light-text dark:text-white"
+                        >
+                          <option value="cover">Cover (Full bleed)</option>
+                          <option value="contain">Contain (Letterboxed)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Media Display Mode */}
                     <div>
-                      <CloudinaryUploader
-                        label="Project Showcase Image / Banner"
-                        value={newProduct.previewUrl || (newProduct as any).image || ''}
-                        folder="codrix/projects"
-                        isUploading={isUploadingImage}
-                        setIsUploading={setIsUploadingImage}
-                        showToast={showToast}
-                        placeholder="https://res.cloudinary.com/... or click Upload"
-                        onChange={(url) => setNewProduct({ ...newProduct, previewUrl: url, image: url } as any)}
-                      />
+                      <label className="block text-[11px] font-mono text-light-subtext font-semibold mb-1">Card Media Display Preference</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setNewProduct({ ...newProduct, mediaType: 'both' })}
+                          className={`px-3 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer ${
+                            (newProduct.mediaType || 'both') === 'both'
+                              ? 'bg-electric-purple text-white border-electric-purple font-semibold shadow-sm'
+                              : 'bg-purple-50/40 dark:bg-midnight-900 border-light-border dark:border-midnight-border text-light-subtext hover:border-purple-300'
+                          }`}
+                        >
+                          Both (Toggleable)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setNewProduct({ ...newProduct, mediaType: 'video' })}
+                          className={`px-3 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer ${
+                            newProduct.mediaType === 'video'
+                              ? 'bg-electric-purple text-white border-electric-purple font-semibold shadow-sm'
+                              : 'bg-purple-50/40 dark:bg-midnight-900 border-light-border dark:border-midnight-border text-light-subtext hover:border-purple-300'
+                          }`}
+                        >
+                          Video Only
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setNewProduct({ ...newProduct, mediaType: 'image' })}
+                          className={`px-3 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer ${
+                            newProduct.mediaType === 'image'
+                              ? 'bg-electric-purple text-white border-electric-purple font-semibold shadow-sm'
+                              : 'bg-purple-50/40 dark:bg-midnight-900 border-light-border dark:border-midnight-border text-light-subtext hover:border-purple-300'
+                          }`}
+                        >
+                          Photo Only
+                        </button>
+                      </div>
                     </div>
 
                     <div>
@@ -1690,17 +1831,101 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                             className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
                           />
                         </div>
+                        {/* Media Management: Showcase Image + Vertical Alignment */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                          <div className="md:col-span-2">
+                            <CloudinaryUploader
+                              label="Project Showcase Image / Banner"
+                              value={(editingProduct as any).image || editingProduct.previewUrl || ''}
+                              folder="codrix/projects"
+                              isUploading={isUploadingImage}
+                              setIsUploading={setIsUploadingImage}
+                              showToast={showToast}
+                              mediaKind="image"
+                              placeholder="https://res.cloudinary.com/... or upload image"
+                              onChange={(url) => setEditingProduct({ ...editingProduct, previewUrl: url, image: url } as any)}
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-mono text-light-subtext font-semibold mb-1">Image Vertical Alignment</label>
+                            <select
+                              value={editingProduct.imageAlignment || 'center'}
+                              onChange={(e) => setEditingProduct({ ...editingProduct, imageAlignment: e.target.value as any })}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs font-mono text-light-text dark:text-white"
+                            >
+                              <option value="center">Center (Default)</option>
+                              <option value="top">Top (Header Focus)</option>
+                              <option value="bottom">Bottom (Footer Focus)</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Media Management: Demo Video + Aspect Fit */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                          <div className="md:col-span-2">
+                            <CloudinaryUploader
+                              label="Project Demo Video (.mp4, .webm, webp)"
+                              value={editingProduct.videoUrl || (editingProduct as any).video || ''}
+                              folder="codrix/projects/videos"
+                              isUploading={isUploadingImage}
+                              setIsUploading={setIsUploadingImage}
+                              showToast={showToast}
+                              mediaKind="video"
+                              placeholder="https://res.cloudinary.com/... or upload .mp4/.webm"
+                              onChange={(url) => setEditingProduct({ ...editingProduct, videoUrl: url, video: url } as any)}
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-mono text-light-subtext font-semibold mb-1">Video Aspect Fit</label>
+                            <select
+                              value={editingProduct.videoAlignment || 'cover'}
+                              onChange={(e) => setEditingProduct({ ...editingProduct, videoAlignment: e.target.value as any })}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs font-mono text-light-text dark:text-white"
+                            >
+                              <option value="cover">Cover (Full bleed)</option>
+                              <option value="contain">Contain (Letterboxed)</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Media Display Mode */}
                         <div>
-                          <CloudinaryUploader
-                            label="Project Showcase Image / Banner"
-                            value={(editingProduct as any).image || editingProduct.previewUrl || ''}
-                            folder="codrix/projects"
-                            isUploading={isUploadingImage}
-                            setIsUploading={setIsUploadingImage}
-                            showToast={showToast}
-                            placeholder="https://res.cloudinary.com/... or click Upload"
-                            onChange={(url) => setEditingProduct({ ...editingProduct, previewUrl: url, image: url } as any)}
-                          />
+                          <label className="block text-[11px] font-mono text-light-subtext font-semibold mb-1">Card Media Display Preference</label>
+                          <div className="grid grid-cols-3 gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setEditingProduct({ ...editingProduct, mediaType: 'both' })}
+                              className={`px-3 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer ${
+                                (editingProduct.mediaType || 'both') === 'both'
+                                  ? 'bg-electric-purple text-white border-electric-purple font-semibold shadow-sm'
+                                  : 'bg-purple-50/40 dark:bg-midnight-900 border-light-border dark:border-midnight-border text-light-subtext hover:border-purple-300'
+                              }`}
+                            >
+                              Both (Toggleable)
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingProduct({ ...editingProduct, mediaType: 'video' })}
+                              className={`px-3 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer ${
+                                editingProduct.mediaType === 'video'
+                                  ? 'bg-electric-purple text-white border-electric-purple font-semibold shadow-sm'
+                                  : 'bg-purple-50/40 dark:bg-midnight-900 border-light-border dark:border-midnight-border text-light-subtext hover:border-purple-300'
+                              }`}
+                            >
+                              Video Only
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingProduct({ ...editingProduct, mediaType: 'image' })}
+                              className={`px-3 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer ${
+                                editingProduct.mediaType === 'image'
+                                  ? 'bg-electric-purple text-white border-electric-purple font-semibold shadow-sm'
+                                  : 'bg-purple-50/40 dark:bg-midnight-900 border-light-border dark:border-midnight-border text-light-subtext hover:border-purple-300'
+                              }`}
+                            >
+                              Photo Only
+                            </button>
+                          </div>
                         </div>
                         <div>
                           <label className="block font-mono text-light-subtext mb-1">Subtitle</label>
