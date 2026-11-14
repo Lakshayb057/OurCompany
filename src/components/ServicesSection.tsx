@@ -96,10 +96,6 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
             transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.75s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lavender-soft/80 dark:bg-white/[0.06] border border-purple-200/60 dark:border-white/10 text-xs font-semibold text-electric-purple dark:text-lavender-light">
-            <span>Specialized Engineering Pillars</span>
-          </div>
-
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
             Engineering <span className="text-gradient-purple">Capabilities</span>
           </h2>

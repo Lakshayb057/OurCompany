@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Check, Globe, ArrowRight, Clock, ExternalLink } from 'lucide-react';
+import { Check, Globe, ArrowRight, Clock, ExternalLink } from 'lucide-react';
 import { PlanPackage, PLANS_DATA } from '../data/plansData';
 import { PlanRegistrationModal } from './PlanRegistrationModal';
 
@@ -38,11 +38,6 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, pla
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 mb-10 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-50 dark:bg-white/5 border border-purple-200/80 dark:border-white/10 text-electric-purple dark:text-lavender-light text-xs font-mono font-bold tracking-wide uppercase shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Featured Engineering Packages</span>
-          </div>
-
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
             Engineering Plans & <span className="text-gradient-purple">Packages</span>
           </h2>

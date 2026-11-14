@@ -164,11 +164,6 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome, plans }) => 
 
         {/* Hero Title & Value Proposition */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-50 dark:bg-white/5 border border-purple-200 dark:border-white/10 text-electric-purple dark:text-lavender-light text-xs font-mono font-bold tracking-wide uppercase shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Standardized Scope • Guaranteed Execution</span>
-          </div>
-
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-light-text dark:text-white">
             Engineering Plans & <span className="text-gradient-purple">Packages</span>
           </h1>

@@ -8,12 +8,6 @@ export const TechStackSection: React.FC = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[250px] bg-electric-purple/5 dark:bg-electric-purple/10 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center mb-6 sm:mb-8">
-        {/* Subtle pill badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono tracking-wider uppercase bg-electric-purple/10 text-electric-purple dark:text-purple-300 border border-electric-purple/20 mb-3 sm:mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-electric-purple animate-pulse" />
-          Production Engineering Stack
-        </div>
-
         {/* User-requested quote line */}
         <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-light-text dark:text-white max-w-3xl mx-auto leading-snug">
           &ldquo;The tech stacks we proficiently work with to turn ideas into scalable technology.&rdquo;
