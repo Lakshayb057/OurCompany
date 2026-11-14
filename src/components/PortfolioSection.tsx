@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Github, ArrowUpRight, BookOpen, ArrowRight, Play, Image as ImageIcon } from 'lucide-react';
 import { Product } from '../types';
 import { getOptimizedImageUrl } from '../utils/imageOptimizer';
-import { TechStackMarquee } from './TechStackMarquee';
 
 interface PortfolioSectionProps {
   products: Product[];
@@ -67,7 +66,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-4 sm:mb-6">
+        <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-10 sm:mb-14">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
             Top Flagship <span className="text-gradient-purple">Services</span>
           </h2>
@@ -75,15 +74,6 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
             Real-world enterprise systems, production platforms, and scalable architectures engineered and shipped with verified impact and high availability.
           </p>
         </div>
-
-      </div>
-
-      {/* Full-Bleed Revolving Tech Stack Band - Positioned right after header text */}
-      <div className="mb-8 sm:mb-12 w-full relative z-10 overflow-hidden">
-        <TechStackMarquee />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
         {/* Portfolio Cards Grid (Wider Showcase for UniVerse with Properly Aligned Widescreen Video) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto items-stretch">

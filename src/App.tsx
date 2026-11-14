@@ -8,6 +8,7 @@ import { MorphingButton } from './components/MorphingButton';
 import { OurStory } from './components/OurStory';
 import { ServicesSection } from './components/ServicesSection';
 import { PortfolioSection } from './components/PortfolioSection';
+import { TechStackSection } from './components/TechStackSection';
 import { ProjectsPage } from './components/ProjectsPage';
 import { ServicesPage } from './components/ServicesPage';
 import { CaseStudyModal } from './components/CaseStudyModal';
@@ -550,6 +551,9 @@ export const App: React.FC = () => {
               onViewAllProjects={navigateToProjects}
               onViewAllServices={navigateToServices}
             />
+
+            {/* Section 04.6: Core Engineering Tech Stack */}
+            <TechStackSection />
 
             {/* Section 05: How We Work (Discovery to Delivery) */}
             <ProcessSection
