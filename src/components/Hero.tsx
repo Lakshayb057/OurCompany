@@ -145,7 +145,7 @@ export const Hero: React.FC<HeroProps> = ({
           {/* Left Column: Hero Visual Artwork Container (Anchors the Morphing 3D Logo on Desktop only) */}
           <div className="hidden lg:flex lg:col-span-5 relative justify-center order-1 lg:order-1">
             <div className="relative w-full max-w-[200px] sm:max-w-xs lg:max-w-none">
-              {/* Soft circular ambient glow behind ribbon artwork */}
+              {/* Soft circular ambient glow behind ribbon artwork (Light mode only) */}
               <div 
                 style={{
                   opacity: isEntered ? 1 : 0,
@@ -153,7 +153,7 @@ export const Hero: React.FC<HeroProps> = ({
                   transition: 'opacity 1s ease-out, transform 1s ease-out',
                   transitionDelay: '200ms',
                 }}
-                className="absolute -inset-4 bg-electric-purple/15 dark:bg-electric-purple/20 rounded-full blur-3xl pointer-events-none" 
+                className="absolute -inset-4 bg-electric-purple/15 dark:hidden rounded-full blur-3xl pointer-events-none" 
               />
 
               {/* Layout footprint & anchor element measured by MorphingLogo */}
@@ -171,14 +171,14 @@ export const Hero: React.FC<HeroProps> = ({
             {/* Mobile-Only Stationary Hero Logo: cleanly centered above the headline on small screens */}
             <div className="lg:hidden flex flex-col items-center justify-center mb-1 sm:mb-3">
               <div className="relative w-44 h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 flex items-center justify-center">
-                {/* Soft circular ambient glow behind ribbon artwork */}
+                {/* Soft circular ambient glow behind ribbon artwork (Light mode only) */}
                 <div 
                   style={{
                     opacity: isEntered ? 1 : 0,
                     transform: isEntered ? 'scale(1)' : 'scale(0.8)',
                     transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
                   }}
-                  className="absolute -inset-3 sm:-inset-4 bg-electric-purple/25 dark:bg-lavender-glow/30 rounded-full blur-2xl sm:blur-3xl pointer-events-none" 
+                  className="absolute -inset-3 sm:-inset-4 bg-electric-purple/25 dark:hidden rounded-full blur-2xl sm:blur-3xl pointer-events-none" 
                 />
                 
                 <img
@@ -187,7 +187,7 @@ export const Hero: React.FC<HeroProps> = ({
                   loading="eager"
                   {...{ fetchpriority: 'high' }}
                   decoding="async"
-                  className={`relative z-10 w-full h-full object-contain pointer-events-none drop-shadow-[0_16px_36px_rgba(124,44,245,0.35)] dark:drop-shadow-[0_20px_48px_rgba(182,108,255,0.48)] ${isEntered ? 'animate-hero-float' : ''}`}
+                  className={`relative z-10 w-full h-full object-contain pointer-events-none drop-shadow-[0_16px_36px_rgba(124,44,245,0.35)] dark:drop-shadow-none ${isEntered ? 'animate-hero-float' : ''}`}
                 />
               </div>
             </div>
