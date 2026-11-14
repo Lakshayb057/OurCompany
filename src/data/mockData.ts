@@ -7,7 +7,7 @@ export const INITIAL_SERVICES: Service[] = [
     title: "Web & Distributed Cloud Systems",
     domain: "Enterprise Cloud & Microservices",
     icon: "Cloud",
-    image: "/services/cloud-systems.jpg",
+    image: "/services/cliparts/1.webp",
     summary: "Architecting resilient, multi-tenant cloud ecosystems with high-availability microservices, ACID transactional integrity, and scalable containerized deployments.",
     technologies: ["PERN Stack", "Node.js", "Express.js", "PostgreSQL", "AWS EC2/RDS", "AWS VPC", "Docker", "Socket.io"],
     benefits: [
@@ -23,7 +23,7 @@ export const INITIAL_SERVICES: Service[] = [
     title: "AI, Intelligent Agents & OCR",
     domain: "Artificial Intelligence & Automation",
     icon: "Bot",
-    image: "/services/ai-agents.jpg",
+    image: "/services/cliparts/2.webp",
     summary: "Building cutting-edge cognitive pipelines combining multimodal LLMs, high-speed OCR extraction, and autonomous agent coordination to automate manual workflows.",
     technologies: ["Gemini 2.5 Flash", "Groq Llama-4", "FastAPI", "Python", "Computer Vision OCR", "Baileys SDK", "WebSockets"],
     benefits: [
@@ -39,7 +39,7 @@ export const INITIAL_SERVICES: Service[] = [
     title: "High-Throughput CRMs & Real-Time Engines",
     domain: "Workflow Automation & Telemetry",
     icon: "Zap",
-    image: "/services/crm-automation.jpg",
+    image: "/services/cliparts/3.webp",
     summary: "Developing high-velocity CRM platforms equipped with Redis event messaging, sub-second lead distribution, and automated reminder sequences.",
     technologies: ["React.js", "Node.js", "Prisma ORM", "Redis Event Bus", "PostgreSQL JSONB", "Socket.io", "Brevo SMTP"],
     benefits: [
@@ -55,7 +55,7 @@ export const INITIAL_SERVICES: Service[] = [
     title: "Institutional ERPs & Verification Portals",
     domain: "Education & Digital Credentials",
     icon: "ShieldCheck",
-    image: "/services/institutional-erp.jpg",
+    image: "/services/cliparts/4.webp",
     summary: "Engineering automated administrative platforms featuring cryptographically secured digital credential verification, student lifecycle tracking, and custom RBAC.",
     technologies: ["React.js", "Tailwind CSS", "Express.js", "MongoDB", "JWT Auth", "PDF-Parse Engine", "Axios"],
     benefits: [
@@ -71,7 +71,7 @@ export const INITIAL_SERVICES: Service[] = [
     title: "Direct-to-Consumer & Agri-Commerce OS",
     domain: "E-Commerce & Operational ERP",
     icon: "ShoppingBag",
-    image: "/services/agri-commerce.jpg",
+    image: "/services/cliparts/5.webp",
     summary: "Full-stack direct-to-consumer digital commerce platforms with seamless payment processing, omni-channel order routing, and centralized executive ERPs.",
     technologies: ["React 18", "Vite", "Node.js", "PostgreSQL", "Prisma", "Razorpay UPI", "WhatsApp Business API", "SVG Dashboards"],
     benefits: [
@@ -87,7 +87,7 @@ export const INITIAL_SERVICES: Service[] = [
     title: "Circular Economy & P2P Marketplaces",
     domain: "Social Impact & Community Platforms",
     icon: "RefreshCw",
-    image: "/services/campus-marketplaces.jpg",
+    image: "/services/cliparts/6.webp",
     summary: "Creating trustworthy peer-to-peer sharing and circular exchange ecosystems with identity validation, direct communication, and rental logistics.",
     technologies: ["Django", "MongoDB", "Android Kotlin", "REST APIs", "AI Verification", "Web Application"],
     benefits: [

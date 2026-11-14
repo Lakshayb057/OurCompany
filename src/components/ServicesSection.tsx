@@ -8,19 +8,19 @@ interface ServicesSectionProps {
   onViewAllServices?: () => void;
 }
 
-const DEFAULT_SERVICE_IMAGES: Record<string, string> = {
-  'srv-01': '/services/cloud-systems.jpg',
-  'srv-02': '/services/ai-agents.jpg',
-  'srv-03': '/services/crm-automation.jpg',
-  'srv-04': '/services/institutional-erp.jpg',
-  'srv-05': '/services/agri-commerce.jpg',
-  'srv-06': '/services/campus-marketplaces.jpg',
-  'cloud-systems': '/services/cloud-systems.jpg',
-  'ai-agents': '/services/ai-agents.jpg',
-  'crm-automation': '/services/crm-automation.jpg',
-  'institutional-erp': '/services/institutional-erp.jpg',
-  'agri-commerce': '/services/agri-commerce.jpg',
-  'campus-marketplaces': '/services/campus-marketplaces.jpg',
+const CLIPART_MAP: Record<string, string> = {
+  'srv-01': '/services/cliparts/1.webp',
+  'srv-02': '/services/cliparts/2.webp',
+  'srv-03': '/services/cliparts/3.webp',
+  'srv-04': '/services/cliparts/4.webp',
+  'srv-05': '/services/cliparts/5.webp',
+  'srv-06': '/services/cliparts/6.webp',
+  'cloud-systems': '/services/cliparts/1.webp',
+  'ai-agents': '/services/cliparts/2.webp',
+  'crm-automation': '/services/cliparts/3.webp',
+  'institutional-erp': '/services/cliparts/4.webp',
+  'agri-commerce': '/services/cliparts/5.webp',
+  'campus-marketplaces': '/services/cliparts/6.webp',
 };
 
 export const ServicesSection: React.FC<ServicesSectionProps> = ({ 
@@ -71,14 +71,21 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
 
   const getIcon = (iconName: string) => {
     switch (iconName) {
-      case 'Cloud': return <Cloud className="w-5 h-5 text-electric-purple dark:text-lavender-glow" />;
-      case 'Bot': return <Bot className="w-5 h-5 text-electric-purple dark:text-lavender-glow" />;
-      case 'Zap': return <Zap className="w-5 h-5 text-electric-purple dark:text-lavender-glow" />;
-      case 'ShieldCheck': return <ShieldCheck className="w-5 h-5 text-electric-purple dark:text-lavender-glow" />;
-      case 'ShoppingBag': return <ShoppingBag className="w-5 h-5 text-electric-purple dark:text-lavender-glow" />;
-      case 'RefreshCw': return <RefreshCw className="w-5 h-5 text-electric-purple dark:text-lavender-glow" />;
-      default: return <Rocket className="w-5 h-5 text-electric-purple dark:text-lavender-glow" />;
+      case 'Cloud': return <Cloud className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
+      case 'Bot': return <Bot className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
+      case 'Zap': return <Zap className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
+      case 'ShieldCheck': return <ShieldCheck className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
+      case 'ShoppingBag': return <ShoppingBag className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
+      case 'RefreshCw': return <RefreshCw className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
+      default: return <Rocket className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
     }
+  };
+
+  const getClipartSrc = (service: Service, idx: number) => {
+    if (service.image && service.image.includes('/cliparts/')) {
+      return service.image;
+    }
+    return CLIPART_MAP[service.id] || CLIPART_MAP[service.slug] || `/services/cliparts/${(idx % 6) + 1}.webp`;
   };
 
   return (
@@ -91,7 +98,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
         
         {/* Section Header with 3D Reveal (Desktop only) */}
         <div 
-          className="max-w-3xl mx-auto text-center space-y-4 mb-6 sm:mb-16"
+          className="max-w-3xl mx-auto text-center space-y-4 mb-10 sm:mb-16"
           style={isMobile ? undefined : {
             opacity: isInView ? 1 : 0,
             transform: isInView 
@@ -101,6 +108,10 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
             transition: 'opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.75s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lavender-soft/80 dark:bg-white/[0.06] border border-purple-200/60 dark:border-white/10 text-xs font-semibold text-electric-purple dark:text-lavender-light">
+            <span>Specialized Engineering Pillars</span>
+          </div>
+
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
             Engineering <span className="text-gradient-purple">Capabilities</span>
           </h2>
@@ -116,10 +127,10 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
           </p>
         </div>
 
-        {/* 4K Portrait Explanatory Showcase Grid with Staggered Cascading 3D Physics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* 3-Column Clipart Showcase Grid with Staggered Cascading 3D Physics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {services.map((service, idx) => {
-            const imgSrc = service.image || DEFAULT_SERVICE_IMAGES[service.id] || DEFAULT_SERVICE_IMAGES[service.slug] || '/services/cloud-systems.jpg';
+            const imgSrc = getClipartSrc(service, idx);
             const shortDomain = service.domain || service.title;
             const staggerDelay = 150 + idx * 95;
 
@@ -135,61 +146,46 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                   transition: `opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms, filter 0.85s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay}ms`,
                   transformOrigin: 'bottom center',
                 }}
-                className="group relative rounded-3xl overflow-hidden bg-white/90 dark:bg-midnight-card/90 border border-purple-100/90 dark:border-electric-purple/20 hover:border-electric-purple/50 dark:hover:border-electric-purple/60 transition-all duration-500 shadow-none hover:shadow-none flex flex-col justify-between"
+                className="group relative rounded-3xl p-6 sm:p-7 bg-white/90 dark:bg-midnight-card/85 border border-purple-100/90 dark:border-white/10 hover:border-electric-purple/50 dark:hover:border-electric-purple/50 transition-all duration-500 shadow-sm hover:shadow-2xl hover:shadow-purple-500/10 flex flex-col justify-between hover:-translate-y-1.5 backdrop-blur-xl"
               >
-                {/* 4K Portrait Explanatory Imagery Container */}
-                <div className="relative aspect-[4/5] w-full overflow-hidden bg-slate-900">
-                    <img
-                      src={imgSrc}
-                      alt={service.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover object-center transform transition-transform duration-700 ease-out group-hover:scale-105"
-                    />
-
-                  {/* Dual-Theme Atmospheric Gradients */}
-                  {/* Top subtle vignette */}
-                  <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/60 via-black/20 to-transparent pointer-events-none" />
-                  
-                  {/* Bottom smooth fade to card body */}
-                  <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-midnight-card dark:via-midnight-card/85 dark:to-transparent pointer-events-none transition-colors duration-300" />
-
-                  {/* Top Floating Glass Domain Pill */}
-                  <div 
-                    className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none"
-                    style={isMobile ? undefined : {
-                      opacity: isInView ? 1 : 0,
-                      transform: isInView ? 'translateY(0)' : 'translateY(-12px)',
-                      transition: `opacity 0.6s ease-out ${staggerDelay + 160}ms, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay + 160}ms`,
-                    }}
-                  >
-                    <div className="px-3.5 py-1.5 rounded-full bg-white/85 dark:bg-midnight/80 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-sm flex items-center gap-2">
-                      {getIcon(service.icon)}
-                      <span className="text-xs font-semibold tracking-wide text-slate-800 dark:text-gray-200">
-                        {shortDomain}
-                      </span>
-                    </div>
+                {/* TOP: Header (Domain Pill + Service Title) */}
+                <div className="space-y-3">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-lavender-soft/80 dark:bg-white/[0.07] border border-purple-200/60 dark:border-white/10 shadow-xs">
+                    {getIcon(service.icon)}
+                    <span className="text-xs font-semibold tracking-wide text-electric-dark dark:text-lavender-light">
+                      {shortDomain}
+                    </span>
                   </div>
-                </div>
 
-                {/* Clean Bottom Meta & Action */}
-                <div 
-                  className="relative z-10 p-6 pt-2 space-y-4"
-                  style={isMobile ? undefined : {
-                    opacity: isInView ? 1 : 0,
-                    transform: isInView ? 'translateY(0)' : 'translateY(14px)',
-                    transition: `opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay + 100}ms, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${staggerDelay + 100}ms`,
-                  }}
-                >
-                  {/* Service Title */}
-                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-light-text dark:text-white group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors line-clamp-2">
+                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-light-text dark:text-white group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors line-clamp-2 min-h-[3.25rem]">
                     {service.title}
                   </h3>
+                </div>
 
-                  {/* Sleek CTA Button */}
+                {/* MIDDLE: Seamless Clipart Illustration (No Box Container) */}
+                <div className="relative my-3 sm:my-4 h-44 sm:h-48 w-full flex items-center justify-center">
+                  {/* Subtle ambient aura behind illustration */}
+                  <div className="absolute w-3/4 h-28 rounded-full bg-electric-purple/10 dark:bg-lavender-glow/15 blur-2xl pointer-events-none opacity-40 group-hover:opacity-85 transition-opacity duration-500" />
+
+                  {/* Transparent Tinted Clipart */}
+                  <img
+                    src={imgSrc}
+                    alt={service.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="relative z-10 max-h-40 sm:max-h-44 max-w-[94%] object-contain transform transition-all duration-500 ease-out group-hover:scale-106 group-hover:-translate-y-1.5 drop-shadow-[0_4px_14px_rgba(124,44,245,0.15)] dark:drop-shadow-[0_4px_18px_rgba(182,108,255,0.4)] dark:brightness-130"
+                  />
+                </div>
+
+                {/* BOTTOM: Concise Description & Action Button */}
+                <div className="space-y-4 pt-1">
+                  <p className="text-light-subtext dark:text-gray-300 text-sm leading-relaxed line-clamp-3 min-h-[3.75rem]">
+                    {service.summary || "Enterprise-grade digital architecture and high-velocity engineering engineered for real-time scale."}
+                  </p>
+
                   <button
                     onClick={() => onSelectService(service.title)}
-                    className="w-full py-3 px-5 rounded-2xl bg-lavender-soft hover:bg-electric-purple text-electric-dark hover:text-white dark:bg-midnight-surface dark:border-electric-purple/30 dark:hover:bg-electric-purple dark:text-white border border-purple-200/80 text-sm font-semibold flex items-center justify-between group/btn transition-all duration-300 shadow-sm hover:shadow-md"
+                    className="w-full py-2.5 sm:py-3 px-4 sm:px-5 rounded-2xl bg-lavender-soft/80 hover:bg-electric-purple text-electric-dark hover:text-white dark:bg-white/[0.06] dark:border-electric-purple/30 dark:hover:bg-electric-purple dark:text-white border border-purple-200/80 text-xs sm:text-sm font-semibold flex items-center justify-between group/btn transition-all duration-300 cursor-pointer shadow-xs hover:shadow-md hover:shadow-purple-500/20"
                   >
                     <span>Inquire for {service.title.split('&')[0].trim().split(' ')[0]}</span>
                     <div className="w-7 h-7 rounded-full bg-white/80 dark:bg-white/10 group-hover/btn:bg-white/20 flex items-center justify-center transition-colors">
@@ -204,7 +200,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
 
         {/* Explore All Services Action */}
         {onViewAllServices && (
-          <div className="mt-6 sm:mt-14 flex justify-center">
+          <div className="mt-8 sm:mt-14 flex justify-center">
             <button
               onClick={onViewAllServices}
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white dark:bg-midnight-card border border-purple-200 dark:border-white/15 text-sm font-semibold text-light-text dark:text-white hover:text-electric-purple dark:hover:text-lavender-light hover:border-electric-purple hover:bg-lavender-soft/40 dark:hover:bg-white/5 hover:scale-[1.02] active:scale-[0.98] transition-all group cursor-pointer shadow-none hover:shadow-none"
