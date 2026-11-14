@@ -212,4 +212,55 @@
   will-change: transform;
 }
 
+/* ═══════════════════════════════════════════════════════════ */
+/* ══════ Circular Theme Reveal (View Transition API) ═══════ */
+/* ═══════════════════════════════════════════════════════════ */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 99999;
+}
+
+/* Temporarily disable CSS transitions during view transition capture */
+.theme-no-transitions,
+.theme-no-transitions * {
+  transition: none !important;
+}
+
+/* Fallback circular reveal overlay for browsers without View Transitions */
+.theme-reveal-fallback {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  clip-path: circle(0px at var(--reveal-x, 50%) var(--reveal-y, 50%));
+  will-change: clip-path;
+  animation: circularRevealFallback 650ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes circularRevealFallback {
+  0% {
+    clip-path: circle(0px at var(--reveal-x) var(--reveal-y));
+    opacity: 1;
+  }
+  80% {
+    clip-path: circle(200vmax at var(--reveal-x) var(--reveal-y));
+    opacity: 1;
+  }
+  100% {
+    clip-path: circle(200vmax at var(--reveal-x) var(--reveal-y));
+    opacity: 0;
+  }
+}
+
+
 

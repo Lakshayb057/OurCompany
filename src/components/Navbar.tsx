@@ -4,7 +4,7 @@ import { Menu, X, Sun, Moon, ChevronDown, ArrowRight } from 'lucide-react';
 interface NavbarProps {
   onNavigate: (sectionId: string) => void;
   isDark?: boolean;
-  onToggleTheme?: () => void;
+  onToggleTheme?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   dockBtnRef?: React.RefObject<HTMLDivElement>;
   dockStartBtnRef?: React.RefObject<HTMLDivElement>;
   dockExploreBtnRef?: React.RefObject<HTMLDivElement>;
@@ -209,7 +209,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <>
               <div className="h-4 w-[1px] bg-purple-300/80 dark:bg-white/20 mx-0.5 xl:mx-1 flex-shrink-0" aria-hidden="true" />
               <button
-                onClick={onToggleTheme}
+                onClick={(e) => onToggleTheme?.(e)}
                 className="p-1.5 rounded-full text-slate-800 dark:text-gray-100 hover:text-electric-purple dark:hover:text-white hover:bg-purple-200/50 dark:hover:bg-white/10 transition-colors focus:outline-none flex-shrink-0"
                 title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 aria-label="Toggle theme"
@@ -263,7 +263,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Mobile-only theme toggle - Positioned on the right corner AFTER the three bar */}
         {onToggleTheme && (
           <button
-            onClick={onToggleTheme}
+            onClick={(e) => onToggleTheme?.(e)}
             className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white transition-all shadow-sm backdrop-blur-md cursor-pointer flex-shrink-0"
             title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             aria-label="Toggle theme"

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { flushSync } from 'react-dom';
 import { SplashScreen } from './components/SplashScreen';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -77,6 +78,12 @@ export const App: React.FC = () => {
 
   // Initialize theme from persistent session / cookie / system preference
   const [theme, setTheme] = useState<'light' | 'dark'>(getStoredTheme);
+  const [fallbackOverlay, setFallbackOverlay] = useState<{
+    x: number;
+    y: number;
+    color: string;
+  } | null>(null);
+  const isThemeTransitioningRef = useRef(false);
   const [services, setServices] = useState<Service[]>(INITIAL_SERVICES);
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [team, setTeam] = useState<TeamMember[]>(INITIAL_TEAM);
@@ -206,12 +213,98 @@ export const App: React.FC = () => {
     saveStoredTheme(theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme(prev => {
-      const next = prev === 'light' ? 'dark' : 'light';
-      saveStoredTheme(next);
-      return next;
+  const toggleTheme = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (isThemeTransitioningRef.current) return;
+
+    const next = theme === 'light' ? 'dark' : 'light';
+
+    // Calculate origin coordinates (switching button center)
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
+
+    if (e?.currentTarget) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      x = rect.left + rect.width / 2;
+      y = rect.top + rect.height / 2;
+    } else if (e && typeof e.clientX === 'number' && e.clientX > 0) {
+      x = e.clientX;
+      y = e.clientY;
+    }
+
+    // Maximum distance from origin to all 4 screen corners ensures total coverage
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const doc = document as any;
+
+    // Standard View Transitions API (Chrome 111+, Edge 111+, Firefox 127+, Safari 18+)
+    if (typeof doc.startViewTransition === 'function') {
+      isThemeTransitioningRef.current = true;
+      const root = document.documentElement;
+
+      const transition = doc.startViewTransition(() => {
+        flushSync(() => {
+          root.classList.add('theme-no-transitions');
+          setTheme(next);
+          if (next === 'dark') {
+            root.classList.add('dark');
+            root.classList.remove('light');
+          } else {
+            root.classList.add('light');
+            root.classList.remove('dark');
+          }
+          saveStoredTheme(next);
+        });
+      });
+
+      transition.ready
+        .then(() => {
+          const animation = root.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration: 650,
+              easing: 'cubic-bezier(0.76, 0, 0.24, 1)',
+              pseudoElement: '::view-transition-new(root)',
+            }
+          );
+
+          animation.onfinish = () => {
+            root.classList.remove('theme-no-transitions');
+            isThemeTransitioningRef.current = false;
+          };
+        })
+        .catch(() => {
+          root.classList.remove('theme-no-transitions');
+          isThemeTransitioningRef.current = false;
+        });
+
+      return;
+    }
+
+    // Seamless fallback for environments without View Transitions API
+    isThemeTransitioningRef.current = true;
+    setFallbackOverlay({
+      x,
+      y,
+      color: next === 'dark' ? '#09090B' : '#FBFBFE',
     });
+
+    setTimeout(() => {
+      setTheme(next);
+      saveStoredTheme(next);
+    }, 320);
+
+    setTimeout(() => {
+      setFallbackOverlay(null);
+      isThemeTransitioningRef.current = false;
+    }, 650);
   };
 
   // Load latest data from backend with real-time sync
@@ -533,6 +626,19 @@ export const App: React.FC = () => {
 
       {/* Cookie & Session Preferences Consent Banner */}
       <CookieConsent />
+
+      {/* Circular Theme Reveal Fallback Overlay */}
+      {fallbackOverlay && (
+        <div
+          className="theme-reveal-fallback"
+          style={{
+            '--reveal-x': `${fallbackOverlay.x}px`,
+            '--reveal-y': `${fallbackOverlay.y}px`,
+            backgroundColor: fallbackOverlay.color,
+          } as React.CSSProperties}
+          aria-hidden="true"
+        />
+      )}
     </div>
   </>
   );
