@@ -93,7 +93,7 @@ export const Hero: React.FC<HeroProps> = ({
     <section 
       ref={heroSectionRef}
       id="hero" 
-      className="relative pt-16 pb-6 sm:min-h-screen sm:pt-28 sm:pb-10 flex flex-col justify-center overflow-hidden w-full max-w-full"
+      className="relative pt-20 pb-6 sm:min-h-screen sm:pt-28 sm:pb-10 flex flex-col justify-center overflow-hidden w-full max-w-full"
     >
       {/* Hero-Only Video & Animated WebP Dynamic Background with smooth entrance fade */}
       <div 
@@ -142,8 +142,8 @@ export const Hero: React.FC<HeroProps> = ({
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">
 
-          {/* Left Column: Hero Visual Artwork Container (Anchors the Morphing 3D Logo) - First on Mobile & Left on Desktop */}
-          <div className="lg:col-span-5 relative flex justify-center order-1 lg:order-1">
+          {/* Left Column: Hero Visual Artwork Container (Anchors the Morphing 3D Logo on Desktop only) */}
+          <div className="hidden lg:flex lg:col-span-5 relative justify-center order-1 lg:order-1">
             <div className="relative w-full max-w-[200px] sm:max-w-xs lg:max-w-none">
               {/* Soft circular ambient glow behind ribbon artwork */}
               <div 

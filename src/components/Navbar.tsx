@@ -28,6 +28,17 @@ export const Navbar: React.FC<NavbarProps> = ({
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const projectsDropdownRef = useRef<HTMLDivElement | null>(null);
   const [scrollY, setScrollY] = useState(0);
+  const [isSmallScreen, setIsSmallScreen] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 1024 : false
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 1024);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const isDedicatedPage = currentRoute === 'projects' || currentRoute === 'services' || currentRoute === 'plan';
 
@@ -75,8 +86,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   // Dynamic glass opacity that smoothly materializes as user scrolls down and logo docks
-  // If on a dedicated projects, services, or plan page, navbar is always in docked glass state
-  const glassOpacity = isDedicatedPage ? 1 : Math.min(1, Math.max(0, (scrollY - 40) / 120));
+  // For small screens (< 1024px) or dedicated pages, header is always cleanly aligned & visible
+  const glassOpacity = (isSmallScreen || isDedicatedPage) ? 1 : Math.min(1, Math.max(0, (scrollY - 40) / 120));
 
   const navItems = [
     { label: 'Our Story', target: 'story' },
@@ -100,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         style={{ 
           opacity: glassOpacity,
         }}
-        className="fixed top-0 inset-x-0 h-[68px] sm:h-[84px] z-40 transition-opacity duration-300 pointer-events-none select-none backdrop-blur-2xl bg-white/85 dark:bg-[#070514]/85 border-b border-purple-200/50 dark:border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
+        className="fixed top-0 inset-x-0 h-[60px] sm:h-[68px] lg:h-[84px] z-40 transition-opacity duration-300 pointer-events-none select-none backdrop-blur-2xl bg-white/90 dark:bg-[#070514]/90 border-b border-purple-200/50 dark:border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.45)]"
       >
         <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-electric-purple/35 dark:via-purple-500/30 to-transparent pointer-events-none" />
       </div>
@@ -222,7 +233,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* 2. TOP-RIGHT CORNER: Action Entities & Dock Target */}
-      <div className="fixed top-3 right-4 sm:top-5 sm:right-8 z-50 flex items-center gap-2 sm:gap-3">
+      <div className="fixed top-2.5 right-4 sm:top-3.5 sm:right-6 lg:top-5 lg:right-8 z-50 flex items-center gap-2 sm:gap-3">
         {/* If on dedicated Projects or Services page, render a direct Start a Project button */}
         {isDedicatedPage ? (
           <button
@@ -249,11 +260,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         )}
 
-        {/* Mobile Menu Button (Three Bar) - Appears once scrolled or on dedicated pages */}
-        {(isDedicatedPage || scrollY > 60) && (
+        {/* Mobile Menu Button (Three Bar) - Always visible & aligned on small screen size */}
+        {(isSmallScreen || isDedicatedPage || scrollY > 60) && (
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-text dark:text-white focus:outline-none shadow-sm backdrop-blur-md cursor-pointer flex-shrink-0 transition-all duration-200"
+            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-text dark:text-white focus:outline-none shadow-sm backdrop-blur-md cursor-pointer flex-shrink-0 transition-all duration-200 hover:border-electric-purple/50 active:scale-95"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -264,7 +275,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {onToggleTheme && (
           <button
             onClick={(e) => onToggleTheme?.(e)}
-            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white transition-all shadow-sm backdrop-blur-md cursor-pointer flex-shrink-0"
+            className="lg:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/90 dark:bg-midnight-card/90 border border-purple-200 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-electric-purple dark:hover:text-white transition-all shadow-sm backdrop-blur-md cursor-pointer flex-shrink-0 active:scale-95"
             title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             aria-label="Toggle theme"
           >
@@ -275,7 +286,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed top-20 left-4 right-4 z-50 bg-white/95 dark:bg-midnight-900/95 border border-purple-200 dark:border-midnight-border rounded-2xl p-5 shadow-2xl backdrop-blur-xl space-y-3">
+        <div className="lg:hidden fixed top-[66px] sm:top-[74px] left-4 right-4 z-50 bg-white/95 dark:bg-midnight-900/95 border border-purple-200 dark:border-midnight-border rounded-2xl p-5 shadow-2xl backdrop-blur-xl space-y-3 max-h-[calc(100vh-80px)] overflow-y-auto">
           {navItems.map((item) => {
             if (item.target === 'projects') {
               return (

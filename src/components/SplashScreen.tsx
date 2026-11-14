@@ -160,7 +160,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
               src="/hero-ribbon.png"
               alt="Codrix Ribbon Emblem"
               loading="eager"
-              fetchPriority="high"
+              {...{ fetchpriority: 'high' }}
               decoding="async"
               className="w-full h-full object-contain pointer-events-none select-none drop-shadow-[0_16px_36px_rgba(124,44,245,0.32)] dark:drop-shadow-[0_22px_48px_rgba(182,108,255,0.42)]"
             />

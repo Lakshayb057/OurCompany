@@ -14,13 +14,13 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
   const [box, setBox] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
   const [scrollY, setScrollY] = useState(0);
   const [hasEntered, setHasEntered] = useState(false);
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  const [isSmallScreen, setIsSmallScreen] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 1024 : false
   );
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsSmallScreen(window.innerWidth < 1024);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -91,33 +91,36 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (!box && !isAlwaysDocked) return null;
+  const effectivelyAlwaysDocked = isAlwaysDocked || isSmallScreen;
+
+  if (!box && !effectivelyAlwaysDocked) return null;
 
   // Prominent, significantly enlarged docked size when aligned to top-left
-  const targetH = isMobile ? 40 : 72;
-  const targetW = isMobile ? 54 : 98;
-  const targetX = isMobile ? 16 : 24;       // left alignment
-  const targetY = isMobile ? 12 : 8;        // vertically centered with header
+  const targetH = isSmallScreen ? 36 : 72;
+  const targetW = isSmallScreen ? 48 : 98;
+  const targetX = isSmallScreen ? 16 : 24;       // left alignment
+  const targetY = isSmallScreen ? 12 : 8;        // vertically centered with header
 
   // Progress from 0 (hero) to 1 (header docked) - calibrated for fluid, butter-smooth flight on all screens
-  const maxScroll = isMobile ? 220 : 320;
-  const rawP = isAlwaysDocked ? 1 : Math.min(1, Math.max(0, scrollY / maxScroll));
+  // For small screens: stationary in navbar (no flight animation from hero to navbar)
+  const maxScroll = 320;
+  const rawP = effectivelyAlwaysDocked ? 1 : Math.min(1, Math.max(0, scrollY / maxScroll));
 
   // Smooth sinusoidal S-curve with zero sudden acceleration jumps
-  const p = isAlwaysDocked ? 1 : (0.5 - Math.cos(rawP * Math.PI) / 2);
+  const p = effectivelyAlwaysDocked ? 1 : (0.5 - Math.cos(rawP * Math.PI) / 2);
 
   // Peak in-flight factor (0 at endpoints, 1 at midpoint)
-  const flight = isAlwaysDocked ? 0 : Math.sin(rawP * Math.PI);
+  const flight = effectivelyAlwaysDocked ? 0 : Math.sin(rawP * Math.PI);
 
   // Once the logo approaches dock position, smoothly trigger the "Codrix" wordmark emergence
-  const isDocked = isAlwaysDocked || rawP >= 0.85;
+  const isDocked = effectivelyAlwaysDocked || rawP >= 0.85;
 
   // Interpolated position and dimensions for the ribbon logo
   const heroCurrentY = box ? box.y - scrollY : targetY;
-  const currentX = (box && !isAlwaysDocked) ? box.x * (1 - p) + targetX * p : targetX;
-  const currentY = (box && !isAlwaysDocked) ? heroCurrentY * (1 - p) + targetY * p : targetY;
-  const currentW = (box && !isAlwaysDocked) ? box.width * (1 - p) + targetW * p : targetW;
-  const currentH = (box && !isAlwaysDocked) ? box.height * (1 - p) + targetH * p : targetH;
+  const currentX = (box && !effectivelyAlwaysDocked) ? box.x * (1 - p) + targetX * p : targetX;
+  const currentY = (box && !effectivelyAlwaysDocked) ? heroCurrentY * (1 - p) + targetY * p : targetY;
+  const currentW = (box && !effectivelyAlwaysDocked) ? box.width * (1 - p) + targetW * p : targetW;
+  const currentH = (box && !effectivelyAlwaysDocked) ? box.height * (1 - p) + targetH * p : targetH;
 
   // Smooth 3D rotations and perspective elevation during flight
   const rotateY = flight * -18;
@@ -153,11 +156,11 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
         display: 'flex',
         alignItems: 'center',
         opacity: hasEntered ? 1 : 0,
-        transition: 'opacity 0.4s ease-out',
-        willChange: 'transform',
+        transition: effectivelyAlwaysDocked ? 'opacity 0.4s ease-out' : 'opacity 0.4s ease-out',
+        willChange: effectivelyAlwaysDocked ? 'auto' : 'transform',
       }}
       className="select-none group focus:outline-none bg-transparent border-0 p-0 shadow-none pointer-events-auto"
-      title={isAlwaysDocked ? "Codrix - Return to Home" : "Codrix Home - Scroll to top"}
+      title={effectivelyAlwaysDocked ? "Codrix - Return to Home" : "Codrix Home - Scroll to top"}
       aria-label="Codrix Home"
       role="button"
       tabIndex={0}
@@ -175,7 +178,7 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
           transform: `perspective(1000px) translate3d(0, 0, ${translateZ}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg) rotateZ(${rotateZ}deg)`,
           transformStyle: 'preserve-3d',
           filter: ribbonFilter,
-          willChange: 'transform, width, height',
+          willChange: effectivelyAlwaysDocked ? 'auto' : 'transform, width, height',
           flexShrink: 0,
         }}
         className="flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
@@ -184,9 +187,9 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
           src="/hero-ribbon.png"
           alt="Codrix Ribbon"
           loading="eager"
-          fetchPriority="high"
+          {...{ fetchpriority: 'high' }}
           decoding="async"
-          className={`w-full h-full object-contain pointer-events-none ${rawP === 0 && hasEntered ? 'animate-hero-float' : ''}`}
+          className={`w-full h-full object-contain pointer-events-none ${rawP === 0 && hasEntered && !isSmallScreen ? 'animate-hero-float' : ''}`}
         />
       </div>
 
@@ -196,15 +199,17 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
           display: 'flex',
           alignItems: 'center',
           overflow: 'hidden',
-          maxWidth: isDocked ? (isMobile ? '160px' : '280px') : '0px',
+          maxWidth: isDocked ? (isSmallScreen ? '160px' : '280px') : '0px',
           opacity: isDocked ? 1 : 0,
           transform: isDocked 
             ? 'translate3d(0, 0, 0) scale(1)' 
             : 'translate3d(-14px, 0, 0) scale(0.92)',
           transformOrigin: 'left center',
-          transition: 'max-width 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease-out, transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), margin-left 0.32s ease-out',
+          transition: effectivelyAlwaysDocked 
+            ? 'none' 
+            : 'max-width 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease-out, transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), margin-left 0.32s ease-out',
           pointerEvents: isDocked ? 'auto' : 'none',
-          marginLeft: isDocked ? (isMobile ? '6px' : '10px') : '0px',
+          marginLeft: isDocked ? (isSmallScreen ? '6px' : '10px') : '0px',
         }}
         className="font-extrabold tracking-tight select-none"
       >

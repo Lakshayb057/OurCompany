@@ -86,25 +86,35 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
 
   // Sticky scroll listener: calculates smooth scrub progress through the 5 stages
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const totalScrollable = rect.height - windowHeight;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (!sectionRef.current) {
+            ticking = false;
+            return;
+          }
+          const rect = sectionRef.current.getBoundingClientRect();
+          const windowHeight = window.innerHeight;
+          const totalScrollable = rect.height - windowHeight;
 
-      if (totalScrollable <= 0) return;
+          if (totalScrollable > 0) {
+            // Distance scrolled into the section
+            const scrolledInside = -rect.top;
+            const rawProgress = Math.min(Math.max(scrolledInside / totalScrollable, 0), 1);
+            setProgress(rawProgress);
 
-      // Distance scrolled into the section
-      const scrolledInside = -rect.top;
-      const rawProgress = Math.min(Math.max(scrolledInside / totalScrollable, 0), 1);
-      setProgress(rawProgress);
-
-      // Current active step calculation
-      const stepIdx = Math.min(
-        Math.round(rawProgress * (steps.length - 1)),
-        steps.length - 1
-      );
-      setActiveStep(stepIdx);
+            // Current active step calculation
+            const stepIdx = Math.min(
+              Math.round(rawProgress * (steps.length - 1)),
+              steps.length - 1
+            );
+            setActiveStep(stepIdx);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -338,7 +348,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                           alt={step.title}
                           loading={idx === 0 ? "eager" : "lazy"}
                           decoding="async"
-                          fetchPriority={idx === 0 ? "high" : "auto"}
+                          {...{ fetchpriority: idx === 0 ? "high" : "auto" }}
                           className="w-full h-full object-cover object-center rounded-[inherit] transform transition-transform duration-700 ease-out"
                         />
 

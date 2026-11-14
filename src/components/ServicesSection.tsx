@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Cloud, Bot, Zap, ShieldCheck, ShoppingBag, RefreshCw, Rocket } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Service } from '../types';
 
 interface ServicesSectionProps {
@@ -69,18 +69,6 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
     return () => observer.disconnect();
   }, []);
 
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'Cloud': return <Cloud className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
-      case 'Bot': return <Bot className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
-      case 'Zap': return <Zap className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
-      case 'ShieldCheck': return <ShieldCheck className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
-      case 'ShoppingBag': return <ShoppingBag className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
-      case 'RefreshCw': return <RefreshCw className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
-      default: return <Rocket className="w-4 h-4 text-electric-purple dark:text-lavender-glow" />;
-    }
-  };
-
   const getClipartSrc = (service: Service, idx: number) => {
     if (service.image && service.image.includes('/cliparts/')) {
       return service.image;
@@ -131,7 +119,6 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {services.map((service, idx) => {
             const imgSrc = getClipartSrc(service, idx);
-            const shortDomain = service.domain || service.title;
             const staggerDelay = 150 + idx * 95;
 
             return (
@@ -148,15 +135,8 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
                 }}
                 className="group relative rounded-3xl p-6 sm:p-7 bg-white/90 dark:bg-midnight-card/85 border border-purple-100/90 dark:border-white/10 hover:border-electric-purple/50 dark:hover:border-electric-purple/50 transition-all duration-500 shadow-sm hover:shadow-2xl hover:shadow-purple-500/10 flex flex-col justify-between hover:-translate-y-1.5 backdrop-blur-xl"
               >
-                {/* TOP: Header (Domain Pill + Service Title) */}
-                <div className="space-y-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-lavender-soft/80 dark:bg-white/[0.07] border border-purple-200/60 dark:border-white/10 shadow-xs">
-                    {getIcon(service.icon)}
-                    <span className="text-xs font-semibold tracking-wide text-electric-dark dark:text-lavender-light">
-                      {shortDomain}
-                    </span>
-                  </div>
-
+                {/* TOP: Header (Service Title) */}
+                <div>
                   <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-light-text dark:text-white group-hover:text-electric-purple dark:group-hover:text-lavender-light transition-colors line-clamp-2 min-h-[3.25rem]">
                     {service.title}
                   </h3>
