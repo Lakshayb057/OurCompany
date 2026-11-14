@@ -231,10 +231,6 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
                       <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-lavender-glow border border-white/20 shadow-md">
                         {meta.serviceBadge}
                       </span>
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-md">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        Tie-Up Ready
-                      </span>
                     </div>
 
                     {/* Bottom Domain Ribbon */}
