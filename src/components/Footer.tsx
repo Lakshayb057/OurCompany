@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Instagram, Mail } from 'lucide-react';
+import { siInstagram, siGmail } from 'simple-icons';
 
 interface FooterProps {
   onNavigate?: (sectionId: string) => void;
@@ -43,33 +43,46 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
           {/* Bottom-to-top background gradient blend to guarantee seamless transition */}
           <div className="absolute inset-x-0 bottom-0 h-4 sm:h-6 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-midnight-900 dark:via-midnight-900/80 to-transparent pointer-events-none z-10" />
 
-          {/* Social Media Links: LinkedIn, Instagram, Gmail Stacked One Below Another on the Right */}
+          {/* Real Official Social Media Links: LinkedIn, Instagram, Gmail Stacked One Below Another on the Right */}
           <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-1.5 sm:gap-2 flex-shrink-0 z-20">
-            {/* LinkedIn Button */}
+            {/* Real Official LinkedIn Button */}
             <a
               href={settings?.linkedinUrl || 'https://www.linkedin.com/company/codrix'}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Connect on LinkedIn"
               title="Connect on LinkedIn"
-              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#0A66C2] dark:hover:text-[#0A66C2] hover:border-[#0A66C2]/50 hover:bg-[#0A66C2]/10 flex items-center justify-center transition-all shadow-sm group cursor-pointer"
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border hover:border-[#0A66C2]/60 hover:bg-[#0A66C2]/10 flex items-center justify-center transition-all shadow-sm group cursor-pointer"
             >
-              <Linkedin className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 group-hover:scale-110 transition-transform" />
+              <svg role="img" viewBox="0 0 24 24" className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 shrink-0 fill-[#0A66C2] group-hover:scale-110 transition-transform">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+              </svg>
             </a>
 
-            {/* Instagram Button */}
+            {/* Real Official Instagram Button with Branded Radial Gradient */}
             <a
               href={settings?.instagramUrl || 'https://www.instagram.com/codrix.tech'}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Follow on Instagram"
               title="Follow on Instagram"
-              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#E4405F] dark:hover:text-[#E4405F] hover:border-[#E4405F]/50 hover:bg-[#E4405F]/10 flex items-center justify-center transition-all shadow-sm group cursor-pointer"
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border hover:border-[#E4405F]/60 hover:bg-[#E4405F]/10 flex items-center justify-center transition-all shadow-sm group cursor-pointer"
             >
-              <Instagram className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 group-hover:scale-110 transition-transform" />
+              <svg role="img" viewBox="0 0 24 24" className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 shrink-0 group-hover:scale-110 transition-transform">
+                <defs>
+                  <radialGradient id="footer-ig-grad" cx="20%" cy="115%" r="140%">
+                    <stop stopColor="#fdf497" offset="0%" />
+                    <stop stopColor="#fdf497" offset="5%" />
+                    <stop stopColor="#fd5949" offset="45%" />
+                    <stop stopColor="#d6249f" offset="60%" />
+                    <stop stopColor="#285AEB" offset="90%" />
+                  </radialGradient>
+                </defs>
+                <path fill="url(#footer-ig-grad)" d={siInstagram.path} />
+              </svg>
             </a>
 
-            {/* Gmail / Email Button */}
+            {/* Real Official Gmail Button with Google Red Brand Fill */}
             <a
               href={
                 settings?.gmailUrl
@@ -82,9 +95,11 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
               rel="noopener noreferrer"
               aria-label="Email via Gmail"
               title="Contact via Gmail"
-              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#EA4335] dark:hover:text-[#EA4335] hover:border-[#EA4335]/50 hover:bg-[#EA4335]/10 flex items-center justify-center transition-all shadow-sm group cursor-pointer"
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border hover:border-[#EA4335]/60 hover:bg-[#EA4335]/10 flex items-center justify-center transition-all shadow-sm group cursor-pointer"
             >
-              <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 group-hover:scale-110 transition-transform" />
+              <svg role="img" viewBox="0 0 24 24" className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 shrink-0 fill-[#EA4335] group-hover:scale-110 transition-transform">
+                <path d={siGmail.path} />
+              </svg>
             </a>
           </div>
         </div>
