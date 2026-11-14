@@ -169,8 +169,8 @@ export const Hero: React.FC<HeroProps> = ({
           <div className="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left order-2 lg:order-2">
             
             {/* Mobile-Only Stationary Hero Logo: cleanly centered above the headline on small screens */}
-            <div className="lg:hidden flex flex-col items-center justify-center -mb-1 sm:mb-2">
-              <div className="relative w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center">
+            <div className="lg:hidden flex flex-col items-center justify-center mb-1 sm:mb-3">
+              <div className="relative w-44 h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 flex items-center justify-center">
                 {/* Soft circular ambient glow behind ribbon artwork */}
                 <div 
                   style={{
@@ -178,7 +178,7 @@ export const Hero: React.FC<HeroProps> = ({
                     transform: isEntered ? 'scale(1)' : 'scale(0.8)',
                     transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
                   }}
-                  className="absolute inset-0 bg-electric-purple/20 dark:bg-lavender-glow/25 rounded-full blur-2xl pointer-events-none" 
+                  className="absolute -inset-3 sm:-inset-4 bg-electric-purple/25 dark:bg-lavender-glow/30 rounded-full blur-2xl sm:blur-3xl pointer-events-none" 
                 />
                 
                 <img
@@ -187,7 +187,7 @@ export const Hero: React.FC<HeroProps> = ({
                   loading="eager"
                   {...{ fetchpriority: 'high' }}
                   decoding="async"
-                  className={`relative z-10 w-full h-full object-contain pointer-events-none drop-shadow-[0_12px_28px_rgba(124,44,245,0.32)] dark:drop-shadow-[0_16px_36px_rgba(182,108,255,0.42)] ${isEntered ? 'animate-hero-float' : ''}`}
+                  className={`relative z-10 w-full h-full object-contain pointer-events-none drop-shadow-[0_16px_36px_rgba(124,44,245,0.35)] dark:drop-shadow-[0_20px_48px_rgba(182,108,255,0.48)] ${isEntered ? 'animate-hero-float' : ''}`}
                 />
               </div>
             </div>
