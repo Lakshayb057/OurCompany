@@ -17,36 +17,25 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ settings }) => {
   return (
-    <footer className="bg-white dark:bg-midnight-900 border-t border-light-border dark:border-midnight-border pt-3 pb-3 sm:pt-4 sm:pb-3 relative overflow-hidden transition-colors">
+    <footer className="bg-white dark:bg-midnight-900 border-t border-light-border dark:border-midnight-border pt-4 pb-4 sm:pt-6 sm:pb-4 relative overflow-hidden transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Compact & Balanced Brand Logo Showcase */}
-        <div className="py-1.5 sm:py-2.5 border-b border-light-border dark:border-midnight-border/70 flex items-center justify-center overflow-hidden">
-          <div className="flex items-center justify-center gap-2 sm:gap-4 lg:gap-5 opacity-80 dark:opacity-90 hover:opacity-100 transition-opacity duration-300">
+        {/* Massive Brand Showcase with Vertically Stacked Social Icons on the Right */}
+        <div className="py-2 sm:py-4 lg:py-6 border-b border-light-border dark:border-midnight-border/70 flex items-center justify-between gap-3 sm:gap-6 overflow-hidden">
+          {/* Logo + CODRIX Brand Wordmark filling the width */}
+          <div className="flex items-center gap-2 sm:gap-4 md:gap-6 lg:gap-8 flex-1 min-w-0 opacity-90 hover:opacity-100 transition-opacity duration-300">
             <img
               src="/hero-ribbon.png"
               alt="Codrix Ribbon Logo"
-              className="w-8 h-8 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 object-contain flex-shrink-0 drop-shadow-[0_0_25px_rgba(124,44,245,0.55)]"
+              className="w-10 h-10 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-32 xl:h-32 object-contain flex-shrink-0 drop-shadow-[0_0_30px_rgba(124,44,245,0.6)]"
             />
-            <span className="text-[10vw] sm:text-[7.5vw] md:text-[5.5vw] lg:text-[4.5rem] font-black tracking-tight sm:tracking-normal lg:tracking-wider uppercase leading-none whitespace-nowrap bg-gradient-to-b from-purple-700 via-electric-purple to-purple-400/50 dark:from-white dark:via-lavender-glow dark:to-electric-purple/60 bg-clip-text text-transparent drop-shadow-[0_2px_12px_rgba(124,44,245,0.25)] dark:drop-shadow-[0_3px_20px_rgba(124,44,245,0.5)] select-none">
+            <span className="text-[12vw] sm:text-[10vw] md:text-[8.5vw] lg:text-[7rem] xl:text-[8.2rem] font-black tracking-tight sm:tracking-normal lg:tracking-wider uppercase leading-none whitespace-nowrap bg-gradient-to-b from-purple-700 via-electric-purple to-purple-400/50 dark:from-white dark:via-lavender-glow dark:to-electric-purple/60 bg-clip-text text-transparent drop-shadow-[0_2px_16px_rgba(124,44,245,0.3)] dark:drop-shadow-[0_4px_28px_rgba(124,44,245,0.65)] select-none">
               Codrix
             </span>
           </div>
-        </div>
 
-        {/* Bottom Bar: Copyright on Left, Social Media Buttons in Center, HQ on Right */}
-        <div className="pt-2.5 sm:pt-3 flex flex-col md:flex-row items-center justify-between gap-3 text-xs font-mono text-light-subtext dark:text-muted-gray">
-          {/* Copyright notice */}
-          <div className="text-center md:text-left font-medium order-2 md:order-1 md:flex-1">
-            © {new Date().getFullYear()} {settings?.companyName || 'Codrix'}. {
-              (settings?.copyrightNotice || 'All rights reserved.')
-                .replace(/^©\s*\d{4}\s+[^.]*\.\s*/i, '')
-                .trim() || 'All rights reserved.'
-            }
-          </div>
-
-          {/* Social Media Links: LinkedIn, Instagram, Gmail */}
-          <div className="flex items-center justify-center gap-2.5 order-1 md:order-2 flex-shrink-0">
+          {/* Social Media Links: LinkedIn, Instagram, Gmail Stacked One Below Another on the Right */}
+          <div className="flex flex-col items-center justify-center gap-1.5 sm:gap-2 md:gap-2.5 flex-shrink-0">
             {/* LinkedIn Button */}
             <a
               href={settings?.linkedinUrl || 'https://www.linkedin.com/company/codrix'}
@@ -54,9 +43,9 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
               rel="noopener noreferrer"
               aria-label="Connect on LinkedIn"
               title="Connect on LinkedIn"
-              className="p-1.5 sm:p-2 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#0A66C2] dark:hover:text-[#0A66C2] hover:border-[#0A66C2]/50 hover:bg-[#0A66C2]/10 transition-all shadow-sm group cursor-pointer"
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#0A66C2] dark:hover:text-[#0A66C2] hover:border-[#0A66C2]/50 hover:bg-[#0A66C2]/10 flex items-center justify-center transition-all shadow-sm group cursor-pointer"
             >
-              <Linkedin className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
+              <Linkedin className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 group-hover:scale-110 transition-transform" />
             </a>
 
             {/* Instagram Button */}
@@ -66,9 +55,9 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
               rel="noopener noreferrer"
               aria-label="Follow on Instagram"
               title="Follow on Instagram"
-              className="p-1.5 sm:p-2 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#E4405F] dark:hover:text-[#E4405F] hover:border-[#E4405F]/50 hover:bg-[#E4405F]/10 transition-all shadow-sm group cursor-pointer"
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#E4405F] dark:hover:text-[#E4405F] hover:border-[#E4405F]/50 hover:bg-[#E4405F]/10 flex items-center justify-center transition-all shadow-sm group cursor-pointer"
             >
-              <Instagram className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
+              <Instagram className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 group-hover:scale-110 transition-transform" />
             </a>
 
             {/* Gmail / Email Button */}
@@ -84,14 +73,26 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
               rel="noopener noreferrer"
               aria-label="Email via Gmail"
               title="Contact via Gmail"
-              className="p-1.5 sm:p-2 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#EA4335] dark:hover:text-[#EA4335] hover:border-[#EA4335]/50 hover:bg-[#EA4335]/10 transition-all shadow-sm group cursor-pointer"
+              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl bg-purple-50/80 dark:bg-midnight-card border border-purple-200/70 dark:border-midnight-border text-light-subtext dark:text-muted-gray hover:text-[#EA4335] dark:hover:text-[#EA4335] hover:border-[#EA4335]/50 hover:bg-[#EA4335]/10 flex items-center justify-center transition-all shadow-sm group cursor-pointer"
             >
-              <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" />
+              <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-4.5 md:h-4.5 group-hover:scale-110 transition-transform" />
             </a>
+          </div>
+        </div>
+
+        {/* Bottom Bar: Copyright on Left, Legal HQ on Right */}
+        <div className="pt-3 sm:pt-3.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono text-light-subtext dark:text-muted-gray">
+          {/* Copyright notice */}
+          <div className="text-center sm:text-left font-medium">
+            © {new Date().getFullYear()} {settings?.companyName || 'Codrix'}. {
+              (settings?.copyrightNotice || 'All rights reserved.')
+                .replace(/^©\s*\d{4}\s+[^.]*\.\s*/i, '')
+                .trim() || 'All rights reserved.'
+            }
           </div>
 
           {/* Legal Headquarters */}
-          <div className="text-[11px] text-light-subtext/80 dark:text-muted-gray/80 text-center md:text-right truncate max-w-md order-3 md:flex-1">
+          <div className="text-[11px] text-light-subtext/80 dark:text-muted-gray/80 text-center sm:text-right truncate max-w-md">
             {(settings?.legalHeadquarters || 'Corporate Headquarters: India').replace(/\s*•\s*Global Remote Delivery/gi, '').trim()}
           </div>
         </div>
