@@ -167,6 +167,31 @@ export const Hero: React.FC<HeroProps> = ({
 
           {/* Right Column: Story & Typography - Below Logo on Mobile & Right on Desktop */}
           <div className="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left order-2 lg:order-2">
+            
+            {/* Mobile-Only Stationary Hero Logo: cleanly centered above the headline on small screens */}
+            <div className="lg:hidden flex flex-col items-center justify-center -mb-1 sm:mb-2">
+              <div className="relative w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center">
+                {/* Soft circular ambient glow behind ribbon artwork */}
+                <div 
+                  style={{
+                    opacity: isEntered ? 1 : 0,
+                    transform: isEntered ? 'scale(1)' : 'scale(0.8)',
+                    transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
+                  }}
+                  className="absolute inset-0 bg-electric-purple/20 dark:bg-lavender-glow/25 rounded-full blur-2xl pointer-events-none" 
+                />
+                
+                <img
+                  src="/hero-ribbon.png"
+                  alt="Codrix Ribbon Emblem"
+                  loading="eager"
+                  {...{ fetchpriority: 'high' }}
+                  decoding="async"
+                  className={`relative z-10 w-full h-full object-contain pointer-events-none drop-shadow-[0_12px_28px_rgba(124,44,245,0.32)] dark:drop-shadow-[0_16px_36px_rgba(182,108,255,0.42)] ${isEntered ? 'animate-hero-float' : ''}`}
+                />
+              </div>
+            </div>
+
             {/* 3D Kinetic Headline with Staggered Word Reveal */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] text-light-text dark:text-white flex flex-col items-center lg:items-start gap-1">
               {/* Line 1: CODRIX */}
