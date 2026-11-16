@@ -122,10 +122,16 @@ export interface PlanRegistrationItem {
   planId: string;
   planName: string;
   category?: string;
+  badge?: string;
+  tagline?: string;
+  turnaroundTime?: string;
   domainOption?: string;
   billingPeriod?: string;
   estimatedPrice?: string;
   notes?: string;
+  ndaProtected?: boolean;
+  ipTransfer?: boolean;
+  zeroHiddenFees?: boolean;
   status: string;
   createdAt: string;
 }

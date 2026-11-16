@@ -453,7 +453,12 @@ app.post('/api/v1/inquiries', async (req, res) => {
 
 // Register for Plan
 app.post('/api/v1/plan-registrations', async (req, res) => {
-  const { fullName, email, contact, company, planId, planName, category, domainOption, billingPeriod, estimatedPrice, notes } = req.body;
+  const { 
+    fullName, email, contact, company, 
+    planId, planName, category, badge, tagline, turnaroundTime, 
+    domainOption, billingPeriod, estimatedPrice, notes,
+    ndaProtected, ipTransfer, zeroHiddenFees
+  } = req.body;
 
   if (!fullName || !fullName.trim()) return res.status(400).json({ success: false, message: 'Full name is required.' });
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return res.status(400).json({ success: false, message: 'A valid email is required.' });
@@ -471,11 +476,17 @@ app.post('/api/v1/plan-registrations', async (req, res) => {
     company: (company || '').trim(),
     planId: (planId || 'custom-plan').trim(),
     planName: planName.trim(),
-    category: category || 'General',
+    category: category || 'single-page',
+    badge: (badge || '').trim(),
+    tagline: (tagline || '').trim(),
+    turnaroundTime: (turnaroundTime || '').trim(),
     domainOption: domainOption || 'with-domain',
     billingPeriod: billingPeriod || 'One-Time',
     estimatedPrice: estimatedPrice || '',
     notes: (notes || '').trim(),
+    ndaProtected: ndaProtected !== undefined ? Boolean(ndaProtected) : true,
+    ipTransfer: ipTransfer !== undefined ? Boolean(ipTransfer) : true,
+    zeroHiddenFees: zeroHiddenFees !== undefined ? Boolean(zeroHiddenFees) : true,
     status: 'Pending Review',
     createdAt: new Date().toISOString()
   };

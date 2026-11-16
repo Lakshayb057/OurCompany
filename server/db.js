@@ -38,10 +38,16 @@ const planRegistrationSchema = new mongoose.Schema({
   planId: { type: String, required: true },
   planName: { type: String, required: true },
   category: { type: String, default: 'General' },
+  badge: { type: String, default: '' },
+  tagline: { type: String, default: '' },
+  turnaroundTime: { type: String, default: '' },
   domainOption: { type: String, default: 'with-domain' },
   billingPeriod: { type: String, default: 'One-Time' },
   estimatedPrice: { type: String, default: '' },
   notes: { type: String, default: '' },
+  ndaProtected: { type: Boolean, default: true },
+  ipTransfer: { type: Boolean, default: true },
+  zeroHiddenFees: { type: Boolean, default: true },
   status: { type: String, default: 'Pending Review' },
   createdAt: { type: Date, default: Date.now }
 });

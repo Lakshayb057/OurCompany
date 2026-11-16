@@ -586,7 +586,30 @@
       "notes": "Razorpay UPI + WhatsApp direct-to-farm platform."
     }
   ],
-  "planRegistrations": [],
+  "planRegistrations": [
+    {
+      "id": "plan-reg-1794830978793",
+      "fullName": "Lakshay Sharma",
+      "email": "you@company.com",
+      "contact": "+91 98765 43210",
+      "company": "Acme Tech Innovations",
+      "planId": "single-page-starter",
+      "planName": "Founder & Personal Portfolio",
+      "category": "single-page",
+      "badge": "Fast Delivery",
+      "tagline": "High-impact personal branding & executive portfolio",
+      "turnaroundTime": "3 - 5 Business Days",
+      "domainOption": "with-domain",
+      "billingPeriod": "One-Time",
+      "estimatedPrice": "₹14,999",
+      "notes": "Target launch within 5 business days. Clean dark mode aesthetics, executive portfolio layout with lead capture.",
+      "ndaProtected": true,
+      "ipTransfer": true,
+      "zeroHiddenFees": true,
+      "status": "Pending Review",
+      "createdAt": "2026-11-16T12:09:47.351Z"
+    }
+  ],
   "plans": [],
   "siteContent": {
     "hero": {

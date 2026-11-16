@@ -284,6 +284,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   const [inquiriesFilter, setInquiriesFilter] = useState('All');
   const [inquiriesSearch, setInquiriesSearch] = useState('');
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
+  const [leadSourceFilter, setLeadSourceFilter] = useState<'all' | 'inquiries' | 'registrations'>('all');
 
   const [registrations, setRegistrations] = useState<PlanRegistrationItem[]>([]);
   const [registrationsFilter, setRegistrationsFilter] = useState('All');
@@ -961,6 +962,135 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     }
   };
 
+  const renderPlanRegistrationCard = (reg: PlanRegistrationItem) => (
+    <div
+      key={reg.id}
+      className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm space-y-4"
+    >
+      {/* Top Header: Client Name, Company, Contact, Date, Status Selector & Delete */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-light-border dark:border-midnight-border/60 pb-3">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-bold text-base text-light-text dark:text-white">{reg.fullName}</h3>
+            {reg.company && (
+              <span className="text-xs text-light-subtext dark:text-muted-gray">
+                • {reg.company}
+              </span>
+            )}
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-purple-500/10 text-electric-purple dark:text-lavender-glow border border-purple-500/20">
+              Plan Booking
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-light-subtext dark:text-muted-gray font-mono">
+            <span className="text-purple-600 dark:text-lavender-glow font-medium">{reg.email}</span>
+            <span>•</span>
+            <span>{reg.contact}</span>
+            <span>•</span>
+            <span>{new Date(reg.createdAt).toLocaleDateString()}</span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <select
+            value={reg.status}
+            onChange={(e) => handleUpdateRegistrationStatus(reg.id, e.target.value)}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-50 dark:bg-midnight-900 border border-purple-200 dark:border-midnight-border text-electric-purple dark:text-lavender-glow focus:ring-1 focus:ring-electric-purple cursor-pointer"
+          >
+            <option value="Pending Review">Pending Review</option>
+            <option value="Contacted">Contacted</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <button
+            onClick={() => handleDeleteRegistration(reg.id)}
+            className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors"
+            title="Delete registration"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Package Specification Showcase */}
+      <div className="p-4 rounded-xl bg-purple-50/60 dark:bg-midnight-900/80 border border-purple-200/60 dark:border-midnight-border/70 space-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider bg-electric-purple text-white">
+              {reg.category ? reg.category.replace('-', ' ') : 'SINGLE PAGE'}
+            </span>
+            {(reg.badge || 'Fast Delivery') && (
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                {reg.badge || 'Fast Delivery'}
+              </span>
+            )}
+          </div>
+          <span className="text-xs font-extrabold text-purple-700 dark:text-lavender-light">
+            {reg.estimatedPrice || '₹14,999'} • {reg.billingPeriod || 'One-Time'} {reg.turnaroundTime ? `• ${reg.turnaroundTime}` : '• 3 - 5 Business Days'}
+          </span>
+        </div>
+
+        <h4 className="font-extrabold text-sm sm:text-base text-light-text dark:text-white">
+          [{reg.category ? reg.category.toUpperCase().replace('-', ' ') : 'SINGLE-PAGE'}] {reg.planName} — {reg.estimatedPrice || '₹14,999'} ({reg.billingPeriod || 'One-Time'})
+        </h4>
+        {reg.tagline && (
+          <p className="text-xs text-light-subtext dark:text-muted-gray">
+            {reg.tagline}
+          </p>
+        )}
+      </div>
+
+      {/* Client Parameters Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+        <div className="p-3 rounded-xl bg-light-50 dark:bg-midnight-900/50 border border-light-border/60 dark:border-midnight-border/40">
+          <span className="text-light-subtext dark:text-muted-gray block mb-1 font-medium">Domain Requirement Preference:</span>
+          <p className="font-semibold text-light-text dark:text-white">
+            {reg.domainOption === 'with-domain' || reg.domainOption === 'With Domain'
+              ? 'With Domain — Codrix registers & configures 1-year domain'
+              : reg.domainOption === 'without-domain' || reg.domainOption === 'Without Domain'
+              ? 'Without Domain — I already own a custom domain to link'
+              : reg.domainOption === 'need-advice' || reg.domainOption === 'Need Domain Advice'
+              ? 'Need Domain Advice — Help me choose the ideal domain TLD'
+              : (reg.domainOption || 'Standard Configuration')}
+          </p>
+        </div>
+
+        <div className="p-3 rounded-xl bg-light-50 dark:bg-midnight-900/50 border border-light-border/60 dark:border-midnight-border/40">
+          <span className="text-light-subtext dark:text-muted-gray block mb-1 font-medium">Company / Organization:</span>
+          <p className="font-semibold text-light-text dark:text-white">
+            {reg.company || 'Not Specified (Individual / Stealth)'}
+          </p>
+        </div>
+
+        <div className="p-3 rounded-xl bg-light-50 dark:bg-midnight-900/50 border border-light-border/60 dark:border-midnight-border/40">
+          <span className="text-light-subtext dark:text-muted-gray block mb-1 font-medium">Delivery & Execution:</span>
+          <p className="font-semibold text-purple-600 dark:text-lavender-glow">
+            {reg.billingPeriod || 'One-Time'} • {reg.turnaroundTime || '3 - 5 Business Days'}
+          </p>
+        </div>
+      </div>
+
+      {/* Project Notes */}
+      {reg.notes && (
+        <div className="p-3.5 rounded-xl bg-light-50 dark:bg-midnight-900/60 text-xs text-light-text dark:text-muted-gray border border-light-border dark:border-midnight-border/50">
+          <span className="font-bold block text-light-text dark:text-white mb-1">Project Notes, Custom Features or Deadlines:</span>
+          <p className="leading-relaxed">{reg.notes}</p>
+        </div>
+      )}
+
+      {/* Guarantees & Protections Bar */}
+      <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-light-subtext dark:text-muted-gray font-mono">
+        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
+          <Shield className="w-3.5 h-3.5" />
+          Strict NDA Protected
+        </span>
+        <span>•</span>
+        <span className="text-purple-600 dark:text-lavender-glow font-semibold">100% Full Source IP Transfer</span>
+        <span>•</span>
+        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Zero Hidden Fees</span>
+      </div>
+    </div>
+  );
+
   if (!isOpen) return null;
 
   // -------------------------------------------------------------
@@ -1410,126 +1540,194 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             )}
 
             {/* TAB: INQUIRIES */}
-            {activeTab === 'inquiries' && (
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div>
-                    <h1 className="text-xl font-bold text-light-text dark:text-white">Client Project Inquiries</h1>
-                    <p className="text-xs text-light-subtext dark:text-muted-gray">
-                      Qualified leads received through the "Let's Build Together" proposal form.
-                    </p>
+            {activeTab === 'inquiries' && (() => {
+              const filteredInquiries = inquiries.filter(i => {
+                if (inquiriesFilter !== 'All' && i.status !== inquiriesFilter) return false;
+                if (inquiriesSearch.trim()) {
+                  const q = inquiriesSearch.toLowerCase();
+                  return (
+                    i.fullName.toLowerCase().includes(q) ||
+                    i.email.toLowerCase().includes(q) ||
+                    (i.company || '').toLowerCase().includes(q) ||
+                    (i.projectType || '').toLowerCase().includes(q)
+                  );
+                }
+                return true;
+              });
+
+              const filteredRegistrations = registrations.filter(r => {
+                if (inquiriesFilter !== 'All') {
+                  if (inquiriesFilter === 'New' && r.status !== 'Pending Review' && r.status !== 'New') return false;
+                  if (inquiriesFilter === 'Contacted' && r.status !== 'Contacted') return false;
+                  if (inquiriesFilter === 'Closed' && r.status !== 'Completed' && r.status !== 'Closed') return false;
+                }
+                if (inquiriesSearch.trim()) {
+                  const q = inquiriesSearch.toLowerCase();
+                  return (
+                    r.fullName.toLowerCase().includes(q) ||
+                    r.email.toLowerCase().includes(q) ||
+                    r.planName.toLowerCase().includes(q) ||
+                    (r.company || '').toLowerCase().includes(q) ||
+                    (r.category || '').toLowerCase().includes(q)
+                  );
+                }
+                return true;
+              });
+
+              const totalVisible = (leadSourceFilter !== 'registrations' ? filteredInquiries.length : 0) +
+                                   (leadSourceFilter !== 'inquiries' ? filteredRegistrations.length : 0);
+
+              return (
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h1 className="text-xl font-bold text-light-text dark:text-white">Client Project Inquiries</h1>
+                      <p className="text-xs text-light-subtext dark:text-muted-gray">
+                        Real-time client proposals and package bookings recorded in the database.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="Search name, company, email..."
+                        value={inquiriesSearch}
+                        onChange={(e) => setInquiriesSearch(e.target.value)}
+                        className="px-3 py-1.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border text-xs focus:ring-1 focus:ring-electric-purple"
+                      />
+                      <select
+                        value={inquiriesFilter}
+                        onChange={(e) => setInquiriesFilter(e.target.value)}
+                        className="px-3 py-1.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border text-xs"
+                      >
+                        <option value="All">All Statuses</option>
+                        <option value="New">New / Pending</option>
+                        <option value="Review">In Review</option>
+                        <option value="Contacted">Contacted</option>
+                        <option value="Closed">Closed / Completed</option>
+                      </select>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      placeholder="Search name, company, email..."
-                      value={inquiriesSearch}
-                      onChange={(e) => setInquiriesSearch(e.target.value)}
-                      className="px-3 py-1.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border text-xs focus:ring-1 focus:ring-electric-purple"
-                    />
-                    <select
-                      value={inquiriesFilter}
-                      onChange={(e) => setInquiriesFilter(e.target.value)}
-                      className="px-3 py-1.5 rounded-xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border text-xs"
+
+                  {/* Channel Filter Toggle */}
+                  <div className="flex items-center gap-2 p-1 bg-white/60 dark:bg-midnight-900/60 rounded-xl border border-light-border dark:border-midnight-border/80 w-fit">
+                    <button
+                      onClick={() => setLeadSourceFilter('all')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        leadSourceFilter === 'all'
+                          ? 'bg-electric-purple text-white shadow-sm'
+                          : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white'
+                      }`}
                     >
-                      <option value="All">All Statuses</option>
-                      <option value="New">New</option>
-                      <option value="Review">Review</option>
-                      <option value="Contacted">Contacted</option>
-                      <option value="Closed">Closed</option>
-                    </select>
+                      All Inquiries & Bookings ({inquiries.length + registrations.length})
+                    </button>
+                    <button
+                      onClick={() => setLeadSourceFilter('inquiries')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        leadSourceFilter === 'inquiries'
+                          ? 'bg-electric-purple text-white shadow-sm'
+                          : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white'
+                      }`}
+                    >
+                      Direct Proposals ({inquiries.length})
+                    </button>
+                    <button
+                      onClick={() => setLeadSourceFilter('registrations')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        leadSourceFilter === 'registrations'
+                          ? 'bg-electric-purple text-white shadow-sm'
+                          : 'text-light-subtext dark:text-muted-gray hover:text-light-text dark:hover:text-white'
+                      }`}
+                    >
+                      Plan Bookings ({registrations.length})
+                    </button>
                   </div>
-                </div>
 
-                {inquiries.length === 0 ? (
-                  <div className="p-12 text-center bg-white dark:bg-midnight-800 rounded-3xl border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray text-xs">
-                    No inquiries recorded yet. Submissions from the public inquiry form appear here instantly.
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {inquiries
-                      .filter(i => {
-                        if (inquiriesFilter !== 'All' && i.status !== inquiriesFilter) return false;
-                        if (inquiriesSearch.trim()) {
-                          const q = inquiriesSearch.toLowerCase();
-                          return (
-                            i.fullName.toLowerCase().includes(q) ||
-                            i.email.toLowerCase().includes(q) ||
-                            (i.company || '').toLowerCase().includes(q)
-                          );
-                        }
-                        return true;
-                      })
-                      .map((inq) => (
-                        <div
-                          key={inq.id}
-                          className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border/80 shadow-sm space-y-3"
-                        >
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-light-border dark:border-midnight-border/60 pb-3">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-bold text-sm text-light-text dark:text-white">{inq.fullName}</h3>
-                                {inq.company && (
-                                  <span className="text-xs text-light-subtext dark:text-muted-gray">
-                                    • {inq.company} ({inq.country || 'Global'})
+                  {totalVisible === 0 ? (
+                    <div className="p-12 text-center bg-white dark:bg-midnight-800 rounded-3xl border border-light-border dark:border-midnight-border text-light-subtext dark:text-muted-gray text-xs">
+                      No matching inquiries or package bookings found.
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {/* Render Plan Registration Bookings */}
+                      {leadSourceFilter !== 'inquiries' &&
+                        filteredRegistrations.map((reg) => renderPlanRegistrationCard(reg))}
+
+                      {/* Render Direct Proposal Inquiries */}
+                      {leadSourceFilter !== 'registrations' &&
+                        filteredInquiries.map((inq) => (
+                          <div
+                            key={inq.id}
+                            className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border/80 shadow-sm space-y-4"
+                          >
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-light-border dark:border-midnight-border/60 pb-3">
+                              <div>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <h3 className="font-bold text-base text-light-text dark:text-white">{inq.fullName}</h3>
+                                  {inq.company && (
+                                    <span className="text-xs text-light-subtext dark:text-muted-gray">
+                                      • {inq.company} ({inq.country || 'Global'})
+                                    </span>
+                                  )}
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                                    Direct Proposal
                                   </span>
-                                )}
+                                </div>
+                                <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-light-subtext dark:text-muted-gray font-mono">
+                                  <span className="text-purple-600 dark:text-lavender-glow font-medium">{inq.email}</span>
+                                  {inq.contact && <span>• {inq.contact}</span>}
+                                  <span>• {new Date(inq.createdAt).toLocaleDateString()}</span>
+                                </div>
                               </div>
-                              <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-light-subtext dark:text-muted-gray">
-                                <span className="font-mono text-purple-600 dark:text-lavender-glow">{inq.email}</span>
-                                {inq.contact && <span>• {inq.contact}</span>}
-                                <span>• {new Date(inq.createdAt).toLocaleDateString()}</span>
+
+                              <div className="flex items-center gap-2">
+                                <select
+                                  value={inq.status}
+                                  onChange={(e) => handleUpdateInquiryStatus(inq.id, e.target.value)}
+                                  className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-50 dark:bg-midnight-900 border border-purple-200 dark:border-midnight-border text-electric-purple dark:text-lavender-glow focus:ring-1 focus:ring-electric-purple cursor-pointer"
+                                >
+                                  <option value="New">New</option>
+                                  <option value="Review">In Review</option>
+                                  <option value="Contacted">Contacted</option>
+                                  <option value="Closed">Closed</option>
+                                </select>
+                                <button
+                                  onClick={() => handleDeleteInquiry(inq.id)}
+                                  className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors"
+                                  title="Delete inquiry"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                              <select
-                                value={inq.status}
-                                onChange={(e) => handleUpdateInquiryStatus(inq.id, e.target.value)}
-                                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-purple-50 dark:bg-midnight-900 border border-purple-200 dark:border-midnight-border text-electric-purple dark:text-lavender-glow"
-                              >
-                                <option value="New">New</option>
-                                <option value="Review">In Review</option>
-                                <option value="Contacted">Contacted</option>
-                                <option value="Closed">Closed</option>
-                              </select>
-                              <button
-                                onClick={() => handleDeleteInquiry(inq.id)}
-                                className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors"
-                                title="Delete inquiry"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                              <div className="p-3 rounded-xl bg-light-50 dark:bg-midnight-900/50 border border-light-border/60 dark:border-midnight-border/40">
+                                <span className="text-light-subtext dark:text-muted-gray block mb-1 font-medium">Project Type:</span>
+                                <p className="font-semibold text-light-text dark:text-white mt-0.5">{inq.projectType}</p>
+                              </div>
+                              <div className="p-3 rounded-xl bg-light-50 dark:bg-midnight-900/50 border border-light-border/60 dark:border-midnight-border/40">
+                                <span className="text-light-subtext dark:text-muted-gray block mb-1 font-medium">Budget Allocation:</span>
+                                <p className="font-semibold text-purple-600 dark:text-lavender-light mt-0.5">{inq.budgetRange}</p>
+                              </div>
+                              <div className="p-3 rounded-xl bg-light-50 dark:bg-midnight-900/50 border border-light-border/60 dark:border-midnight-border/40">
+                                <span className="text-light-subtext dark:text-muted-gray block mb-1 font-medium">Target Timeline:</span>
+                                <p className="font-semibold text-light-text dark:text-white mt-0.5">{inq.timeline}</p>
+                              </div>
                             </div>
-                          </div>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                            <div>
-                              <span className="text-light-subtext dark:text-muted-gray">Project Type:</span>
-                              <p className="font-medium text-light-text dark:text-white mt-0.5">{inq.projectType}</p>
-                            </div>
-                            <div>
-                              <span className="text-light-subtext dark:text-muted-gray">Budget Allocation:</span>
-                              <p className="font-medium text-purple-600 dark:text-lavender-light mt-0.5">{inq.budgetRange}</p>
-                            </div>
-                            <div>
-                              <span className="text-light-subtext dark:text-muted-gray">Target Timeline:</span>
-                              <p className="font-medium text-light-text dark:text-white mt-0.5">{inq.timeline}</p>
-                            </div>
+                            {inq.description && (
+                              <div className="p-3.5 rounded-xl bg-light-50 dark:bg-midnight-900/60 text-xs text-light-text dark:text-muted-gray border border-light-border dark:border-midnight-border/50">
+                                <span className="font-bold block text-light-text dark:text-white mb-1">Architecture Scope:</span>
+                                <p className="leading-relaxed">{inq.description}</p>
+                              </div>
+                            )}
                           </div>
-
-                          {inq.description && (
-                            <div className="p-3 rounded-xl bg-purple-50/40 dark:bg-midnight-900/60 text-xs text-light-text dark:text-muted-gray border border-light-border dark:border-midnight-border/40">
-                              <span className="font-semibold block text-light-subtext dark:text-white mb-1">Architecture Scope:</span>
-                              {inq.description}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                  </div>
-                )}
-              </div>
-            )}
+                        ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* TAB: PLATFORM ADOPTIONS */}
             {activeTab === 'adoptions' && (
@@ -1773,7 +1971,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     No plan registrations yet. When clients register for a package on /plan, their submissions will be recorded here.
                   </div>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {registrations
                       .filter(r => {
                         if (registrationsSearch.trim()) {
@@ -1781,78 +1979,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                           return (
                             r.fullName.toLowerCase().includes(q) ||
                             r.email.toLowerCase().includes(q) ||
-                            r.planName.toLowerCase().includes(q)
+                            r.planName.toLowerCase().includes(q) ||
+                            (r.company || '').toLowerCase().includes(q) ||
+                            (r.category || '').toLowerCase().includes(q)
                           );
                         }
                         return true;
                       })
-                      .map((reg) => (
-                        <div
-                          key={reg.id}
-                          className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border border-light-border dark:border-midnight-border shadow-sm space-y-3"
-                        >
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-light-border dark:border-midnight-border/60 pb-3">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-bold text-sm text-light-text dark:text-white">{reg.fullName}</h3>
-                                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-500/10 text-electric-purple dark:text-lavender-glow border border-purple-500/20">
-                                  {reg.planName}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2 mt-1 text-xs text-light-subtext dark:text-muted-gray">
-                                <span>{reg.email}</span>
-                                <span>• {reg.contact}</span>
-                                <span>• {new Date(reg.createdAt).toLocaleDateString()}</span>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              <select
-                                value={reg.status}
-                                onChange={(e) => handleUpdateRegistrationStatus(reg.id, e.target.value)}
-                                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-purple-50 dark:bg-midnight-900 border border-purple-200 dark:border-midnight-border text-electric-purple dark:text-lavender-glow"
-                              >
-                                <option value="Pending Review">Pending Review</option>
-                                <option value="Contacted">Contacted</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Completed">Completed</option>
-                              </select>
-                              <button
-                                onClick={() => handleDeleteRegistration(reg.id)}
-                                className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                            <div>
-                              <span className="text-light-subtext dark:text-muted-gray">Domain Status:</span>
-                              <p className="font-medium text-light-text dark:text-white mt-0.5">{reg.domainOption || 'Standard'}</p>
-                            </div>
-                            <div>
-                              <span className="text-light-subtext dark:text-muted-gray">Billing Period:</span>
-                              <p className="font-medium text-light-text dark:text-white mt-0.5">{reg.billingPeriod || 'One-Time'}</p>
-                            </div>
-                            <div>
-                              <span className="text-light-subtext dark:text-muted-gray">Estimated Price:</span>
-                              <p className="font-medium text-purple-600 dark:text-lavender-light mt-0.5">{reg.estimatedPrice || 'Standard Package'}</p>
-                            </div>
-                            <div>
-                              <span className="text-light-subtext dark:text-muted-gray">Company:</span>
-                              <p className="font-medium text-light-text dark:text-white mt-0.5">{reg.company || 'Founder / Stealth'}</p>
-                            </div>
-                          </div>
-
-                          {reg.notes && (
-                            <div className="p-3 rounded-xl bg-purple-50/40 dark:bg-midnight-900/60 text-xs text-light-text dark:text-muted-gray border border-light-border dark:border-midnight-border/40">
-                              <span className="font-semibold block text-light-subtext dark:text-white mb-1">Client Notes:</span>
-                              {reg.notes}
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                      .map((reg) => renderPlanRegistrationCard(reg))}
                   </div>
                 )}
               </div>

@@ -95,10 +95,16 @@ export const PlanRegistrationModal: React.FC<PlanRegistrationModalProps> = ({
           planId: activePlan.id,
           planName: activePlan.name,
           category: activePlan.category,
+          badge: activePlan.badge || 'Fast Delivery',
+          tagline: activePlan.tagline || activePlan.description || '',
+          turnaroundTime: activePlan.turnaroundTime || '',
           domainOption,
           billingPeriod: activePlan.billingPeriod,
           estimatedPrice: priceDisplay,
-          notes: notes.trim()
+          notes: notes.trim(),
+          ndaProtected: true,
+          ipTransfer: true,
+          zeroHiddenFees: true
         })
       });
 
