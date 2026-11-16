@@ -202,6 +202,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
               return (
                 <div
                   key={prod.id}
+                  id={prod.slug || prod.id}
                   className="rounded-3xl overflow-hidden bg-white/90 dark:bg-midnight-card/90 border border-purple-100/90 dark:border-electric-purple/20 hover:border-electric-purple/50 dark:hover:border-electric-purple/60 transition-all duration-300 shadow-lg hover:shadow-2xl flex flex-col justify-between group"
                 >
                   {/* Top Media Showcase Banner */}

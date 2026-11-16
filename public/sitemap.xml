@@ -67,6 +67,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://codrix.co.in/#faq</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://codrix.co.in/#contact</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
