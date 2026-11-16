@@ -23,6 +23,8 @@ import { InquirySection } from './components/InquirySection';
 import { Footer } from './components/Footer';
 import { AdminPortal } from './components/AdminPortal';
 import { CookieConsent } from './components/CookieConsent';
+import { ServiceLandingPage } from './components/ServiceLandingPage';
+import { SERVICE_LANDING_PAGES } from './data/serviceLandingData';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import { getStoredTheme, saveStoredTheme } from './utils/session';
 import { realtimeSync } from './utils/realtime';
@@ -96,18 +98,20 @@ export const App: React.FC = () => {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<Product | null>(null);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [inquiryDomain, setInquiryDomain] = useState<string>('AI, Intelligent Agents & OCR');
-  const [currentRoute, setCurrentRoute] = useState<'home' | 'projects' | 'services' | 'plan'>(() => {
+  const [currentRoute, setCurrentRoute] = useState<
+    'home' | 'projects' | 'services' | 'plan' |
+    'website-development' | 'software-development' | 'ai-development' | 'crm-development' | 'mobile-app-development'
+  >(() => {
     if (typeof window !== 'undefined') {
       const path = window.location.pathname;
-      if (path === '/projects') {
-        return 'projects';
-      }
-      if (path === '/services') {
-        return 'services';
-      }
-      if (path === '/plan' || path === '/plans') {
-        return 'plan';
-      }
+      if (path === '/projects') return 'projects';
+      if (path === '/services') return 'services';
+      if (path === '/plan' || path === '/plans') return 'plan';
+      if (path === '/website-development') return 'website-development';
+      if (path === '/software-development') return 'software-development';
+      if (path === '/ai-development') return 'ai-development';
+      if (path === '/crm-development') return 'crm-development';
+      if (path === '/mobile-app-development') return 'mobile-app-development';
     }
     return 'home';
   });
@@ -134,6 +138,21 @@ export const App: React.FC = () => {
       } else if (path === '/plan' || path === '/plans') {
         setCurrentRoute('plan');
         updatePageSEO('plan');
+      } else if (path === '/website-development') {
+        setCurrentRoute('website-development');
+        updatePageSEO('website-development');
+      } else if (path === '/software-development') {
+        setCurrentRoute('software-development');
+        updatePageSEO('software-development');
+      } else if (path === '/ai-development') {
+        setCurrentRoute('ai-development');
+        updatePageSEO('ai-development');
+      } else if (path === '/crm-development') {
+        setCurrentRoute('crm-development');
+        updatePageSEO('crm-development');
+      } else if (path === '/mobile-app-development') {
+        setCurrentRoute('mobile-app-development');
+        updatePageSEO('mobile-app-development');
       } else {
         setCurrentRoute('home');
         updatePageSEO('home');
@@ -200,8 +219,13 @@ export const App: React.FC = () => {
       navigateToProjects();
     } else if (target === 'explore-services' || target === 'services-page') {
       navigateToServices();
-    } else if (target === 'plans') {
+    } else if (target === 'plans' || target === 'plan') {
       navigateToPlans();
+    } else if (SERVICE_LANDING_PAGES[target]) {
+      window.history.pushState(null, '', `/${target}`);
+      setCurrentRoute(target as any);
+      updatePageSEO(target as any);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (currentRoute !== 'home') {
       navigateToHome(target);
     } else {
@@ -526,6 +550,12 @@ export const App: React.FC = () => {
               navigateToHome('contact');
             }}
             onExploreProjects={navigateToProjects}
+          />
+        ) : SERVICE_LANDING_PAGES[currentRoute] ? (
+          <ServiceLandingPage
+            config={SERVICE_LANDING_PAGES[currentRoute]}
+            onBackToHome={() => navigateToHome()}
+            onNavigateToPlans={navigateToPlans}
           />
         ) : (
           <>

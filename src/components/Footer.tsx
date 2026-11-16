@@ -139,6 +139,21 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
           </div>
         </div>
 
+        {/* Search Engine & Visitor Directory Sitelinks */}
+        <div className="py-2.5 sm:py-3 border-b border-light-border/60 dark:border-midnight-border/50 flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-5 gap-y-2 text-[11px] sm:text-xs font-mono text-light-subtext dark:text-muted-gray">
+          <a href="/website-development" onClick={(e) => { e.preventDefault(); onNavigate?.('website-development'); }} className="hover:text-electric-purple dark:hover:text-lavender-glow transition-colors">Website Development</a>
+          <span className="opacity-40">•</span>
+          <a href="/software-development" onClick={(e) => { e.preventDefault(); onNavigate?.('software-development'); }} className="hover:text-electric-purple dark:hover:text-lavender-glow transition-colors">Custom Software</a>
+          <span className="opacity-40">•</span>
+          <a href="/ai-development" onClick={(e) => { e.preventDefault(); onNavigate?.('ai-development'); }} className="hover:text-electric-purple dark:hover:text-lavender-glow transition-colors">AI & Automation</a>
+          <span className="opacity-40">•</span>
+          <a href="/crm-development" onClick={(e) => { e.preventDefault(); onNavigate?.('crm-development'); }} className="hover:text-electric-purple dark:hover:text-lavender-glow transition-colors">CRM Development</a>
+          <span className="opacity-40">•</span>
+          <a href="/mobile-app-development" onClick={(e) => { e.preventDefault(); onNavigate?.('mobile-app-development'); }} className="hover:text-electric-purple dark:hover:text-lavender-glow transition-colors">Mobile App Development</a>
+          <span className="opacity-40">•</span>
+          <a href="/plan" onClick={(e) => { e.preventDefault(); onNavigate?.('plan'); }} className="hover:text-electric-purple dark:hover:text-lavender-glow transition-colors">Plans & Pricing</a>
+        </div>
+
         {/* Bottom Bar: Copyright on Left, Legal HQ on Right */}
         <div className="pt-2.5 sm:pt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono text-light-subtext dark:text-muted-gray">
           {/* Copyright notice */}

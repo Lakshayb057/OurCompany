@@ -39,6 +39,36 @@ export const ROUTE_SEO: Record<string, PageSEOConfig> = {
     title: 'Executive Mission Command | CodRix Admin Portal',
     description: 'CodRix secure administrative console for managing client proposals, package bookings, platform adoptions, and live website assets.',
     canonical: 'https://codrix.co.in/admin'
+  },
+  'website-development': {
+    title: 'Website Development Company | High-Performance Web Design | CodRix',
+    description: 'CodRix is a leading website development company engineering ultra-fast, mobile-responsive, SEO-optimized business websites, landing pages, and web portals.',
+    canonical: 'https://codrix.co.in/website-development',
+    keywords: 'Website Development Company, Custom Web Design, Modern Business Websites, React Web Applications, SEO Web Development India'
+  },
+  'software-development': {
+    title: 'Custom Software Development Company | Enterprise Cloud & Web Apps | CodRix',
+    description: 'CodRix architects mission-critical custom software, distributed microservices, scalable databases, and enterprise cloud applications with sub-100ms response times.',
+    canonical: 'https://codrix.co.in/software-development',
+    keywords: 'Custom Software Development, Enterprise Cloud Applications, Microservices Architecture, Full-Stack Engineering, Database Scalability'
+  },
+  'ai-development': {
+    title: 'AI Development Company | Autonomous AI Agents & Intelligent OCR | CodRix',
+    description: 'CodRix engineers autonomous AI agents, high-speed document OCR pipelines, and intelligent automated workflows with sub-second inference and multimodal LLMs.',
+    canonical: 'https://codrix.co.in/ai-development',
+    keywords: 'AI Development Company, Autonomous AI Agents, Multimodal OCR, LLM Integration, WhatsApp Automation, Computer Vision'
+  },
+  'crm-development': {
+    title: 'CRM Software Development Company | Custom High-Throughput CRMs | CodRix',
+    description: 'CodRix builds high-concurrency custom CRM software equipped with Redis event streams, sub-second lead routing, and automated omnichannel follow-up pipelines.',
+    canonical: 'https://codrix.co.in/crm-development',
+    keywords: 'CRM Software Development, Custom CRM Solutions, Lead Routing Automation, Real-Time Sales Telemetry, High-Concurrency CRM'
+  },
+  'mobile-app-development': {
+    title: 'Mobile App Development Company | iOS & Android Applications | CodRix',
+    description: 'CodRix engineers high-performance cross-platform mobile apps for iOS and Android with native performance, offline-first sync, and intuitive touch UI/UX.',
+    canonical: 'https://codrix.co.in/mobile-app-development',
+    keywords: 'Mobile App Development, Cross-Platform Mobile Apps, React Native Development, iOS App Development, Android App Development'
   }
 };
 

@@ -19,6 +19,38 @@
     <priority>0.9</priority>
   </url>
 
+  <!-- High-Intent Primary Service Landing Pages -->
+  <url>
+    <loc>https://codrix.co.in/website-development</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://codrix.co.in/software-development</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://codrix.co.in/ai-development</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://codrix.co.in/crm-development</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://codrix.co.in/mobile-app-development</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
   <!-- Plans & Pricing Page -->
   <url>
     <loc>https://codrix.co.in/plan</loc>
