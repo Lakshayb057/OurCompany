@@ -265,11 +265,15 @@ export async function connectDB() {
     }
   }
 
-  const uri = (process.env.MONGODB_URI && process.env.MONGODB_URI.trim()) || DEFAULT_ATLAS_URI;
+  let uri = (process.env.MONGODB_URI && process.env.MONGODB_URI.trim()) || DEFAULT_ATLAS_URI;
+  if (uri.includes('/codeverse')) {
+    uri = uri.replace('/codeverse', '/codrix');
+  }
 
   try {
-    console.log('[Database] Connecting to online MongoDB Atlas cluster...');
+    console.log('[Database] Connecting to online MongoDB Atlas cluster (database: codrix)...');
     cachedConnectionPromise = mongoose.connect(uri, {
+      dbName: 'codrix',
       serverSelectionTimeoutMS: 10000,
       maxPoolSize: 10,
     });
