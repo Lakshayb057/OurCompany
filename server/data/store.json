@@ -14,48 +14,6 @@
       "description": "cvhbeskrjhsbfjceskrzhbfvkesurhfbseukzhsj",
       "status": "New",
       "createdAt": "2026-11-12T14:55:28.739Z"
-    },
-    {
-      "id": "inq-1793725438123",
-      "fullName": "Test Enterprise Lead",
-      "email": "lead@enterprise.com",
-      "company": "Enterprise Corp",
-      "country": "United States",
-      "projectType": "Web & Distributed Cloud Systems",
-      "budgetRange": "Not decided",
-      "timeline": "Flexible",
-      "preferredContact": "Email",
-      "description": "Requesting cloud architecture consultation for high-throughput WebSocket system.",
-      "status": "New",
-      "createdAt": "2026-11-03T17:03:58.123Z"
-    },
-    {
-      "id": "inq-101",
-      "fullName": "Alexander Vance",
-      "email": "alex@vancetech.io",
-      "company": "Vance Technologies UK",
-      "country": "United Kingdom",
-      "projectType": "AI & Distributed Cloud Platform",
-      "budgetRange": "$25,000 - $50,000",
-      "timeline": "2-3 Months",
-      "preferredContact": "Email",
-      "description": "We are seeking to build a high-concurrency document processing engine with automated OCR extraction and real-time agent dispatcher, similar to your ChatLeads AI architecture.",
-      "status": "Review",
-      "createdAt": "2026-10-28T14:32:00Z"
-    },
-    {
-      "id": "inq-102",
-      "fullName": "Meera Sen",
-      "email": "meera@ecosphere.in",
-      "company": "EcoSphere Agritech",
-      "country": "India",
-      "projectType": "Direct-to-Consumer & ERP",
-      "budgetRange": "₹5 Lakh - ₹15 Lakh",
-      "timeline": "1-2 Months",
-      "preferredContact": "WhatsApp",
-      "description": "Interested in building a multi-vendor direct farm portal with automated order tracking, Razorpay integration, and a centralized superadmin dashboard like SachiKheti.",
-      "status": "New",
-      "createdAt": "2026-11-01T09:15:00Z"
     }
   ],
   "services": [

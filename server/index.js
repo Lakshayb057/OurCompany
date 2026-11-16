@@ -1029,9 +1029,10 @@ app.get('/api/v1/admin/inquiries', async (req, res) => {
       inquiries = await Inquiry.find().sort({ createdAt: -1 }).lean();
     } catch (e) {
       console.warn('Atlas inquiries fetch error:', e.message);
+      const data = readData();
+      inquiries = data.inquiries || [];
     }
-  }
-  if (!inquiries || !inquiries.length) {
+  } else {
     const data = readData();
     inquiries = data.inquiries || [];
   }
@@ -1098,9 +1099,10 @@ app.get('/api/v1/admin/plan-registrations', async (req, res) => {
       regs = await PlanRegistration.find().sort({ createdAt: -1 }).lean();
     } catch (e) {
       console.warn('Atlas plan registrations fetch error:', e.message);
+      const data = readData();
+      regs = data.planRegistrations || [];
     }
-  }
-  if (!regs || !regs.length) {
+  } else {
     const data = readData();
     regs = data.planRegistrations || [];
   }
@@ -1153,9 +1155,10 @@ app.get('/api/v1/admin/platform-adoptions', async (req, res) => {
       adoptions = await PlatformAdoption.find().sort({ createdAt: -1 }).lean();
     } catch (e) {
       console.warn('Atlas adoptions fetch error:', e.message);
+      const data = readData();
+      adoptions = data.platformAdoptions || [];
     }
-  }
-  if (!adoptions || !adoptions.length) {
+  } else {
     const data = readData();
     adoptions = data.platformAdoptions || [];
   }
@@ -1311,9 +1314,38 @@ app.delete('/api/v1/admin/delete-image', async (req, res) => {
 });
 
 // Admin Analytics Overview
-app.get('/api/v1/admin/analytics', (req, res) => {
-  const data = readData();
-  const inquiries = data.inquiries || [];
+app.get('/api/v1/admin/analytics', async (req, res) => {
+  let inquiries = [];
+  let planRegistrations = [];
+  let platformAdoptions = [];
+  let products = [];
+  let services = [];
+
+  if (isConnected()) {
+    try {
+      inquiries = await Inquiry.find().sort({ createdAt: -1 }).lean();
+      planRegistrations = await PlanRegistration.find().lean();
+      platformAdoptions = await PlatformAdoption.find().lean();
+      products = await ProductModel.find().lean();
+      services = await ServiceModel.find().lean();
+    } catch (e) {
+      console.warn('Atlas analytics fetch error:', e.message);
+      const data = readData();
+      inquiries = data.inquiries || [];
+      planRegistrations = data.planRegistrations || [];
+      platformAdoptions = data.platformAdoptions || [];
+      products = data.products || [];
+      services = data.services || [];
+    }
+  } else {
+    const data = readData();
+    inquiries = data.inquiries || [];
+    planRegistrations = data.planRegistrations || [];
+    platformAdoptions = data.platformAdoptions || [];
+    products = data.products || [];
+    services = data.services || [];
+  }
+
   const statusCounts = inquiries.reduce((acc, curr) => {
     acc[curr.status] = (acc[curr.status] || 0) + 1;
     return acc;
@@ -1324,10 +1356,10 @@ app.get('/api/v1/admin/analytics', (req, res) => {
     data: {
       totalInquiries: inquiries.length,
       statusCounts,
-      totalProjects: (data.products || []).length,
-      totalServices: (data.services || []).length,
-      totalPlanRegistrations: (data.planRegistrations || []).length,
-      totalPlatformAdoptions: (data.platformAdoptions || []).length,
+      totalProjects: products.length,
+      totalServices: services.length,
+      totalPlanRegistrations: planRegistrations.length,
+      totalPlatformAdoptions: platformAdoptions.length,
       recentInquiries: inquiries.slice(0, 5)
     }
   });
