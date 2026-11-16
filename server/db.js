@@ -228,8 +228,8 @@ const siteContentSchema = new mongoose.Schema({
     contactEmail: { type: String, default: 'codrixsoftwares@gmail.com' },
     contactPhone: { type: String, default: '+91 99999 99999' },
     copyrightNotice: { type: String, default: 'All rights reserved.' },
-    linkedinUrl: { type: String, default: 'https://linkedin.com/company/codrix' },
-    instagramUrl: { type: String, default: 'https://instagram.com/codrix.tech' },
+    linkedinUrl: { type: String, default: 'https://www.linkedin.com/in/codrixsoftwares/' },
+    instagramUrl: { type: String, default: 'https://www.instagram.com/codrixsoftwares/' },
     gmailUrl: { type: String, default: 'mailto:codrixsoftwares@gmail.com' }
   },
   updatedAt: { type: Date, default: Date.now }

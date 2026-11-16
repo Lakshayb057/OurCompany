@@ -17,8 +17,8 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ settings }) => {
-  const linkedinHref = settings?.linkedinUrl || 'https://www.linkedin.com/company/codrix';
-  const instagramHref = settings?.instagramUrl || 'https://www.instagram.com/codrix.tech';
+  const linkedinHref = settings?.linkedinUrl || 'https://www.linkedin.com/in/codrixsoftwares/';
+  const instagramHref = settings?.instagramUrl || 'https://www.instagram.com/codrixsoftwares/';
   const gmailHref = settings?.gmailUrl
     ? settings.gmailUrl
     : settings?.contactEmail
