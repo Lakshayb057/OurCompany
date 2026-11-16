@@ -5,15 +5,15 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <!-- Homepage -->
   <url>
-    <loc>https://codrix.co.in/</loc>
+    <loc>https://www.codrix.co.in/</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Dedicated Services Landing Page -->
+  <!-- Dedicated Services Hub -->
   <url>
-    <loc>https://codrix.co.in/services</loc>
+    <loc>https://www.codrix.co.in/services</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -21,31 +21,31 @@
 
   <!-- High-Intent Primary Service Landing Pages -->
   <url>
-    <loc>https://codrix.co.in/website-development</loc>
+    <loc>https://www.codrix.co.in/website-development</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://codrix.co.in/software-development</loc>
+    <loc>https://www.codrix.co.in/software-development</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://codrix.co.in/ai-development</loc>
+    <loc>https://www.codrix.co.in/ai-development</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://codrix.co.in/crm-development</loc>
+    <loc>https://www.codrix.co.in/crm-development</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://codrix.co.in/mobile-app-development</loc>
+    <loc>https://www.codrix.co.in/mobile-app-development</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
@@ -53,59 +53,15 @@
 
   <!-- Plans & Pricing Page -->
   <url>
-    <loc>https://codrix.co.in/plan</loc>
+    <loc>https://www.codrix.co.in/plan</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- Portfolio & Flagship Projects -->
+  <!-- Portfolio & Projects Page -->
   <url>
-    <loc>https://codrix.co.in/projects</loc>
-    <lastmod>2026-11-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Core Sitelink Anchor Sections -->
-  <url>
-    <loc>https://codrix.co.in/#services</loc>
-    <lastmod>2026-11-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://codrix.co.in/#tech-stack</loc>
-    <lastmod>2026-11-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://codrix.co.in/#platforms</loc>
-    <lastmod>2026-11-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://codrix.co.in/#process</loc>
-    <lastmod>2026-11-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://codrix.co.in/#leadership</loc>
-    <lastmod>2026-11-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://codrix.co.in/#faq</loc>
-    <lastmod>2026-11-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://codrix.co.in/#contact</loc>
+    <loc>https://www.codrix.co.in/projects</loc>
     <lastmod>2026-11-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
