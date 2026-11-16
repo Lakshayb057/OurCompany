@@ -1,0 +1,13 @@
+# https://codrix.co.in/robots.txt
+# Search Engine Crawling Directive for CodRix
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# Host Authority
+Host: https://codrix.co.in
+
+# XML Sitemaps
+Sitemap: https://codrix.co.in/sitemap.xml

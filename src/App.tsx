@@ -25,6 +25,7 @@ import { CookieConsent } from './components/CookieConsent';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import { getStoredTheme, saveStoredTheme } from './utils/session';
 import { realtimeSync } from './utils/realtime';
+import { updatePageSEO } from './utils/seo';
 
 import { INITIAL_SERVICES, INITIAL_PRODUCTS, INITIAL_TEAM } from './data/mockData';
 import { Service, Product, TeamMember, SiteContent } from './types';
@@ -121,14 +122,20 @@ export const App: React.FC = () => {
       const isAdmin = path === '/admin' || hash === '#admin';
       setIsAdminOpen(isAdmin);
 
-      if (path === '/projects') {
+      if (isAdmin) {
+        updatePageSEO('admin');
+      } else if (path === '/projects') {
         setCurrentRoute('projects');
+        updatePageSEO('projects');
       } else if (path === '/services') {
         setCurrentRoute('services');
+        updatePageSEO('services');
       } else if (path === '/plan' || path === '/plans') {
         setCurrentRoute('plan');
-      } else if (!isAdmin) {
+        updatePageSEO('plan');
+      } else {
         setCurrentRoute('home');
+        updatePageSEO('home');
         if (hash) {
           const targetId = hash.replace('#', '');
           setTimeout(() => {

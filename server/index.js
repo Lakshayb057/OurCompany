@@ -238,6 +238,28 @@ async function seedInitialDataIfEmpty() {
 }
 
 // -------------------------------------------------------------
+// PUBLIC SEO & SEARCH ENGINE CRAWLER DIRECTIVES
+// -------------------------------------------------------------
+
+app.get('/sitemap.xml', (req, res) => {
+  res.type('application/xml');
+  const sitemapPath = path.join(__dirname, '..', 'public', 'sitemap.xml');
+  if (fs.existsSync(sitemapPath)) {
+    return res.sendFile(sitemapPath);
+  }
+  res.status(404).send('Sitemap not found');
+});
+
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  const robotsPath = path.join(__dirname, '..', 'public', 'robots.txt');
+  if (fs.existsSync(robotsPath)) {
+    return res.sendFile(robotsPath);
+  }
+  res.send("User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\nSitemap: https://codrix.co.in/sitemap.xml\n");
+});
+
+// -------------------------------------------------------------
 // PUBLIC API ENDPOINTS
 // -------------------------------------------------------------
 
