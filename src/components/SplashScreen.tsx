@@ -157,7 +157,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
           {/* 3D Floating Ribbon Image */}
           <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40">
             <img
-              src="/hero-ribbon.png"
+              src="/hero-ribbon.webp"
               alt="Codrix Ribbon Emblem"
               loading="eager"
               {...{ fetchpriority: 'high' }}
@@ -176,7 +176,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             }}
           >
             <img
-              src="/hero-ribbon.png"
+              src="/hero-ribbon.webp"
               alt=""
               className="w-full h-full object-contain"
             />

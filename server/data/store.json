@@ -171,8 +171,8 @@
       "subtitle": "Campus Dining & Multi-Vendor OS",
       "badge": "FLAGSHIP STARTUP • 0-TO-1",
       "status": "Live",
-      "image": "/universe-banner.jpg",
-      "previewUrl": "/universe-banner.jpg",
+      "image": "/universe-banner.webp",
+      "previewUrl": "/universe-banner.webp",
       "videoUrl": "/universe_video.webp",
       "video": "/universe_video.webp",
       "mediaType": "both",
@@ -325,8 +325,8 @@
       "subtitle": "High-Performance Multi-Tenant Event Engine",
       "badge": "ENTERPRISE CRM • MAY ’26",
       "status": "Live",
-      "image": "/CRM.jpeg",
-      "previewUrl": "/CRM.jpeg",
+      "image": "/CRM.webp",
+      "previewUrl": "/CRM.webp",
       "videoUrl": "/CRM.webm",
       "video": "/CRM.webm",
       "mediaType": "both",
@@ -473,7 +473,7 @@
       "role": "Founder, Strategy & Tech",
       "primaryResponsibility": "Vision, leadership, strategy, product ownership, and 0-to-1 engineering.",
       "bio": "",
-      "avatar": "/lakshay.jpeg",
+      "avatar": "/lakshay.webp",
       "linkedin": "https://linkedin.com/in/lakshay-codrix"
     },
     {
@@ -483,7 +483,7 @@
       "role": "Technology & Architecture",
       "primaryResponsibility": "Technology architecture, cloud infrastructure, engineering standards, and technical delivery.",
       "bio": "",
-      "avatar": "/Parth.jpeg",
+      "avatar": "/Parth.webp",
       "linkedin": "https://linkedin.com/in/parth-codrix"
     },
     {
@@ -493,7 +493,7 @@
       "role": "Operations & Execution",
       "primaryResponsibility": "Operations, project execution, agile methodologies, and client delivery governance.",
       "bio": "",
-      "avatar": "/Diya.jpg",
+      "avatar": "/Diya.webp",
       "linkedin": "https://linkedin.com/in/diya-codrix"
     },
     {
@@ -503,12 +503,12 @@
       "role": "Corporate Governance & Oversight",
       "primaryResponsibility": "Corporate governance, strategic policy decisions, risk management, and organizational oversight.",
       "bio": "Corporate governance, strategic policy decisions, risk management, and organizational oversight.",
-      "avatar": "/ishita.jpeg",
+      "avatar": "/Ishita.webp",
       "linkedin": "https://linkedin.com/in/ishita-codrix",
       "_id": "6af567e1d2bc06a02165ca9d",
       "updatedAt": "2026-11-13T08:08:24.312Z",
       "__v": 0,
-      "photo": "/ishita.jpeg",
+      "photo": "/Ishita.webp",
       "initials": "IM",
       "isVisible": false
     },
@@ -519,7 +519,7 @@
       "role": "Growth & Partnerships",
       "primaryResponsibility": "Business development, international client acquisition, growth marketing, and strategic partnerships.",
       "bio": "",
-      "avatar": "/suryansh.jpeg",
+      "avatar": "/suryansh.webp",
       "linkedin": "https://linkedin.com/in/suryansh-codrix"
     },
     {
@@ -646,7 +646,7 @@
         "num": "01",
         "title": "Discovery & System Design",
         "shortTitle": "System Discovery",
-        "image": "/process/step-01-discovery.jpg",
+        "image": "/process/step-01-discovery.webp",
         "deliverables": [
           "SRS & Architectural Blueprint",
           "Entity Relationship Diagram",
@@ -657,7 +657,7 @@
         "num": "02",
         "title": "Rapid Prototyping & Validation",
         "shortTitle": "Interactive Prototyping",
-        "image": "/process/step-02-prototyping.jpg",
+        "image": "/process/step-02-prototyping.webp",
         "deliverables": [
           "Figma Design System",
           "Key Interaction Proof-of-Concept",
@@ -668,7 +668,7 @@
         "num": "03",
         "title": "Production Engineering",
         "shortTitle": "Full-Stack Engineering",
-        "image": "/process/step-03-engineering.jpg",
+        "image": "/process/step-03-engineering.webp",
         "deliverables": [
           "Type-Safe Clean Codebase",
           "REST / WebSocket Microservices",
@@ -679,7 +679,7 @@
         "num": "04",
         "title": "QA, Security & Hardening",
         "shortTitle": "Security & QA",
-        "image": "/process/step-04-qa-security.jpg",
+        "image": "/process/step-04-qa-security.webp",
         "deliverables": [
           "Unit & Integration Testing",
           "Security & RBAC Auditing",
@@ -690,7 +690,7 @@
         "num": "05",
         "title": "Deployment & Observability",
         "shortTitle": "CI/CD & Live Telemetry",
-        "image": "/process/step-05-deployment.jpg",
+        "image": "/process/step-05-deployment.webp",
         "deliverables": [
           "Zero-Downtime CI/CD Handover",
           "Structured Logs & Telemetry",

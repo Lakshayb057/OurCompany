@@ -14,7 +14,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ product, onClose
   const isUniverse = product.slug === 'universe' || product.id === 'prod-01' || product.name.toLowerCase().includes('universe');
   const isNexus = product.slug === 'nexus-crm' || product.id === 'prod-04' || product.name.toLowerCase().includes('nexus');
   const videoSrc = product.videoUrl || (product as any).video || (isUniverse ? '/universe_video.webp' : (isNexus ? '/CRM.webm' : ''));
-  const imgSrc = (product as any).image || (product as any).previewUrl || (isUniverse ? '/universe-banner.jpg' : (isNexus ? '/CRM.jpeg' : ''));
+  const imgSrc = (product as any).image || (product as any).previewUrl || (isUniverse ? '/universe-banner.webp' : (isNexus ? '/CRM.webp' : ''));
   const hasVideo = Boolean(videoSrc);
   const hasImage = Boolean(imgSrc);
 
@@ -131,8 +131,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ product, onClose
                       className={`w-full max-h-[380px] ${videoAlignClass}`}
                     >
                       <source src={videoSrc} type={videoSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
-                      {videoSrc.endsWith('.webm') && <source src="/CRM.mp4" type="video/mp4" />}
-                    </video>
+                      </video>
                   )
                 ) : hasImage ? (
                   <img

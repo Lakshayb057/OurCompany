@@ -43,7 +43,7 @@ export const Footer: React.FC<FooterProps> = ({ settings, onNavigate }) => {
             className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8 opacity-95 hover:opacity-100 transition-opacity duration-300"
           >
             <img
-              src="/hero-ribbon.png"
+              src="/hero-ribbon.webp"
               alt="Codrix Ribbon Logo"
               className="w-10 h-10 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-28 lg:h-28 xl:w-32 xl:h-32 object-contain flex-shrink-0 drop-shadow-[0_0_30px_rgba(124,44,245,0.45)]"
             />
@@ -61,7 +61,7 @@ export const Footer: React.FC<FooterProps> = ({ settings, onNavigate }) => {
           {/* Left: Ribbon Logo + CODRIX | TURNING IDEAS INTO TECHNOLOGY */}
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-2.5 select-none">
             <img
-              src="/hero-ribbon.png"
+              src="/hero-ribbon.webp"
               alt="Codrix Ribbon Logo"
               className="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0 drop-shadow-[0_0_12px_rgba(124,44,245,0.35)]"
             />

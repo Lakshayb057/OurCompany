@@ -27,7 +27,7 @@ export const GlobalVision: React.FC<GlobalVisionProps> = ({ onStartProject, cont
           {/* Complete Container Full-Bleed Background Image */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img
-              src="/global-vision.jpg"
+              src="/global-vision.webp"
               alt="Engineered Locally, Deployed Globally - 4K Photography"
               loading="lazy"
               decoding="async"

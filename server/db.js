@@ -181,35 +181,35 @@ const siteContentSchema = new mongoose.Schema({
       num: { type: String, default: '01' },
       title: { type: String, default: 'Discovery & System Design' },
       shortTitle: { type: String, default: 'System Discovery' },
-      image: { type: String, default: '/process/step-01-discovery.jpg' },
+      image: { type: String, default: '/process/step-01-discovery.webp' },
       deliverables: [{ type: String }]
     },
     {
       num: { type: String, default: '02' },
       title: { type: String, default: 'Rapid Prototyping & Validation' },
       shortTitle: { type: String, default: 'Interactive Prototyping' },
-      image: { type: String, default: '/process/step-02-prototyping.jpg' },
+      image: { type: String, default: '/process/step-02-prototyping.webp' },
       deliverables: [{ type: String }]
     },
     {
       num: { type: String, default: '03' },
       title: { type: String, default: 'Production Engineering' },
       shortTitle: { type: String, default: 'Full-Stack Engineering' },
-      image: { type: String, default: '/process/step-03-engineering.jpg' },
+      image: { type: String, default: '/process/step-03-engineering.webp' },
       deliverables: [{ type: String }]
     },
     {
       num: { type: String, default: '04' },
       title: { type: String, default: 'QA, Security & Hardening' },
       shortTitle: { type: String, default: 'Security & QA' },
-      image: { type: String, default: '/process/step-04-qa-security.jpg' },
+      image: { type: String, default: '/process/step-04-qa-security.webp' },
       deliverables: [{ type: String }]
     },
     {
       num: { type: String, default: '05' },
       title: { type: String, default: 'Deployment & Observability' },
       shortTitle: { type: String, default: 'CI/CD & Live Telemetry' },
-      image: { type: String, default: '/process/step-05-deployment.jpg' },
+      image: { type: String, default: '/process/step-05-deployment.webp' },
       deliverables: [{ type: String }]
     }
   ],

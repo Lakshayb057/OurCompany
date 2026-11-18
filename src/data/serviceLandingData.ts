@@ -92,7 +92,7 @@ export const SERVICE_LANDING_PAGES: Record<string, ServiceLandingConfig> = {
       subtitle: 'Modern Engineering Platform with Sub-Second Latency',
       description: 'Engineered with React, TypeScript, and modern CSS gradients, featuring real-time MongoDB lead tracking, client proposal flow, and automated Socket.io state synchronization.',
       metrics: ['Sub-100ms API Latency', '100% Clean Codebase', 'Complete SEO Schema Graph'],
-      image: '/hero-ribbon.png'
+      image: '/hero-ribbon.webp'
     },
     faqs: [
       {
@@ -238,7 +238,7 @@ export const SERVICE_LANDING_PAGES: Record<string, ServiceLandingConfig> = {
       subtitle: 'Multimodal OCR & Autonomous WhatsApp Fleet',
       description: 'Engineered for high-volume sales organizations, combining Gemini 2.5 Flash document intelligence with Llama-4 reasoning to automate lead extraction and customer booking pipelines.',
       metrics: ['90% Reduction in Audit Effort', 'Sub-Second Document OCR', 'Automated Lead Extraction'],
-      image: '/services/ai-agents.jpg'
+      image: '/services/ai-agents.webp'
     },
     faqs: [
       {
@@ -311,7 +311,7 @@ export const SERVICE_LANDING_PAGES: Record<string, ServiceLandingConfig> = {
       subtitle: 'High-Concurrency Event-Driven Platform',
       description: 'Battle-tested enterprise CRM managing 100,000+ records, equipped with Redis Pub/Sub, sub-second lead routing, and automated omnichannel dispatch.',
       metrics: ['100,000+ Records Ingested', 'Sub-50ms Routing Latency', '4 Operational Role Tiers'],
-      image: '/CRM.jpeg'
+      image: '/CRM.webp'
     },
     faqs: [
       {

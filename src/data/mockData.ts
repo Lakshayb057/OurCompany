@@ -260,7 +260,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     role: "Founder, Strategy & Tech",
     primaryResponsibility: "Vision, leadership, strategy, product ownership, and 0-to-1 engineering.",
     bio: "",
-    avatar: "/lakshay.jpeg",
+    avatar: "/lakshay.webp",
     linkedin: "https://linkedin.com/in/lakshay-codrix"
   },
   {
@@ -270,7 +270,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     role: "Technology & Architecture",
     primaryResponsibility: "Technology architecture, cloud infrastructure, engineering standards, and technical delivery.",
     bio: "",
-    avatar: "/Parth.jpeg",
+    avatar: "/Parth.webp",
     linkedin: "https://linkedin.com/in/parth-codrix"
   },
   {
@@ -280,7 +280,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     role: "Operations & Execution",
     primaryResponsibility: "Operations, project execution, agile methodologies, and client delivery governance.",
     bio: "",
-    avatar: "/Diya.jpg",
+    avatar: "/Diya.webp",
     linkedin: "https://linkedin.com/in/diya-codrix"
   },
   {
@@ -290,7 +290,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     role: "Corporate Governance & Oversight",
     primaryResponsibility: "Corporate governance, strategic policy decisions, risk management, and organizational oversight.",
     bio: "",
-    avatar: "/ishita.jpeg",
+    avatar: "/Ishita.webp",
     linkedin: "https://linkedin.com/in/ishita-codrix"
   },
   {
@@ -300,7 +300,7 @@ export const INITIAL_TEAM: TeamMember[] = [
     role: "Growth & Partnerships",
     primaryResponsibility: "Business development, international client acquisition, growth marketing, and strategic partnerships.",
     bio: "",
-    avatar: "/suryansh.jpeg",
+    avatar: "/suryansh.webp",
     linkedin: "https://linkedin.com/in/suryansh-codrix"
   }
 ];

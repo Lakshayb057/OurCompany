@@ -147,35 +147,35 @@ function getDefaultSiteContent() {
         num: '01',
         title: 'Discovery & System Design',
         shortTitle: 'System Discovery',
-        image: '/process/step-01-discovery.jpg',
+        image: '/process/step-01-discovery.webp',
         deliverables: ['SRS & Architectural Blueprint', 'Entity Relationship Diagram', 'API Contract Specification']
       },
       {
         num: '02',
         title: 'Rapid Prototyping & Validation',
         shortTitle: 'Interactive Prototyping',
-        image: '/process/step-02-prototyping.jpg',
+        image: '/process/step-02-prototyping.webp',
         deliverables: ['Figma Design System', 'Key Interaction Proof-of-Concept', 'Database Schema Validation']
       },
       {
         num: '03',
         title: 'Production Engineering',
         shortTitle: 'Full-Stack Engineering',
-        image: '/process/step-03-engineering.jpg',
+        image: '/process/step-03-engineering.webp',
         deliverables: ['Type-Safe Clean Codebase', 'REST / WebSocket Microservices', 'ACID Data Persistence']
       },
       {
         num: '04',
         title: 'QA, Security & Hardening',
         shortTitle: 'Security & QA',
-        image: '/process/step-04-qa-security.jpg',
+        image: '/process/step-04-qa-security.webp',
         deliverables: ['Unit & Integration Testing', 'Security & RBAC Auditing', 'Sub-200ms Latency Tuning']
       },
       {
         num: '05',
         title: 'Deployment & Observability',
         shortTitle: 'CI/CD & Live Telemetry',
-        image: '/process/step-05-deployment.jpg',
+        image: '/process/step-05-deployment.webp',
         deliverables: ['Zero-Downtime CI/CD Handover', 'Structured Logs & Telemetry', 'Full IP & Source Transfer']
       }
     ],

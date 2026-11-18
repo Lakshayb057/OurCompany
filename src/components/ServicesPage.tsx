@@ -188,7 +188,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
               const isUniverse = prod.slug === 'universe' || prod.id === 'prod-01' || prod.name.toLowerCase().includes('universe');
               const isNexus = prod.slug === 'nexus-crm' || prod.id === 'prod-04' || prod.name.toLowerCase().includes('nexus');
               const videoSrc = prod.videoUrl || (prod as any).video || (isUniverse ? '/universe_video.webp' : (isNexus ? '/CRM.webm' : ''));
-              const imgSrc = (prod as any).image || (prod as any).previewUrl || (isUniverse ? '/universe-banner.jpg' : (isNexus ? '/CRM.jpeg' : '/services/crm-automation.jpg'));
+              const imgSrc = (prod as any).image || (prod as any).previewUrl || (isUniverse ? '/universe-banner.webp' : (isNexus ? '/CRM.webp' : '/services/crm-automation.webp'));
               const hasVideo = Boolean(videoSrc);
 
               const imageAlignClass = prod.imageAlignment === 'top'
@@ -213,8 +213,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
                       ) : (
                         <video key={videoSrc} muted autoPlay loop playsInline className={`w-full h-full ${videoAlignClass}`}>
                           <source src={videoSrc} type={videoSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
-                          {videoSrc.endsWith('.webm') && <source src="/CRM.mp4" type="video/mp4" />}
-                        </video>
+                          </video>
                       )
                     ) : (
                       <img

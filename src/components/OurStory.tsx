@@ -103,7 +103,7 @@ export const OurStory: React.FC<OurStoryProps> = ({ content }) => {
                   }}
                 >
                   <img
-                    src="/mission-target.png"
+                    src="/mission-target.webp"
                     alt="Our Mission"
                     className="w-6 h-6 object-contain dark:invert transition-transform duration-300 group-hover:scale-110 pointer-events-none"
                   />
@@ -171,7 +171,7 @@ export const OurStory: React.FC<OurStoryProps> = ({ content }) => {
                   }}
                 >
                   <img
-                    src="/philosophy-head.png"
+                    src="/philosophy-head.webp"
                     alt="Our Philosophy"
                     className="w-6 h-6 object-contain dark:invert transition-transform duration-300 group-hover:scale-110 pointer-events-none"
                   />
@@ -239,7 +239,7 @@ export const OurStory: React.FC<OurStoryProps> = ({ content }) => {
                   }}
                 >
                   <img
-                    src="/vision-bulb.png"
+                    src="/vision-bulb.webp"
                     alt="Our Vision"
                     className="w-6 h-6 object-contain dark:invert transition-transform duration-300 group-hover:scale-110 pointer-events-none"
                   />

@@ -1105,7 +1105,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
           <div className="text-center space-y-2">
             <div className="flex items-center justify-center gap-2.5 mb-1">
               <img
-                src="/hero-ribbon.png"
+                src="/hero-ribbon.webp"
                 alt="Codrix Ribbon"
                 className="w-10 h-10 object-contain drop-shadow-[0_2px_14px_rgba(124,44,245,0.45)]"
               />
@@ -1204,7 +1204,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
           title="Return to Website"
         >
           <img
-            src="/hero-ribbon.png"
+            src="/hero-ribbon.webp"
             alt="Codrix"
             className="w-8 h-8 sm:w-9 sm:h-9 object-contain drop-shadow-[0_2px_10px_rgba(124,44,245,0.35)] transition-transform duration-200 group-hover:scale-105"
           />

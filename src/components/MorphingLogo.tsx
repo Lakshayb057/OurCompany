@@ -184,7 +184,7 @@ export const MorphingLogo: React.FC<MorphingLogoProps> = ({
         className="flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
       >
         <img
-          src="/hero-ribbon.png"
+          src="/hero-ribbon.webp"
           alt="Codrix Ribbon"
           loading="eager"
           {...{ fetchpriority: 'high' }}

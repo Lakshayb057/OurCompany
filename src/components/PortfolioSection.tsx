@@ -11,18 +11,18 @@ interface PortfolioSectionProps {
 }
 
 const PROJECT_IMAGES: Record<string, string> = {
-  'prod-01': '/universe-banner.jpg',
-  'prod-02': '/services/ai-agents.jpg',
-  'prod-03': '/services/institutional-erp.jpg',
-  'prod-04': '/CRM.jpeg',
-  'prod-05': '/services/campus-marketplaces.jpg',
-  'prod-06': '/services/agri-commerce.jpg',
-  'universe': '/universe-banner.jpg',
-  'chatleads-ai': '/services/ai-agents.jpg',
-  'abv-skillport': '/services/institutional-erp.jpg',
-  'nexus-crm': '/CRM.jpeg',
-  'campxchange': '/services/campus-marketplaces.jpg',
-  'sachikheti': '/services/agri-commerce.jpg',
+  'prod-01': '/universe-banner.webp',
+  'prod-02': '/services/ai-agents.webp',
+  'prod-03': '/services/institutional-erp.webp',
+  'prod-04': '/CRM.webp',
+  'prod-05': '/services/campus-marketplaces.webp',
+  'prod-06': '/services/agri-commerce.webp',
+  'universe': '/universe-banner.webp',
+  'chatleads-ai': '/services/ai-agents.webp',
+  'abv-skillport': '/services/institutional-erp.webp',
+  'nexus-crm': '/CRM.webp',
+  'campxchange': '/services/campus-marketplaces.webp',
+  'sachikheti': '/services/agri-commerce.webp',
 };
 
 export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
@@ -81,7 +81,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
             const isUniverse = prod.slug === 'universe' || prod.id === 'prod-01' || prod.name.toLowerCase().includes('universe');
             const isNexus = prod.slug === 'nexus-crm' || prod.id === 'prod-04' || prod.name.toLowerCase().includes('nexus');
             const videoSrc = prod.videoUrl || prod.video || (isUniverse ? '/universe_video.webp' : (isNexus ? '/CRM.webm' : ''));
-            const imgSrc = (prod as any).image || (prod as any).previewUrl || PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || (isUniverse ? '/universe-banner.jpg' : (isNexus ? '/CRM.jpeg' : '/services/crm-automation.jpg'));
+            const imgSrc = (prod as any).image || (prod as any).previewUrl || PROJECT_IMAGES[prod.id] || PROJECT_IMAGES[prod.slug] || (isUniverse ? '/universe-banner.webp' : (isNexus ? '/CRM.webp' : '/services/crm-automation.webp'));
             const hasVideo = Boolean(videoSrc);
             const currentMode = getMediaMode(prod);
             const canToggle = hasVideo && Boolean(imgSrc) && prod.mediaType !== 'image' && prod.mediaType !== 'video';
@@ -126,8 +126,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                         className={`w-full h-full ${videoAlignClass} transition-transform duration-700 ease-out group-hover:scale-[1.02]`}
                       >
                         <source src={videoSrc} type={videoSrc.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
-                        {videoSrc.endsWith('.webm') && <source src="/CRM.mp4" type="video/mp4" />}
-                      </video>
+                        </video>
                     )
                   ) : (
                     <img

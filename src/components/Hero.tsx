@@ -109,11 +109,10 @@ export const Hero: React.FC<HeroProps> = ({
           loop
           muted
           playsInline
-          poster="/hero-poster.jpg"
+          poster="/hero-poster.webp"
           className="w-full h-full object-cover opacity-25 dark:opacity-40"
         >
           <source src="/hero-bg.webm" type="video/webm" />
-          <source src="/hero-bg.mp4" type="video/mp4" />
           <img
             src="/hero-bg.webp"
             alt="Hero Background Animation"
@@ -182,7 +181,7 @@ export const Hero: React.FC<HeroProps> = ({
                 />
                 
                 <img
-                  src="/hero-ribbon.png"
+                  src="/hero-ribbon.webp"
                   alt="Codrix Ribbon Emblem"
                   loading="eager"
                   {...{ fetchpriority: 'high' }}
