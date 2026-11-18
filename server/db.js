@@ -223,10 +223,10 @@ const siteContentSchema = new mongoose.Schema({
     ]
   },
   siteSettings: {
-    companyName: { type: String, default: 'Codrix' },
-    legalHeadquarters: { type: String, default: 'Corporate Headquarters: India' },
+    companyName: { type: String, default: 'Codrix Private Limited' },
+    legalHeadquarters: { type: String, default: 'Registered Office: Aggarwal Colony, Fatehabad, Haryana - 125050, India • CIN: U62011HR2026PTC153058' },
     contactEmail: { type: String, default: 'codrixsoftwares@gmail.com' },
-    contactPhone: { type: String, default: '+91 99999 99999' },
+    contactPhone: { type: String, default: '+91 98123 86832' },
     copyrightNotice: { type: String, default: 'All rights reserved.' },
     linkedinUrl: { type: String, default: 'https://www.linkedin.com/in/codrixsoftwares/' },
     instagramUrl: { type: String, default: 'https://www.instagram.com/codrixsoftwares/' },

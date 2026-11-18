@@ -154,11 +154,29 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
           <a href="/plan" onClick={(e) => { e.preventDefault(); onNavigate?.('plan'); }} className="hover:text-electric-purple dark:hover:text-lavender-glow transition-colors">Plans & Pricing</a>
         </div>
 
+        {/* MCA Corporate Compliance & Statutory Registry Strip */}
+        <div className="py-2.5 sm:py-3 border-b border-light-border/60 dark:border-midnight-border/50 text-center">
+          <p className="text-[11px] sm:text-xs font-mono text-light-subtext dark:text-muted-gray leading-relaxed">
+            <span className="font-semibold text-light-text dark:text-white">CODRIX PRIVATE LIMITED</span>
+            {' '}&bull;{' '}
+            <span className="text-electric-purple dark:text-lavender-glow font-medium">CIN: U62011HR2026PTC153058</span>
+            {' '}&bull;{' '}
+            <span>PAN: AAOCC4361R</span>
+            {' '}&bull;{' '}
+            <span>TAN: RTKC11176E</span>
+          </p>
+          <p className="text-[10px] sm:text-[11px] font-mono text-light-subtext/80 dark:text-muted-gray/70 mt-1">
+            Registered Office: C/O Neha, Aggarwal Colony, Fatehabad, Haryana &ndash; 125050, India
+            {' '}&bull;{' '}
+            <span>Incorporated under the Companies Act, 2013 | Ministry of Corporate Affairs, Govt. of India</span>
+          </p>
+        </div>
+
         {/* Bottom Bar: Copyright on Left, Legal HQ on Right */}
         <div className="pt-2.5 sm:pt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono text-light-subtext dark:text-muted-gray">
           {/* Copyright notice */}
           <div className="text-center sm:text-left font-medium">
-            © {new Date().getFullYear()} {settings?.companyName || 'Codrix'}. {
+            &copy; {new Date().getFullYear()} {settings?.companyName || 'Codrix Private Limited'}. {
               (settings?.copyrightNotice || 'All rights reserved.')
                 .replace(/^©\s*\d{4}\s+[^.]*\.\s*/i, '')
                 .trim() || 'All rights reserved.'
@@ -167,7 +185,7 @@ export const Footer: React.FC<FooterProps> = ({ settings }) => {
 
           {/* Legal Headquarters */}
           <div className="text-[11px] text-light-subtext/80 dark:text-muted-gray/80 text-center sm:text-right truncate max-w-md">
-            {(settings?.legalHeadquarters || 'Corporate Headquarters: India').replace(/\s*•\s*Global Remote Delivery/gi, '').trim()}
+            {(settings?.legalHeadquarters || 'Registered Office: Fatehabad, Haryana, India').replace(/\s*•\s*Global Remote Delivery/gi, '').trim()}
           </div>
         </div>
 

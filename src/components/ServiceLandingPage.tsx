@@ -71,9 +71,15 @@ export const ServiceLandingPage: React.FC<ServiceLandingPageProps> = ({
 
         {/* HERO SECTION */}
         <section className="text-center max-w-4xl mx-auto space-y-6 sm:space-y-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase bg-purple-500/10 text-electric-purple dark:text-lavender-glow border border-purple-500/20">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{config.heroBadge}</span>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[11px] font-mono font-bold tracking-wider uppercase bg-purple-500/10 text-electric-purple dark:text-lavender-glow border border-purple-500/20">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{config.heroBadge}</span>
+            </div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-mono font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>CODRIX PRIVATE LIMITED &bull; CIN: U62011HR2026PTC153058</span>
+            </div>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
