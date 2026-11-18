@@ -8,7 +8,7 @@ interface NavbarProps {
   dockBtnRef?: React.RefObject<HTMLDivElement>;
   dockStartBtnRef?: React.RefObject<HTMLDivElement>;
   dockExploreBtnRef?: React.RefObject<HTMLDivElement>;
-  currentRoute?: 'home' | 'projects' | 'services' | 'plan';
+  currentRoute?: string;
   onLogoClick?: () => void;
 }
 

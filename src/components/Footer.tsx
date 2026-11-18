@@ -16,7 +16,7 @@ interface FooterProps {
   };
 }
 
-export const Footer: React.FC<FooterProps> = ({ settings }) => {
+export const Footer: React.FC<FooterProps> = ({ settings, onNavigate }) => {
   const linkedinHref = settings?.linkedinUrl || 'https://www.linkedin.com/in/codrixsoftwares/';
   const instagramHref = settings?.instagramUrl || 'https://www.instagram.com/codrixsoftwares/';
   const gmailHref = settings?.gmailUrl
