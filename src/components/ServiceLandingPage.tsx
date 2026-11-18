@@ -78,7 +78,7 @@ export const ServiceLandingPage: React.FC<ServiceLandingPageProps> = ({
             </div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-mono font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>CODRIX PRIVATE LIMITED &bull; CIN: U62011HR2026PTC153058</span>
+              <span>CODRIX PRIVATE LIMITED &bull; VERIFIED SOFTWARE COMPANY</span>
             </div>
           </div>
 
