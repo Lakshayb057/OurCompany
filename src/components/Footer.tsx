@@ -154,30 +154,15 @@ export const Footer: React.FC<FooterProps> = ({ settings, onNavigate }) => {
           <a href="/plan" onClick={(e) => { e.preventDefault(); onNavigate?.('plan'); }} className="hover:text-electric-purple dark:hover:text-lavender-glow transition-colors">Plans & Pricing</a>
         </div>
 
-        {/* Corporate Legal Strip */}
-        <div className="py-2.5 sm:py-3 border-b border-light-border/60 dark:border-midnight-border/50 text-center">
-          <p className="text-[11px] sm:text-xs font-mono text-light-subtext dark:text-muted-gray">
-            <span className="font-semibold text-light-text dark:text-white">CODRIX PRIVATE LIMITED</span>
-            {' '}&bull;{' '}
-            <span>Software &amp; Web Development Company</span>
-            {' '}&bull;{' '}
-            <span>Registered in India</span>
-          </p>
-        </div>
-
-        {/* Bottom Bar: Copyright on Left, Legal HQ on Right */}
-        <div className="pt-2.5 sm:pt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono text-light-subtext dark:text-muted-gray">
+        {/* Bottom Bar: Clean Unified Legal & Copyright */}
+        <div className="pt-3 sm:pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono text-light-subtext dark:text-muted-gray">
           {/* Copyright notice */}
           <div className="text-center sm:text-left font-medium">
-            &copy; {new Date().getFullYear()} {settings?.companyName || 'Codrix Private Limited'}. {
-              (settings?.copyrightNotice || 'All rights reserved.')
-                .replace(/^©\s*\d{4}\s+[^.]*\.\s*/i, '')
-                .trim() || 'All rights reserved.'
-            }
+            &copy; {new Date().getFullYear()} {settings?.companyName || 'Codrix Private Limited'}. All rights reserved.
           </div>
 
           {/* Legal Headquarters */}
-          <div className="text-[11px] text-light-subtext/80 dark:text-muted-gray/80 text-center sm:text-right truncate max-w-md">
+          <div className="text-[11px] text-light-subtext/80 dark:text-muted-gray/80 text-center sm:text-right">
             {(settings?.legalHeadquarters || 'Corporate Headquarters: India').replace(/\s*•\s*Global Remote Delivery/gi, '').trim()}
           </div>
         </div>
