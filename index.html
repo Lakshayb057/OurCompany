@@ -43,9 +43,10 @@
   <meta name="twitter:image" content="https://www.codrix.co.in/hero-ribbon.png" />
 
   <!-- Google Search Favicon Standards (Multi-Size & Scalable Formats) -->
-  <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="icon" href="/favicon-48x48.png" type="image/png" sizes="48x48" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
 
   <!-- CDN Preconnect & Performance Hints -->
@@ -79,7 +80,11 @@
           ],
           "foundingDate": "2026-11-18",
           "url": "https://www.codrix.co.in/",
-          "logo": "https://www.codrix.co.in/logo.png",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.codrix.co.in/logo-icon.png",
+            "caption": "CodRix Official Logo"
+          },
           "image": "https://www.codrix.co.in/hero-ribbon.png",
           "description": "Codrix Private Limited is an Indian software and web development company. We engineer custom software, scalable cloud systems, mobile apps, and AI digital solutions.",
           "email": "codrixsoftwares@gmail.com",
@@ -113,23 +118,17 @@
           "@type": "WebSite",
           "@id": "https://www.codrix.co.in/#website",
           "url": "https://www.codrix.co.in/",
-          "name": "Codrix Private Limited",
+          "name": "CodRix",
           "alternateName": [
-            "CodRix",
             "Codrix",
-            "CodRix Pvt Ltd",
             "Codrix Private Limited",
-            "Codrix Pvt Ltd",
             "CodRix Private Limited",
-            "CodRix Technologies",
-            "CodRix Software",
             "CodRix Softwares",
             "CodRix Software Company",
-            "CodRix India",
             "codrix.co.in",
             "www.codrix.co.in"
           ],
-          "description": "Codrix Private Limited — Software & Web Development Company. Turning Ideas into Technology.",
+          "description": "CodRix | Software & Web Development Company — Turning Ideas into Technology.",
           "publisher": {
             "@id": "https://www.codrix.co.in/#organization"
           },

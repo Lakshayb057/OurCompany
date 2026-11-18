@@ -1,54 +1,79 @@
 Add-Type -AssemblyName System.Drawing
+
 $currentDir = (Get-Location).Path
 $srcPath = Join-Path $currentDir 'public\logo-icon.png'
-$bmp = [System.Drawing.Bitmap]::FromFile($srcPath)
-Write-Host "Source image dimensions: $($bmp.Width)x$($bmp.Height)"
+$srcBmp = [System.Drawing.Bitmap]::FromFile($srcPath)
 
-# 1. 48x48 Favicon (Google recommended standard)
-$res48 = New-Object System.Drawing.Bitmap 48, 48
-$g48 = [System.Drawing.Graphics]::FromImage($res48)
-$g48.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
-$g48.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
-$g48.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
-$g48.DrawImage($bmp, 0, 0, 48, 48)
+$minX = 10
+$minY = 10
+$cropW = 389
+$cropH = 273
 
-$fav48Path = Join-Path $currentDir 'public\favicon-48x48.png'
-$res48.Save($fav48Path, [System.Drawing.Imaging.ImageFormat]::Png)
+$cropRect = New-Object System.Drawing.Rectangle $minX, $minY, $cropW, $cropH
+$croppedBmp = $srcBmp.Clone($cropRect, $srcBmp.PixelFormat)
 
-# 2. favicon.ico
+function MakeSquareIcon([System.Drawing.Bitmap]$source, [int]$size, [string]$outPath, [double]$paddingRatio) {
+    $canvas = New-Object System.Drawing.Bitmap $size, $size, ([System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+    $g = [System.Drawing.Graphics]::FromImage($canvas)
+    $g.Clear([System.Drawing.Color]::Transparent)
+    $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+    $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+    $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+    $g.CompositingQuality = [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
+
+    $maxW = $size * (1.0 - (2.0 * $paddingRatio))
+    $maxH = $size * (1.0 - (2.0 * $paddingRatio))
+    $scale = [Math]::Min($maxW / $source.Width, $maxH / $source.Height)
+    
+    $destW = [int][Math]::Round($source.Width * $scale)
+    $destH = [int][Math]::Round($source.Height * $scale)
+    $destX = [int][Math]::Round(($size - $destW) / 2.0)
+    $destY = [int][Math]::Round(($size - $destH) / 2.0)
+
+    $destRect = New-Object System.Drawing.Rectangle $destX, $destY, $destW, $destH
+    $g.DrawImage($source, $destRect, 0, 0, $source.Width, $source.Height, [System.Drawing.GraphicsUnit]::Pixel)
+    
+    $canvas.Save($outPath, [System.Drawing.Imaging.ImageFormat]::Png)
+    $g.Dispose()
+    return $canvas
+}
+
+# 1. Generate 48x48
+$bmp48 = MakeSquareIcon $croppedBmp 48 (Join-Path $currentDir 'public\favicon-48x48.png') 0.04
+Write-Host "Generated favicon-48x48.png"
+
+# 2. Generate 96x96
+$bmp96 = MakeSquareIcon $croppedBmp 96 (Join-Path $currentDir 'public\favicon-96x96.png') 0.04
+Write-Host "Generated favicon-96x96.png"
+
+# 3. Generate 180x180 (Apple Touch Icon)
+$bmp180 = MakeSquareIcon $croppedBmp 180 (Join-Path $currentDir 'public\apple-touch-icon.png') 0.05
+Write-Host "Generated apple-touch-icon.png"
+
+# 4. Generate 192x192 (PWA Icon)
+$bmp192 = MakeSquareIcon $croppedBmp 192 (Join-Path $currentDir 'public\icon-192.png') 0.05
+Write-Host "Generated icon-192.png"
+
+# 5. Generate 512x512
+$bmp512 = MakeSquareIcon $croppedBmp 512 (Join-Path $currentDir 'public\icon-512.png') 0.05
+Write-Host "Generated icon-512.png"
+
+# 6. Generate favicon.ico from 48x48
 $icoPath = Join-Path $currentDir 'public\favicon.ico'
-$hIcon = $res48.GetHicon()
+$hIcon = $bmp48.GetHicon()
 $icon = [System.Drawing.Icon]::FromHandle($hIcon)
 $fs = New-Object System.IO.FileStream($icoPath, [System.IO.FileMode]::Create)
 $icon.Save($fs)
 $fs.Close()
 $icon.Dispose()
+Write-Host "Generated favicon.ico"
 
-$g48.Dispose()
-$res48.Dispose()
-
-# 3. 180x180 Apple Touch Icon
-$res180 = New-Object System.Drawing.Bitmap 180, 180
-$g180 = [System.Drawing.Graphics]::FromImage($res180)
-$g180.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
-$g180.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
-$g180.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
-$g180.DrawImage($bmp, 0, 0, 180, 180)
-
-$applePath = Join-Path $currentDir 'public\apple-touch-icon.png'
-$res180.Save($applePath, [System.Drawing.Imaging.ImageFormat]::Png)
-$g180.Dispose()
-$res180.Dispose()
-
-# 4. 192x192 and 512x512 PWA icons
-$res192 = New-Object System.Drawing.Bitmap 192, 192
-$g192 = [System.Drawing.Graphics]::FromImage($res192)
-$g192.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
-$g192.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
-$g192.DrawImage($bmp, 0, 0, 192, 192)
-$res192.Save((Join-Path $currentDir 'public\icon-192.png'), [System.Drawing.Imaging.ImageFormat]::Png)
-$g192.Dispose()
-$res192.Dispose()
-
-$bmp.Dispose()
-Write-Host "All Favicon and App Icon files generated successfully in public/ directory!"
+# Clean up
+$bmp48.Dispose()
+$bmp96.Dispose()
+$bmp180.Dispose()
+$bmp192.Dispose()
+$bmp512.Dispose()
+$croppedBmp.Dispose()
+$srcBmp.Dispose()
+Write-Host "All icons generated successfully!"
