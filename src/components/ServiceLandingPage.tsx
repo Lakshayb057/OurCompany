@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  ArrowRight, Check, Shield, ChevronDown, 
+  ArrowRight, Check, Shield, 
   HelpCircle, Sparkles, Layers, Code, Globe, 
   Cpu, Database, Bot, Zap, ArrowLeft, CheckCircle2,
   Clock, Award, Lock, ExternalLink
@@ -19,16 +19,10 @@ export const ServiceLandingPage: React.FC<ServiceLandingPageProps> = ({
   onBackToHome,
   onNavigateToPlans
 }) => {
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-
   // Scroll to top on mount or route switch
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [config.slug]);
-
-  const toggleFaq = (idx: number) => {
-    setOpenFaqIndex(prev => (prev === idx ? null : idx));
-  };
 
   const scrollToInquiry = () => {
     const el = document.getElementById('service-inquiry');
@@ -254,57 +248,6 @@ export const ServiceLandingPage: React.FC<ServiceLandingPageProps> = ({
                 {t}
               </span>
             ))}
-          </div>
-        </section>
-
-        {/* SERVICE-SPECIFIC FAQS */}
-        <section className="space-y-6 max-w-4xl mx-auto">
-          <div className="text-center space-y-2">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-purple-600 dark:text-lavender-light">
-              Got Questions?
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-light-text dark:text-white">
-              Frequently Asked Questions
-            </h2>
-          </div>
-
-          <div className="space-y-3">
-            {config.faqs.map((faq, idx) => {
-              const isOpen = openFaqIndex === idx;
-              return (
-                <div
-                  key={faq.question}
-                  className={`rounded-2xl border transition-all duration-300 ${
-                    isOpen
-                      ? 'bg-white dark:bg-midnight-800 border-electric-purple/40 shadow-md'
-                      : 'bg-white/70 dark:bg-midnight-900/60 border-light-border dark:border-midnight-border/70'
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => toggleFaq(idx)}
-                    className="w-full flex items-center justify-between text-left p-5 gap-4 cursor-pointer select-none"
-                  >
-                    <span className="font-bold text-sm sm:text-base text-light-text dark:text-white">
-                      {faq.question}
-                    </span>
-                    <div className={`p-1.5 rounded-full bg-light-100 dark:bg-midnight-900 shrink-0 text-light-subtext dark:text-muted-gray transition-transform duration-300 ${
-                      isOpen ? 'rotate-180 text-electric-purple dark:text-lavender-glow' : ''
-                    }`}>
-                      <ChevronDown className="w-4 h-4" />
-                    </div>
-                  </button>
-
-                  {isOpen && (
-                    <div className="px-5 pb-5 pt-0 border-t border-light-border/40 dark:border-midnight-border/40 mt-1">
-                      <p className="text-xs sm:text-sm text-light-subtext dark:text-muted-gray leading-relaxed pt-3">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
           </div>
         </section>
 

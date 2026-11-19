@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, Check, Globe, Shield, Clock, Search, 
-  ExternalLink, Layers, Zap, Server, Calendar, Filter, ChevronDown, 
+  ExternalLink, Layers, Zap, Server, Calendar, Filter, 
   HelpCircle, CheckCircle2, MessageSquare, Terminal 
 } from 'lucide-react';
 import { PlanPackage, PLANS_DATA, PLAN_CATEGORIES } from '../data/plansData';
@@ -20,7 +20,6 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome, plans }) => 
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
   const [selectedPlanForModal, setSelectedPlanForModal] = useState<PlanPackage | null>(null);
   const [clientInquiryData, setClientInquiryData] = useState<{ fullName?: string; email?: string } | null>(null);
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const basePlans = (plans && plans.length > 0) ? plans : PLANS_DATA;
 
@@ -76,29 +75,6 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome, plans }) => 
     setSelectedPlanForModal(plan);
     setRegisterModalOpen(true);
   };
-
-  const faqs = [
-    {
-      q: 'How does the domain inclusion option work?',
-      a: 'Plans marked "With Domain Included" provide full registration and configuration of a top-level domain (e.g. .com, .in, .tech) for 1 full year, including DNS routing, Cloudflare CDN protection, and SSL encryption. If you already own a domain, we configure it to point to your new platform at no additional cost.'
-    },
-    {
-      q: 'Do I get 100% intellectual property (IP) and source code ownership?',
-      a: 'Yes, unconditionally. Upon final milestone deployment, full copyright, repository ownership (GitHub / GitLab), and production infrastructure keys are transferred directly to your organization. Codrix maintains zero proprietary lock-in.'
-    },
-    {
-      q: 'What is the onboarding process after I register for a plan?',
-      a: 'Within 24 hours of registering, our founding technical leadership coordinates directly with you to sign a mutual NDA, confirm architectural specifications, and deliver an interactive sprint roadmap with transparent deliverables.'
-    },
-    {
-      q: 'Can I customize any of these plans or split payments into milestones?',
-      a: 'Absolutely. We typically structure projects into milestone tranches (e.g. 40% discovery & prototyping, 40% engineering, 20% QA & handover). Custom feature additions or third-party API integrations can be tailored to your sprint.'
-    },
-    {
-      q: 'What ongoing maintenance is provided post-handover?',
-      a: 'All plans include 30 to 120 days of complimentary hypercare bugfix support. For ongoing updates, 24/7 server uptime guarantees, and security patch monitoring, you can also opt for our Yearly Retainer (AMC) packages.'
-    }
-  ];
 
   return (
     <div className="min-h-screen pt-20 sm:pt-32 pb-12 sm:pb-24 bg-light-100/60 dark:bg-midnight-900/60 relative overflow-hidden transition-colors duration-300">
@@ -486,44 +462,6 @@ export const PlansPage: React.FC<PlansPageProps> = ({ onBackToHome, plans }) => 
                 </tr>
               </tbody>
             </table>
-          </div>
-        </div>
-
-        {/* Frequently Asked Questions */}
-        <div className="max-w-3xl mx-auto space-y-4">
-          <div className="text-center space-y-1 mb-6">
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-light-text dark:text-white">
-              Frequently Asked Questions
-            </h3>
-            <p className="text-xs text-light-subtext dark:text-muted-gray">
-              Transparent terms regarding domains, source code, warranties, and payments.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            {faqs.map((faq, idx) => {
-              const isOpen = openFaq === idx;
-              return (
-                <div
-                  key={idx}
-                  className="rounded-2xl border border-purple-100 dark:border-midnight-border bg-white dark:bg-midnight-card overflow-hidden shadow-sm"
-                >
-                  <button
-                    type="button"
-                    onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-3 text-xs sm:text-sm font-bold text-light-text dark:text-white hover:text-electric-purple transition-colors"
-                  >
-                    <span>{faq.q}</span>
-                    <ChevronDown className={`w-4 h-4 text-electric-purple transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  {isOpen && (
-                    <div className="px-4 sm:px-5 pb-5 text-xs text-light-subtext dark:text-muted-gray leading-relaxed border-t border-purple-50 dark:border-white/5 pt-3">
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
           </div>
         </div>
 

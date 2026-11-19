@@ -17,8 +17,6 @@ import { GlobalVision } from './components/GlobalVision';
 import { LeadershipSection } from './components/LeadershipSection';
 import { PlansSection } from './components/PlansSection';
 import { PlansPage } from './components/PlansPage';
-import { PartnershipPhilosophy } from './components/PartnershipPhilosophy';
-import { FAQSection } from './components/FAQSection';
 import { InquirySection } from './components/InquirySection';
 import { Footer } from './components/Footer';
 import { AdminPortal } from './components/AdminPortal';
@@ -614,12 +612,6 @@ export const App: React.FC = () => {
               plans={plans}
               onOpenPlansPage={navigateToPlans}
             />
-
-            {/* Section 09 & 10.4: Partnership & 100% Allocation Philosophy */}
-            <PartnershipPhilosophy />
-
-            {/* Section 10: Frequently Asked Questions (SEO & Quality Guidelines) */}
-            <FAQSection />
 
             {/* Section 11: Let's Build Together (Project Inquiry) */}
             <InquirySection
