@@ -15,11 +15,11 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, pla
   // Filter visible plans only
   const allPlans = ((plans && plans.length > 0) ? plans : PLANS_DATA).filter(p => p.isVisible !== false);
 
-  // Exactly 3 featured plans on the home section (Startup Launchpad, Sprint MVP, Custom Enterprise ERP)
+  // Exactly 3 featured plans on the home section (Business Website, Startup MVP, Custom Enterprise Software)
   const homeFeaturedPlans: PlanPackage[] = [
-    allPlans.find(p => p.id === 'single-page-startup-with-domain') || allPlans[1] || allPlans[0],
-    allPlans.find(p => p.id === 'webapp-sprint-mvp') || allPlans[3] || allPlans[1] || allPlans[0],
-    allPlans.find(p => p.id === 'software-custom-erp') || allPlans[6] || allPlans[2] || allPlans[0],
+    allPlans.find(p => p.id === 'plan-02-business-website') || allPlans.find(p => p.id === 'plan-01-static-portfolio') || allPlans[0],
+    allPlans.find(p => p.id === 'plan-06-startup-mvp') || allPlans[1] || allPlans[0],
+    allPlans.find(p => p.id === 'plan-09-custom-enterprise') || allPlans[2] || allPlans[0],
   ].filter(Boolean);
 
   const handleRegisterClick = (plan: PlanPackage) => {
@@ -50,8 +50,17 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, pla
         {/* Exactly 3 Featured Plans Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           {homeFeaturedPlans.map((plan) => {
-            const priceINR = `₹${plan.priceINR.toLocaleString('en-IN')}`;
-            const priceUSD = `$${plan.priceUSD.toLocaleString('en-US')}`;
+            const priceINR = `${plan.startingPrice ? 'Starting ' : ''}₹${plan.priceINR.toLocaleString('en-IN')}`;
+            const priceUSD = `${plan.startingPrice ? 'Starting ' : ''}$${plan.priceUSD.toLocaleString('en-US')}`;
+
+            const categoryLabels: Record<string, string> = {
+              website: 'Website',
+              webapp: 'Web App',
+              ecommerce: 'E-Commerce',
+              enterprise: 'Enterprise',
+              ai: 'AI & Automation',
+              amc: 'Retainer'
+            };
 
             return (
               <div
@@ -65,7 +74,7 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, pla
                 {/* Floating Badges */}
                 <div className="flex items-center justify-between gap-2 mb-3">
                   <span className="text-[10px] font-mono uppercase tracking-wider font-bold px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-white/10 text-electric-purple dark:text-lavender-light border border-purple-200 dark:border-white/10">
-                    {plan.category.replace('-', ' ')}
+                    {categoryLabels[plan.category] || plan.category.replace('-', ' ')}
                   </span>
                   {plan.badge && (
                     <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full ${

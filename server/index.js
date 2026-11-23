@@ -229,6 +229,13 @@ async function seedInitialDataIfEmpty() {
     console.log(`[Seed] Seeded ${store.team.length} team members to MongoDB Atlas`);
   }
 
+  // 3.5 Plans
+  const plansCount = await PlanModel.countDocuments();
+  if (plansCount === 0 && store.plans?.length) {
+    await PlanModel.insertMany(store.plans);
+    console.log(`[Seed] Seeded ${store.plans.length} plans to MongoDB Atlas`);
+  }
+
   // 4. Site Content
   const contentCount = await SiteContentModel.countDocuments();
   if (contentCount === 0) {

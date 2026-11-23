@@ -61,8 +61,8 @@ export const PlanRegistrationModal: React.FC<PlanRegistrationModalProps> = ({
 
   const activePlan = PLANS_DATA.find(p => p.id === currentPlanId) || selectedPlan || PLANS_DATA[0];
   const priceDisplay = currency === 'INR'
-    ? `₹${activePlan.priceINR.toLocaleString('en-IN')}`
-    : `$${activePlan.priceUSD.toLocaleString('en-US')}`;
+    ? `${activePlan.startingPrice ? 'Starting ' : ''}₹${activePlan.priceINR.toLocaleString('en-IN')}${activePlan.billingCycle ? ` ${activePlan.billingCycle}` : ''}`
+    : `${activePlan.startingPrice ? 'Starting ' : ''}$${activePlan.priceUSD.toLocaleString('en-US')}${activePlan.billingCycle ? ` ${activePlan.billingCycle}` : ''}`;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
