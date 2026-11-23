@@ -140,7 +140,9 @@ const planSchema = new mongoose.Schema({
   isBestValue: { type: Boolean, default: false },
   priceINR: { type: Number, default: 0 },
   priceUSD: { type: Number, default: 0 },
+  startingPrice: { type: Boolean, default: false },
   billingPeriod: { type: String, default: 'One-Time' },
+  billingCycle: { type: String, default: '' },
   domainIncluded: { type: Boolean, default: true },
   domainNote: { type: String, default: '' },
   turnaroundTime: { type: String, default: '' },
@@ -151,7 +153,7 @@ const planSchema = new mongoose.Schema({
   idealFor: { type: String, default: '' },
   isVisible: { type: Boolean, default: true },
   updatedAt: { type: Date, default: Date.now }
-});
+}, { strict: false });
 
 // 7. Site Content Singleton Schema
 const siteContentSchema = new mongoose.Schema({

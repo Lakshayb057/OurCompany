@@ -731,18 +731,63 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [newPlan, setNewPlan] = useState<Partial<PlanPackage>>({
     name: '',
-    category: 'single-page',
-    tagline: 'Modern, High-Speed Web Presence',
-    description: 'Bespoke design, responsive layout, and lightning-fast edge delivery.',
-    priceINR: 19999,
+    category: 'website',
+    tagline: '',
+    badge: 'Popular',
+    idealFor: '',
+    priceINR: 17999,
     priceUSD: 249,
-    billingCycle: 'One-Time Project',
-    deliverables: ['Custom Responsive Design', 'Zero-Downtime Deployment', 'Full Source Handover'],
-    popular: false,
+    startingPrice: false,
+    billingPeriod: 'One-Time',
+    billingCycle: '',
+    turnaroundTime: '5–7 business days',
     domainIncluded: true,
-    techStack: ['React', 'Tailwind CSS', 'Vite'],
+    domainNote: 'Includes standard domain allowance up to ₹2,000 for 1 year.',
+    description: '',
+    isPopular: false,
+    isBestValue: false,
     isVisible: true
   });
+  const [newPlanFeaturesText, setNewPlanFeaturesText] = useState('');
+  const [newPlanDeliverablesText, setNewPlanDeliverablesText] = useState('');
+  const [newPlanTechStackText, setNewPlanTechStackText] = useState('React, TypeScript, Tailwind CSS, Vite');
+
+  const [editPlanFeaturesText, setEditPlanFeaturesText] = useState('');
+  const [editPlanDeliverablesText, setEditPlanDeliverablesText] = useState('');
+  const [editPlanTechStackText, setEditPlanTechStackText] = useState('');
+
+  const openAddPlan = () => {
+    setNewPlan({
+      name: '',
+      category: 'website',
+      tagline: '',
+      badge: 'Popular',
+      idealFor: '',
+      priceINR: 17999,
+      priceUSD: 249,
+      startingPrice: false,
+      billingPeriod: 'One-Time',
+      billingCycle: '',
+      turnaroundTime: '5–7 business days',
+      domainIncluded: true,
+      domainNote: 'Includes standard domain allowance up to ₹2,000 for 1 year.',
+      description: '',
+      isPopular: false,
+      isBestValue: false,
+      isVisible: true
+    });
+    setNewPlanFeaturesText('Custom single-page or multi-page responsive design\nModern UI with mobile optimization\nWhatsApp and contact inquiry integration\nFree hosting for 1 year with SSL\nComplete source code handover');
+    setNewPlanDeliverablesText('Production deployed application\n1-Year domain and hosting setup\n30 Days complimentary bug-fix support');
+    setNewPlanTechStackText('React, TypeScript, Tailwind CSS, Vite');
+    setIsAddingPlan(true);
+  };
+
+  const openEditPlan = (plan: PlanPackage) => {
+    setEditingPlan({ ...plan });
+    setEditPlanFeaturesText((plan.features || []).join('\n'));
+    setEditPlanDeliverablesText((plan.deliverables || []).join('\n'));
+    setEditPlanTechStackText((plan.techStack || []).join(', '));
+  };
 
   const handleTogglePlanVisibility = async (plan: PlanPackage) => {
     const newVisibility = plan.isVisible === false ? true : false;
@@ -765,24 +810,31 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
       alert('Please enter a plan name.');
       return;
     }
+    const features = newPlanFeaturesText.split('\n').map(s => s.trim()).filter(Boolean);
+    const deliverables = newPlanDeliverablesText.split('\n').map(s => s.trim()).filter(Boolean);
+    const techStack = newPlanTechStackText.split(',').map(s => s.trim()).filter(Boolean);
+
     const created: PlanPackage = {
       id: `plan-${Date.now()}`,
       name: newPlan.name.trim(),
-      category: newPlan.category as any || 'single-page',
-      tagline: newPlan.tagline || '',
-      description: newPlan.description || '',
-      priceINR: Number(newPlan.priceINR) || 19999,
-      priceUSD: Number(newPlan.priceUSD) || 249,
+      category: (newPlan.category as any) || 'website',
+      tagline: newPlan.tagline?.trim() || '',
+      badge: newPlan.badge?.trim() || '',
+      idealFor: newPlan.idealFor?.trim() || '',
+      description: newPlan.description?.trim() || '',
+      priceINR: Number(newPlan.priceINR) || 0,
+      priceUSD: Number(newPlan.priceUSD) || 0,
+      startingPrice: Boolean(newPlan.startingPrice),
       billingPeriod: (newPlan.billingPeriod || 'One-Time') as any,
-      billingCycle: newPlan.billingCycle || 'One-Time Project',
-      turnaroundTime: newPlan.turnaroundTime || '5-7 Days',
-      features: newPlan.features || newPlan.deliverables || ['Architectural Handover'],
-      deliverables: newPlan.deliverables || ['Architectural Handover'],
-      popular: Boolean(newPlan.popular),
-      isPopular: Boolean(newPlan.popular || newPlan.isPopular),
+      billingCycle: newPlan.billingCycle?.trim() || '',
+      turnaroundTime: newPlan.turnaroundTime?.trim() || '5–7 business days',
       domainIncluded: Boolean(newPlan.domainIncluded),
-      techStack: newPlan.techStack || ['React', 'Node.js'],
-      idealFor: newPlan.idealFor || 'Startups & Growing Businesses',
+      domainNote: newPlan.domainNote?.trim() || '',
+      features: features.length ? features : ['Complete Architectural Handover'],
+      deliverables: deliverables.length ? deliverables : ['Production Deployment & Source Code'],
+      techStack: techStack.length ? techStack : ['React', 'TypeScript', 'Tailwind CSS'],
+      isPopular: Boolean(newPlan.isPopular),
+      isBestValue: Boolean(newPlan.isBestValue),
       isVisible: newPlan.isVisible !== false
     };
 
@@ -798,30 +850,43 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
     if (onAddPlan) onAddPlan(created);
     setIsAddingPlan(false);
-    setNewPlan({
-      name: '',
-      category: 'single-page',
-      tagline: 'Modern, High-Speed Web Presence',
-      description: 'Bespoke design, responsive layout, and lightning-fast edge delivery.',
-      priceINR: 19999,
-      priceUSD: 249,
-      billingCycle: 'One-Time Project',
-      deliverables: ['Custom Responsive Design', 'Zero-Downtime Deployment', 'Full Source Handover'],
-      popular: false,
-      domainIncluded: true,
-      techStack: ['React', 'Tailwind CSS', 'Vite'],
-      isVisible: true
-    });
-    showToast(`Plan "${created.name}" created.`);
+    showToast(`Plan "${created.name}" published to database.`);
   };
 
-  const handleSaveExistingPlan = async (plan: PlanPackage) => {
-    const updated = {
-      ...plan,
-      isVisible: plan.isVisible !== false
+  const handleSaveExistingPlan = async () => {
+    if (!editingPlan || !editingPlan.name?.trim()) {
+      alert('Please enter a valid plan name.');
+      return;
+    }
+    const features = editPlanFeaturesText.split('\n').map(s => s.trim()).filter(Boolean);
+    const deliverables = editPlanDeliverablesText.split('\n').map(s => s.trim()).filter(Boolean);
+    const techStack = editPlanTechStackText.split(',').map(s => s.trim()).filter(Boolean);
+
+    const updated: PlanPackage = {
+      ...editingPlan,
+      name: editingPlan.name.trim(),
+      tagline: editingPlan.tagline?.trim() || '',
+      badge: editingPlan.badge?.trim() || '',
+      idealFor: editingPlan.idealFor?.trim() || '',
+      description: editingPlan.description?.trim() || '',
+      priceINR: Number(editingPlan.priceINR) || 0,
+      priceUSD: Number(editingPlan.priceUSD) || 0,
+      startingPrice: Boolean(editingPlan.startingPrice),
+      billingPeriod: (editingPlan.billingPeriod || 'One-Time') as any,
+      billingCycle: editingPlan.billingCycle?.trim() || '',
+      turnaroundTime: editingPlan.turnaroundTime?.trim() || '',
+      domainIncluded: Boolean(editingPlan.domainIncluded),
+      domainNote: editingPlan.domainNote?.trim() || '',
+      features: features.length ? features : (editingPlan.features || []),
+      deliverables: deliverables.length ? deliverables : (editingPlan.deliverables || []),
+      techStack: techStack.length ? techStack : (editingPlan.techStack || []),
+      isPopular: Boolean(editingPlan.isPopular),
+      isBestValue: Boolean(editingPlan.isBestValue),
+      isVisible: editingPlan.isVisible !== false
     };
+
     try {
-      await fetch(`/api/v1/admin/plans/${plan.id}`, {
+      await fetch(`/api/v1/admin/plans/${updated.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated)
@@ -829,13 +894,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     } catch (e) {
       console.warn('Atlas update plan error:', e);
     }
+
     if (onUpdatePlan) onUpdatePlan(updated);
     setEditingPlan(null);
-    showToast(`Plan "${plan.name}" updated.`);
+    showToast(`Plan "${updated.name}" updated successfully.`);
   };
 
   const handleDeletePlan = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete plan "${name}"?`)) return;
+    if (!confirm(`Are you sure you want to delete plan "${name}"? This action removes it from the website and database.`)) return;
     try {
       await fetch(`/api/v1/admin/plans/${id}`, { method: 'DELETE' });
     } catch (e) {
@@ -2807,7 +2873,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             {/* TAB: PLANS & PACKAGES */}
             {activeTab === 'plans' && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <h1 className="text-xl font-bold text-light-text dark:text-white">Engineering Plans & Packages</h1>
                     <p className="text-xs text-light-subtext dark:text-muted-gray">
@@ -2815,8 +2881,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     </p>
                   </div>
                   <button
-                    onClick={() => setIsAddingPlan(true)}
-                    className="px-3.5 py-2 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 shadow-md shadow-purple-600/20"
+                    onClick={openAddPlan}
+                    className="px-4 py-2 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 shadow-md shadow-purple-600/20 cursor-pointer w-fit"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add Plan</span>
@@ -2825,153 +2891,367 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
                 {/* Add Plan Form */}
                 {isAddingPlan && (
-                  <div className="p-5 rounded-2xl bg-white dark:bg-midnight-800 border-2 border-electric-purple shadow-xl space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h2 className="font-bold text-sm text-light-text dark:text-white">Create New Plan Package</h2>
-                      <button onClick={() => setIsAddingPlan(false)} className="text-light-subtext hover:text-white">
+                  <div className="p-6 rounded-3xl bg-white dark:bg-midnight-800 border-2 border-electric-purple shadow-2xl space-y-5 animate-fadeIn">
+                    <div className="flex items-center justify-between border-b border-light-border dark:border-midnight-border/60 pb-3">
+                      <div>
+                        <h2 className="font-extrabold text-base text-light-text dark:text-white flex items-center gap-2">
+                          <Plus className="w-4 h-4 text-electric-purple" />
+                          <span>Create New Plan Package</span>
+                        </h2>
+                        <p className="text-[11px] text-light-subtext dark:text-muted-gray">
+                          Configure all pricing, architectural features, domain inclusions, and handoff terms.
+                        </p>
+                      </div>
+                      <button onClick={() => setIsAddingPlan(false)} className="p-1 rounded-lg text-light-subtext hover:text-white hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer">
                         <X className="w-4 h-4" />
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                      <div>
-                        <label className="block font-mono text-light-subtext mb-1">Plan Name</label>
+                    {/* Section 1: Core Details */}
+                    <div className="space-y-3">
+                      <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-electric-purple dark:text-lavender-light">
+                        1. Core Plan Details
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div className="md:col-span-2">
+                          <label className="block font-mono text-light-subtext mb-1">Plan Name *</label>
+                          <input
+                            type="text"
+                            value={newPlan.name || ''}
+                            onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
+                            placeholder="e.g. Business Website – UI/UX"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border focus:border-electric-purple focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-mono text-light-subtext mb-1">Category *</label>
+                          <select
+                            value={newPlan.category || 'website'}
+                            onChange={(e) => setNewPlan({ ...newPlan, category: e.target.value as any })}
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border focus:border-electric-purple focus:outline-none font-medium"
+                          >
+                            <option value="website">Website Development</option>
+                            <option value="webapp">Web Applications</option>
+                            <option value="ecommerce">E-Commerce Solutions</option>
+                            <option value="enterprise">Enterprise Software</option>
+                            <option value="ai">AI & Automation</option>
+                            <option value="amc">Annual Retainers (AMC)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div>
+                          <label className="block font-mono text-light-subtext mb-1">Tagline / Subtitle</label>
+                          <input
+                            type="text"
+                            value={newPlan.tagline || ''}
+                            onChange={(e) => setNewPlan({ ...newPlan, tagline: e.target.value })}
+                            placeholder="e.g. High-converting commercial website with up to 10 custom pages"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border focus:border-electric-purple focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-mono text-light-subtext mb-1">Badge Text</label>
+                          <input
+                            type="text"
+                            value={newPlan.badge || ''}
+                            onChange={(e) => setNewPlan({ ...newPlan, badge: e.target.value })}
+                            placeholder="e.g. Popular, Starter, Founder Favorite, Enterprise"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border focus:border-electric-purple focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="text-xs">
+                        <label className="block font-mono text-light-subtext mb-1">Ideal For (Target Client / Persona)</label>
                         <input
                           type="text"
-                          value={newPlan.name}
-                          onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
-                          placeholder="e.g. Single Page Launchpad"
-                          className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                          value={newPlan.idealFor || ''}
+                          onChange={(e) => setNewPlan({ ...newPlan, idealFor: e.target.value })}
+                          placeholder="e.g. Startups, agencies, local businesses, professionals and service providers."
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border focus:border-electric-purple focus:outline-none"
                         />
-                      </div>
-                      <div>
-                        <label className="block font-mono text-light-subtext mb-1">Category</label>
-                        <select
-                          value={newPlan.category}
-                          onChange={(e) => setNewPlan({ ...newPlan, category: e.target.value as any })}
-                          className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
-                        >
-                          <option value="single-page">Single Page Websites</option>
-                          <option value="web-apps">Web Applications</option>
-                          <option value="softwares">Custom Softwares & ERP</option>
-                          <option value="yearly-retainer">Yearly Retainers & AMC</option>
-                        </select>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                      <div>
-                        <label className="block font-mono text-light-subtext mb-1">Price (₹ INR)</label>
-                        <input
-                          type="number"
-                          value={newPlan.priceINR}
-                          onChange={(e) => setNewPlan({ ...newPlan, priceINR: Number(e.target.value) })}
-                          className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
-                        />
+                    {/* Section 2: Pricing & Billing */}
+                    <div className="space-y-3 pt-2 border-t border-light-border dark:border-midnight-border/50">
+                      <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-electric-purple dark:text-lavender-light">
+                        2. Pricing, Billing & Timeline
                       </div>
-                      <div>
-                        <label className="block font-mono text-light-subtext mb-1">Price ($ USD)</label>
-                        <input
-                          type="number"
-                          value={newPlan.priceUSD}
-                          onChange={(e) => setNewPlan({ ...newPlan, priceUSD: Number(e.target.value) })}
-                          className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
-                        />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                        <div>
+                          <label className="block font-mono text-light-subtext mb-1">Price (₹ INR) *</label>
+                          <input
+                            type="number"
+                            value={newPlan.priceINR ?? 0}
+                            onChange={(e) => setNewPlan({ ...newPlan, priceINR: Number(e.target.value) })}
+                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-mono font-bold text-electric-purple"
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-mono text-light-subtext mb-1">Price ($ USD) *</label>
+                          <input
+                            type="number"
+                            value={newPlan.priceUSD ?? 0}
+                            onChange={(e) => setNewPlan({ ...newPlan, priceUSD: Number(e.target.value) })}
+                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-mono font-bold"
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-mono text-light-subtext mb-1">Billing Period</label>
+                          <select
+                            value={newPlan.billingPeriod || 'One-Time'}
+                            onChange={(e) => setNewPlan({ ...newPlan, billingPeriod: e.target.value as any })}
+                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                          >
+                            <option value="One-Time">One-Time Payment</option>
+                            <option value="Yearly Retainer">Yearly Retainer (AMC)</option>
+                            <option value="Monthly Retainer">Monthly Retainer</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block font-mono text-light-subtext mb-1">Delivery Timeline</label>
+                          <input
+                            type="text"
+                            value={newPlan.turnaroundTime || ''}
+                            onChange={(e) => setNewPlan({ ...newPlan, turnaroundTime: e.target.value })}
+                            placeholder="e.g. 5–7 business days"
+                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <label className="block font-mono text-light-subtext mb-1">Free Domain Included?</label>
-                        <select
-                          value={newPlan.domainIncluded ? 'yes' : 'no'}
-                          onChange={(e) => setNewPlan({ ...newPlan, domainIncluded: e.target.value === 'yes' })}
-                          className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
-                        >
-                          <option value="yes">Yes (Domain Included)</option>
-                          <option value="no">No (Without Domain)</option>
-                        </select>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(newPlan.startingPrice)}
+                            onChange={(e) => setNewPlan({ ...newPlan, startingPrice: e.target.checked })}
+                            className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                          />
+                          <span>Show as "Starting Price" (e.g. Starting ₹99,999)</span>
+                        </label>
+                        <div>
+                          <input
+                            type="text"
+                            value={newPlan.billingCycle || ''}
+                            onChange={(e) => setNewPlan({ ...newPlan, billingCycle: e.target.value })}
+                            placeholder="Optional cycle suffix (e.g. / year)"
+                            className="w-full px-3 py-1.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs"
+                          />
+                        </div>
                       </div>
                     </div>
 
-                    <div>
-                      <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none pt-1">
+                    {/* Section 3: Domain & Hosting Policy */}
+                    <div className="space-y-3 pt-2 border-t border-light-border dark:border-midnight-border/50">
+                      <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-electric-purple dark:text-lavender-light">
+                        3. Domain & Infrastructure Terms
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div>
+                          <label className="block font-mono text-light-subtext mb-1">Free Domain Included?</label>
+                          <select
+                            value={newPlan.domainIncluded ? 'yes' : 'no'}
+                            onChange={(e) => setNewPlan({ ...newPlan, domainIncluded: e.target.value === 'yes' })}
+                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                          >
+                            <option value="yes">Yes (Domain Included)</option>
+                            <option value="no">No (Domain Optional / Excluded)</option>
+                          </select>
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label className="block font-mono text-light-subtext mb-1">Domain Allowance / Note</label>
+                          <input
+                            type="text"
+                            value={newPlan.domainNote || ''}
+                            onChange={(e) => setNewPlan({ ...newPlan, domainNote: e.target.value })}
+                            placeholder="e.g. Without domain: ₹17,999 · With domain: ₹19,999 (Includes ₹2,000 allowance)"
+                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Section 4: Specifications, Deliverables & Tech Stack */}
+                    <div className="space-y-3 pt-2 border-t border-light-border dark:border-midnight-border/50">
+                      <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-electric-purple dark:text-lavender-light">
+                        4. Scope, Features & Stack Architecture
+                      </div>
+                      <div className="text-xs">
+                        <label className="block font-mono text-light-subtext mb-1">Detailed Description</label>
+                        <textarea
+                          rows={2}
+                          value={newPlan.description || ''}
+                          onChange={(e) => setNewPlan({ ...newPlan, description: e.target.value })}
+                          placeholder="Comprehensive description of what this engagement delivers..."
+                          className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div>
+                          <label className="block font-mono text-light-subtext mb-1">Included Features (One per line)</label>
+                          <textarea
+                            rows={4}
+                            value={newPlanFeaturesText}
+                            onChange={(e) => setNewPlanFeaturesText(e.target.value)}
+                            placeholder="Custom single-page responsive website&#10;WhatsApp and contact integration&#10;1-Year free hosting on Vercel&#10;Complete source code handover"
+                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-mono text-[11px]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-mono text-light-subtext mb-1">Handoff Deliverables (One per line)</label>
+                          <textarea
+                            rows={4}
+                            value={newPlanDeliverablesText}
+                            onChange={(e) => setNewPlanDeliverablesText(e.target.value)}
+                            placeholder="Complete source code repository transfer&#10;Production cloud deployment & SSL setup&#10;30 Days complimentary bug-fix support"
+                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-mono text-[11px]"
+                          />
+                        </div>
+                      </div>
+                      <div className="text-xs">
+                        <label className="block font-mono text-light-subtext mb-1">Stack Architecture (Comma-separated)</label>
+                        <input
+                          type="text"
+                          value={newPlanTechStackText}
+                          onChange={(e) => setNewPlanTechStackText(e.target.value)}
+                          placeholder="e.g. React, TypeScript, Tailwind CSS, Vite, Cloudflare"
+                          className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-mono text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Section 5: Badges & Display Options */}
+                    <div className="pt-2 border-t border-light-border dark:border-midnight-border/50 flex flex-wrap items-center gap-4 text-xs font-mono">
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={Boolean(newPlan.isPopular)}
+                          onChange={(e) => setNewPlan({ ...newPlan, isPopular: e.target.checked })}
+                          className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                        />
+                        <span>Highlight as "Popular" (Purple Ring & Glow)</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={Boolean(newPlan.isBestValue)}
+                          onChange={(e) => setNewPlan({ ...newPlan, isBestValue: e.target.checked })}
+                          className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                        />
+                        <span>Highlight as "Best Value"</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer select-none text-emerald-600 dark:text-emerald-400 font-bold">
                         <input
                           type="checkbox"
                           checked={newPlan.isVisible !== false}
                           onChange={(e) => setNewPlan({ ...newPlan, isVisible: e.target.checked })}
-                          className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                          className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500 cursor-pointer"
                         />
-                        <span>Display on website (Visible to public)</span>
+                        <span>Display on website (Live to public)</span>
                       </label>
                     </div>
 
-                    <div className="flex justify-end gap-2">
+                    {/* Form Buttons */}
+                    <div className="flex justify-end gap-2.5 pt-3 border-t border-light-border dark:border-midnight-border/60">
                       <button
                         onClick={() => setIsAddingPlan(false)}
-                        className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer"
+                        className="px-4 py-2 rounded-xl border border-light-border dark:border-midnight-border text-xs text-light-subtext hover:text-light-text dark:hover:text-white cursor-pointer"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleCreatePlan}
-                        className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 cursor-pointer"
+                        className="px-5 py-2 rounded-xl bg-electric-purple text-white text-xs font-bold hover:opacity-90 cursor-pointer shadow-lg shadow-purple-600/30 flex items-center gap-2"
                       >
-                        Publish Plan to Database
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Publish Plan to Database</span>
                       </button>
                     </div>
                   </div>
                 )}
 
                 {/* Plans List */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
                   {plans.map((p) => {
                     const isVisible = p.isVisible !== false;
+                    const categoryLabels: Record<string, string> = {
+                      website: 'Website',
+                      webapp: 'Web App',
+                      ecommerce: 'E-Commerce',
+                      enterprise: 'Enterprise',
+                      ai: 'AI & Auto',
+                      amc: 'Retainer',
+                      'single-page': 'Website',
+                      'web-app': 'Web App',
+                      software: 'Enterprise',
+                      yearly: 'Retainer'
+                    };
+
                     return (
                       <div
                         key={p.id}
                         className={`p-5 rounded-2xl border shadow-sm flex flex-col justify-between space-y-3 transition-all ${
                           isVisible
-                            ? 'bg-white dark:bg-midnight-800 border-light-border dark:border-midnight-border'
+                            ? 'bg-white dark:bg-midnight-800 border-light-border dark:border-midnight-border hover:border-purple-300 dark:hover:border-electric-purple/50'
                             : 'bg-white/60 dark:bg-midnight-800/60 border-dashed border-amber-400/60 dark:border-amber-500/30 opacity-75'
                         }`}
                       >
                         <div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-electric-purple border border-purple-500/20">
-                                {p.category}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-electric-purple border border-purple-500/20 font-bold">
+                                {categoryLabels[p.category] || p.category}
                               </span>
+                              {p.badge && (
+                                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-100 dark:bg-white/10 text-electric-purple dark:text-lavender-light font-semibold">
+                                  {p.badge}
+                                </span>
+                              )}
                               <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold flex items-center gap-1 ${
                                 isVisible
                                   ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                                   : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
                               }`}>
                                 <span className={`w-1.5 h-1.5 rounded-full ${isVisible ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-                                {isVisible ? 'Live on Site' : 'Hidden'}
+                                {isVisible ? 'Live' : 'Hidden'}
                               </span>
                             </div>
                             {p.domainIncluded && (
-                              <span className="text-[10px] font-mono text-emerald-500 flex items-center gap-1">
+                              <span className="text-[10px] font-mono text-emerald-500 flex items-center gap-1 shrink-0">
                                 <Globe className="w-3 h-3" />
-                                Domain Incl.
+                                Domain
                               </span>
                             )}
                           </div>
 
-                          <h3 className="font-bold text-sm text-light-text dark:text-white mt-2">{p.name}</h3>
-                          <p className="text-xs text-light-subtext dark:text-muted-gray mt-1 line-clamp-2">{p.description}</p>
+                          <h3 className="font-bold text-sm text-light-text dark:text-white mt-2 leading-snug">{p.name}</h3>
+                          <p className="text-xs text-light-subtext dark:text-muted-gray mt-1 line-clamp-2 leading-relaxed">
+                            {p.tagline || p.description}
+                          </p>
+
+                          {p.idealFor && (
+                            <p className="text-[11px] text-light-subtext dark:text-gray-400 mt-1.5 line-clamp-1 italic">
+                              Target: {p.idealFor}
+                            </p>
+                          )}
                         </div>
 
                         <div className="pt-2 border-t border-light-border dark:border-midnight-border/60 flex items-center justify-between">
                           <div>
-                            <span className="text-sm font-extrabold text-electric-purple dark:text-lavender-glow">
-                              ₹{p.priceINR?.toLocaleString('en-IN')}
+                            <span className="text-sm font-extrabold font-mono text-electric-purple dark:text-lavender-glow">
+                              {p.startingPrice ? 'Starting ' : ''}₹{p.priceINR?.toLocaleString('en-IN')}{p.billingCycle ? ` ${p.billingCycle}` : ''}
                             </span>
-                            <span className="text-[10px] text-light-subtext dark:text-muted-gray ml-1.5">
-                              / ${p.priceUSD?.toLocaleString('en-US')}
+                            <span className="text-[10px] font-mono text-light-subtext dark:text-muted-gray ml-1.5">
+                              (${p.priceUSD?.toLocaleString('en-US')})
                             </span>
                           </div>
 
                           <div className="flex items-center gap-1.5 flex-shrink-0">
-                            {/* Plan Visibility Eye Button Toggle */}
+                            {/* Visibility Eye Toggle */}
                             <button
                               type="button"
                               onClick={() => handleTogglePlanVisibility(p)}
@@ -2988,13 +3268,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                                 <EyeOff className="w-3.5 h-3.5" />
                               )}
                             </button>
+                            {/* Edit Button */}
                             <button
-                              onClick={() => setEditingPlan(p)}
-                              className="p-1.5 rounded-lg border border-light-border dark:border-midnight-border text-light-subtext hover:text-white text-xs cursor-pointer"
-                              title="Edit plan details"
+                              onClick={() => openEditPlan(p)}
+                              className="p-1.5 rounded-lg border border-light-border dark:border-midnight-border text-light-subtext hover:text-white hover:bg-electric-purple/10 text-xs cursor-pointer"
+                              title="Edit all plan details"
                             >
                               <Edit3 className="w-3.5 h-3.5" />
                             </button>
+                            {/* Delete Button */}
                             <button
                               onClick={() => handleDeletePlan(p.id, p.name)}
                               className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 text-xs cursor-pointer"
@@ -3009,82 +3291,260 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                   })}
                 </div>
 
-                {/* Edit Plan Modal */}
+                {/* Edit Plan Modal with Complete Fields */}
                 {editingPlan && (
-                  <div className="fixed inset-0 z-[120] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="w-full max-w-lg bg-white dark:bg-midnight-800 rounded-3xl p-6 border border-light-border dark:border-midnight-border shadow-2xl space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h2 className="font-bold text-sm text-light-text dark:text-white">Edit Plan Package</h2>
-                        <button onClick={() => setEditingPlan(null)} className="text-light-subtext cursor-pointer">
+                  <div className="fixed inset-0 z-[120] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="w-full max-w-2xl max-h-[92vh] overflow-y-auto bg-white dark:bg-midnight-800 rounded-3xl p-6 sm:p-7 border border-light-border dark:border-midnight-border shadow-2xl space-y-5">
+                      <div className="flex items-center justify-between border-b border-light-border dark:border-midnight-border/60 pb-3">
+                        <div>
+                          <h2 className="font-extrabold text-base text-light-text dark:text-white flex items-center gap-2">
+                            <Edit3 className="w-4 h-4 text-electric-purple" />
+                            <span>Edit Plan: {editingPlan.name}</span>
+                          </h2>
+                          <p className="text-[11px] text-light-subtext dark:text-muted-gray">
+                            Update pricing, timeline, domain allowance, specifications and handoff deliverables.
+                          </p>
+                        </div>
+                        <button onClick={() => setEditingPlan(null)} className="p-1 rounded-lg text-light-subtext hover:text-white hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer">
                           <X className="w-4 h-4" />
                         </button>
                       </div>
 
-                      <div className="space-y-3 text-xs">
+                      <div className="space-y-4 text-xs">
+                        {/* 1. Core Details */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div className="md:col-span-2">
+                            <label className="block font-mono text-light-subtext mb-1">Plan Name *</label>
+                            <input
+                              type="text"
+                              value={editingPlan.name || ''}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, name: e.target.value })}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-bold text-light-text dark:text-white"
+                            />
+                          </div>
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Category</label>
+                            <select
+                              value={editingPlan.category || 'website'}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, category: e.target.value as any })}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-medium"
+                            >
+                              <option value="website">Website Development</option>
+                              <option value="webapp">Web Applications</option>
+                              <option value="ecommerce">E-Commerce Solutions</option>
+                              <option value="enterprise">Enterprise Software</option>
+                              <option value="ai">AI & Automation</option>
+                              <option value="amc">Annual Retainers (AMC)</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Tagline</label>
+                            <input
+                              type="text"
+                              value={editingPlan.tagline || ''}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, tagline: e.target.value })}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                            />
+                          </div>
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Badge Text</label>
+                            <input
+                              type="text"
+                              value={editingPlan.badge || ''}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, badge: e.target.value })}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                            />
+                          </div>
+                        </div>
+
                         <div>
-                          <label className="block font-mono text-light-subtext mb-1">Plan Name</label>
+                          <label className="block font-mono text-light-subtext mb-1">Ideal For (Target Audience)</label>
                           <input
                             type="text"
-                            value={editingPlan.name}
-                            onChange={(e) => setEditingPlan({ ...editingPlan, name: e.target.value })}
+                            value={editingPlan.idealFor || ''}
+                            onChange={(e) => setEditingPlan({ ...editingPlan, idealFor: e.target.value })}
                             className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
                           />
                         </div>
-                        <div className="grid grid-cols-2 gap-3">
+
+                        {/* 2. Pricing & Timeline */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                           <div>
                             <label className="block font-mono text-light-subtext mb-1">Price (₹ INR)</label>
                             <input
                               type="number"
-                              value={editingPlan.priceINR}
+                              value={editingPlan.priceINR ?? 0}
                               onChange={(e) => setEditingPlan({ ...editingPlan, priceINR: Number(e.target.value) })}
-                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-mono font-bold text-electric-purple"
                             />
                           </div>
                           <div>
                             <label className="block font-mono text-light-subtext mb-1">Price ($ USD)</label>
                             <input
                               type="number"
-                              value={editingPlan.priceUSD}
+                              value={editingPlan.priceUSD ?? 0}
                               onChange={(e) => setEditingPlan({ ...editingPlan, priceUSD: Number(e.target.value) })}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-mono font-bold"
+                            />
+                          </div>
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Billing Period</label>
+                            <select
+                              value={editingPlan.billingPeriod || 'One-Time'}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, billingPeriod: e.target.value as any })}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                            >
+                              <option value="One-Time">One-Time Payment</option>
+                              <option value="Yearly Retainer">Yearly Retainer (AMC)</option>
+                              <option value="Monthly Retainer">Monthly Retainer</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Timeline</label>
+                            <input
+                              type="text"
+                              value={editingPlan.turnaroundTime || ''}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, turnaroundTime: e.target.value })}
                               className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
                             />
                           </div>
                         </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(editingPlan.startingPrice)}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, startingPrice: e.target.checked })}
+                              className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                            />
+                            <span>Show as "Starting Price"</span>
+                          </label>
+                          <div>
+                            <input
+                              type="text"
+                              value={editingPlan.billingCycle || ''}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, billingCycle: e.target.value })}
+                              placeholder="Cycle suffix (e.g. / year)"
+                              className="w-full px-3 py-1.5 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border text-xs"
+                            />
+                          </div>
+                        </div>
+
+                        {/* 3. Domain Terms */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Domain Included?</label>
+                            <select
+                              value={editingPlan.domainIncluded ? 'yes' : 'no'}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, domainIncluded: e.target.value === 'yes' })}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                            >
+                              <option value="yes">Yes (Domain Included)</option>
+                              <option value="no">No (Without Domain)</option>
+                            </select>
+                          </div>
+                          <div className="sm:col-span-2">
+                            <label className="block font-mono text-light-subtext mb-1">Domain Allowance / Note</label>
+                            <input
+                              type="text"
+                              value={editingPlan.domainNote || ''}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, domainNote: e.target.value })}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
+                            />
+                          </div>
+                        </div>
+
+                        {/* 4. Description, Features & Deliverables */}
                         <div>
                           <label className="block font-mono text-light-subtext mb-1">Description</label>
                           <textarea
-                            rows={3}
-                            value={editingPlan.description}
+                            rows={2}
+                            value={editingPlan.description || ''}
                             onChange={(e) => setEditingPlan({ ...editingPlan, description: e.target.value })}
                             className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border"
                           />
                         </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Included Features (One per line)</label>
+                            <textarea
+                              rows={4}
+                              value={editPlanFeaturesText}
+                              onChange={(e) => setEditPlanFeaturesText(e.target.value)}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-mono text-[11px]"
+                            />
+                          </div>
+                          <div>
+                            <label className="block font-mono text-light-subtext mb-1">Handoff Deliverables (One per line)</label>
+                            <textarea
+                              rows={4}
+                              value={editPlanDeliverablesText}
+                              onChange={(e) => setEditPlanDeliverablesText(e.target.value)}
+                              className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-mono text-[11px]"
+                            />
+                          </div>
+                        </div>
+
                         <div>
-                          <label className="flex items-center gap-2 font-mono text-xs text-light-text dark:text-white cursor-pointer select-none pt-1">
+                          <label className="block font-mono text-light-subtext mb-1">Tech Stack Architecture (Comma-separated)</label>
+                          <input
+                            type="text"
+                            value={editPlanTechStackText}
+                            onChange={(e) => setEditPlanTechStackText(e.target.value)}
+                            className="w-full px-3 py-2 rounded-xl bg-purple-50/40 dark:bg-midnight-900 border border-light-border dark:border-midnight-border font-mono text-xs"
+                          />
+                        </div>
+
+                        {/* 5. Toggles */}
+                        <div className="pt-2 border-t border-light-border dark:border-midnight-border/50 flex flex-wrap items-center gap-4 font-mono">
+                          <label className="flex items-center gap-2 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(editingPlan.isPopular)}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, isPopular: e.target.checked })}
+                              className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                            />
+                            <span>Highlight as "Popular"</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(editingPlan.isBestValue)}
+                              onChange={(e) => setEditingPlan({ ...editingPlan, isBestValue: e.target.checked })}
+                              className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                            />
+                            <span>Highlight as "Best Value"</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer select-none text-emerald-600 dark:text-emerald-400 font-bold">
                             <input
                               type="checkbox"
                               checked={editingPlan.isVisible !== false}
                               onChange={(e) => setEditingPlan({ ...editingPlan, isVisible: e.target.checked })}
-                              className="w-4 h-4 rounded text-electric-purple focus:ring-electric-purple cursor-pointer"
+                              className="w-4 h-4 rounded text-emerald-500 focus:ring-emerald-500 cursor-pointer"
                             />
-                            <span>Display on website (Visible to public)</span>
+                            <span>Display on website (Live to public)</span>
                           </label>
                         </div>
                       </div>
 
-                      <div className="flex justify-end gap-2 pt-2">
+                      <div className="flex justify-end gap-2.5 pt-3 border-t border-light-border dark:border-midnight-border/60">
                         <button
                           onClick={() => setEditingPlan(null)}
-                          className="px-3 py-1.5 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer"
+                          className="px-4 py-2 rounded-xl border border-light-border dark:border-midnight-border text-xs cursor-pointer"
                         >
                           Cancel
                         </button>
                         <button
-                          onClick={() => handleSaveExistingPlan(editingPlan)}
-                          className="px-4 py-1.5 rounded-xl bg-electric-purple text-white text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 cursor-pointer"
+                          onClick={handleSaveExistingPlan}
+                          className="px-5 py-2 rounded-xl bg-electric-purple text-white text-xs font-bold hover:opacity-90 flex items-center gap-1.5 cursor-pointer shadow-lg shadow-purple-600/30"
                         >
                           <Save className="w-3.5 h-3.5" />
-                          <span>Save Changes</span>
+                          <span>Save Changes to Database</span>
                         </button>
                       </div>
                     </div>
