@@ -1,17 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Search, Layout, Zap, Shield, Rocket, Check } from 'lucide-react';
-
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { Search, Layout, Zap, Shield, Rocket, Check, Sparkles } from 'lucide-react';
 import { ProcessStage } from '../types';
 
 interface ProcessSectionProps {
   stages?: ProcessStage[];
 }
 
-const DEFAULT_STEPS = [
+interface StepItem extends ProcessStage {
+  description: string;
+}
+
+const DEFAULT_STEPS: StepItem[] = [
   {
     num: '01',
     title: 'Discovery & System Design',
     shortTitle: 'System Discovery',
+    description: 'Deep-dive stakeholder discovery, requirement modeling, and low-latency system architecture design with API contracts and data schemas.',
     image: '/process/step-01-discovery.webp',
     deliverables: ['SRS & Architectural Blueprint', 'Entity Relationship Diagram', 'API Contract Specification']
   },
@@ -19,6 +23,7 @@ const DEFAULT_STEPS = [
     num: '02',
     title: 'Rapid Prototyping & Validation',
     shortTitle: 'Interactive Prototyping',
+    description: 'Interactive high-fidelity UI/UX wireframing in Figma, rapid interactive proof-of-concept testing, and database schema validation.',
     image: '/process/step-02-prototyping.webp',
     deliverables: ['Figma Design System', 'Key Interaction Proof-of-Concept', 'Database Schema Validation']
   },
@@ -26,6 +31,7 @@ const DEFAULT_STEPS = [
     num: '03',
     title: 'Production Engineering',
     shortTitle: 'Full-Stack Engineering',
+    description: 'Full-stack clean architecture implementation featuring type-safe microservices, reactive frontends, and ACID-compliant distributed persistence.',
     image: '/process/step-03-engineering.webp',
     deliverables: ['Type-Safe Clean Codebase', 'REST / WebSocket Microservices', 'ACID Data Persistence']
   },
@@ -33,6 +39,7 @@ const DEFAULT_STEPS = [
     num: '04',
     title: 'QA, Security & Hardening',
     shortTitle: 'Security & QA',
+    description: 'Comprehensive test automation, OWASP vulnerability audits, strict RBAC policy enforcement, and sub-200ms query & latency tuning.',
     image: '/process/step-04-qa-security.webp',
     deliverables: ['Unit & Integration Testing', 'Security & RBAC Auditing', 'Sub-200ms Latency Tuning']
   },
@@ -40,359 +47,438 @@ const DEFAULT_STEPS = [
     num: '05',
     title: 'Deployment & Observability',
     shortTitle: 'CI/CD & Live Telemetry',
+    description: 'Automated zero-downtime CI/CD deployment pipelines, distributed telemetry observability, and complete intellectual property & source code handover.',
     image: '/process/step-05-deployment.webp',
     deliverables: ['Zero-Downtime CI/CD Handover', 'Structured Logs & Telemetry', 'Full IP & Source Transfer']
   }
 ];
 
 export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
-  const steps = (stages && stages.length > 0) ? stages : DEFAULT_STEPS;
-  const [activeStep, setActiveStep] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [isMobile, setIsMobile] = useState<boolean>(() => {
-    return typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
-  });
-  const sectionRef = useRef<HTMLElement>(null);
-  const touchStartY = useRef<number>(0);
-
-  // Track responsive screen size for mobile horizontal glide
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-
-
-  const renderStepIcon = (index: number, isActive: boolean) => {
-    const iconClass = `w-4 h-4 sm:w-4.5 sm:h-4.5 transition-all duration-300 ${
-      isActive
-        ? 'text-white'
-        : 'text-electric-purple dark:text-lavender-glow'
-    }`;
-
-    switch (index) {
-      case 0: return <Search className={iconClass} />;
-      case 1: return <Layout className={iconClass} />;
-      case 2: return <Zap className={iconClass} />;
-      case 3: return <Shield className={iconClass} />;
-      case 4: return <Rocket className={iconClass} />;
-      default: return <Zap className={iconClass} />;
+  // Normalize steps with rich descriptions
+  const steps: StepItem[] = useMemo(() => {
+    if (stages && stages.length > 0) {
+      return stages.map((s, idx) => ({
+        ...s,
+        description:
+          (s as any).description ||
+          DEFAULT_STEPS[idx % DEFAULT_STEPS.length].description
+      }));
     }
-  };
+    return DEFAULT_STEPS;
+  }, [stages]);
 
-  // Sticky scroll listener: calculates smooth scrub progress through the 5 stages
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          if (!sectionRef.current) {
-            ticking = false;
-            return;
-          }
-          const rect = sectionRef.current.getBoundingClientRect();
-          const windowHeight = window.innerHeight;
-          const totalScrollable = rect.height - windowHeight;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const pathRef = useRef<SVGPathElement>(null);
 
-          if (totalScrollable > 0) {
-            // Distance scrolled into the section
-            const scrolledInside = -rect.top;
-            const rawProgress = Math.min(Math.max(scrolledInside / totalScrollable, 0), 1);
-            setProgress(rawProgress);
+  const [pathD, setPathD] = useState<string>('');
+  const [scrollProgress, setScrollProgress] = useState<number>(0);
+  const [orbPos, setOrbPos] = useState<{ x: number; y: number }>({ x: -100, y: -100 });
+  const [activeStepIdx, setActiveStepIdx] = useState<number>(0);
 
-            // Current active step calculation
-            const stepIdx = Math.min(
-              Math.round(rawProgress * (steps.length - 1)),
-              steps.length - 1
-            );
-            setActiveStep(stepIdx);
-          }
-          ticking = false;
-        });
-        ticking = true;
+  const targetProgress = useRef<number>(0);
+  const currentProgress = useRef<number>(0);
+  const rafId = useRef<number | null>(null);
+
+  // Dynamic Cubic Bezier S-curve calculation
+  const calculateCurve = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const points: { x: number; y: number }[] = [];
+
+    for (let i = 0; i < steps.length; i++) {
+      const node = nodeRefs.current[i];
+      if (node) {
+        const nodeRect = node.getBoundingClientRect();
+        // Calculate node center relative to container
+        const x = nodeRect.left - containerRect.left + nodeRect.width / 2;
+        const y = nodeRect.top - containerRect.top + nodeRect.height / 2;
+        points.push({ x, y });
       }
+    }
+
+    if (points.length < 2) return;
+
+    // Cubic Bezier curve connecting nodes in alternating S-pattern
+    let d = `M ${points[0].x} ${points[0].y}`;
+    for (let i = 0; i < points.length - 1; i++) {
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const midY = (p1.y + p2.y) / 2;
+      d += ` C ${p1.x} ${midY}, ${p2.x} ${midY}, ${p2.x} ${p2.y}`;
+    }
+
+    setPathD(d);
+  }, [steps.length]);
+
+  // Observe resize, orientation, and font loading
+  useEffect(() => {
+    calculateCurve();
+
+    const container = containerRef.current;
+    let ro: ResizeObserver | null = null;
+
+    if (container && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => {
+        calculateCurve();
+      });
+      ro.observe(container);
+    }
+
+    const handleWindowResize = () => calculateCurve();
+    window.addEventListener('resize', handleWindowResize);
+    window.addEventListener('orientationchange', handleWindowResize);
+
+    if (document.fonts) {
+      document.fonts.ready.then(calculateCurve).catch(() => {});
+    }
+
+    const t1 = setTimeout(calculateCurve, 200);
+    const t2 = setTimeout(calculateCurve, 600);
+
+    return () => {
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', handleWindowResize);
+      window.removeEventListener('orientationchange', handleWindowResize);
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [calculateCurve]);
+
+  // Smooth scroll scrubbing calibrated to actual checkpoint node positions
+  useEffect(() => {
+    const handleScroll = () => {
+      const firstNode = nodeRefs.current[0];
+      const lastNode = nodeRefs.current[steps.length - 1];
+      if (!firstNode || !lastNode) return;
+
+      const firstRect = firstNode.getBoundingClientRect();
+      const lastRect = lastNode.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Flow starts when Checkpoint 01 reaches 62% down viewport
+      // and completes when Checkpoint 05 reaches 50% of viewport
+      const triggerStart = windowHeight * 0.62;
+      const totalScrollDist = Math.max(lastRect.top - firstRect.top, 80);
+      const scrolled = triggerStart - firstRect.top;
+
+      const raw = Math.min(Math.max(scrolled / totalScrollDist, 0), 1);
+      targetProgress.current = raw;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    let isRunning = true;
+    const updateLoop = () => {
+      if (!isRunning) return;
+
+      const diff = targetProgress.current - currentProgress.current;
+      if (Math.abs(diff) > 0.0003) {
+        currentProgress.current += diff * 0.16; // smooth spring lerp
+      } else {
+        currentProgress.current = targetProgress.current;
+      }
+
+      const p = currentProgress.current;
+      setScrollProgress(p);
+
+      // Current active checkpoint index calculation
+      const activeIdx = Math.min(
+        Math.round(p * (steps.length - 1)),
+        steps.length - 1
+      );
+      setActiveStepIdx(activeIdx);
+
+      // Calculate traveling pulse orb coordinates exactly at progress point
+      if (pathRef.current) {
+        try {
+          const totalLen = pathRef.current.getTotalLength();
+          if (totalLen > 0) {
+            const clamped = Math.min(Math.max(p, 0), 1);
+            const point = pathRef.current.getPointAtLength(clamped * totalLen);
+            setOrbPos({ x: point.x, y: point.y });
+          }
+        } catch (err) {
+          // Ignore transient SVG render glitches
+        }
+      }
+
+      rafId.current = requestAnimationFrame(updateLoop);
+    };
+
+    rafId.current = requestAnimationFrame(updateLoop);
+
+    return () => {
+      isRunning = false;
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
   }, [steps.length]);
 
-  // Click on a stage in the single container scrolls directly to that stage
-  const handleStepClick = (index: number) => {
-    if (!sectionRef.current) return;
-    const sectionTop = sectionRef.current.getBoundingClientRect().top + window.scrollY;
-    const totalDist = sectionRef.current.offsetHeight - window.innerHeight;
-    const targetProgress = index / (steps.length - 1);
-    const targetScrollY = sectionTop + targetProgress * totalDist;
-
-    window.scrollTo({
-      top: targetScrollY,
-      behavior: 'smooth'
-    });
+  const handleScrollToCheckpoint = (idx: number) => {
+    const node = nodeRefs.current[idx];
+    if (!node) return;
+    const yOffset = -140;
+    const y = node.getBoundingClientRect().top + window.scrollY + yOffset;
+    window.scrollTo({ top: y, behavior: 'smooth' });
   };
 
-  // Continuous scrub factor from 0.0 to 4.0
-  const scrubValue = progress * (steps.length - 1);
+  const renderIcon = (idx: number, isReached: boolean) => {
+    const iconClass = `w-4.5 h-4.5 sm:w-5 sm:h-5 transition-colors duration-300 ${
+      isReached
+        ? 'text-white'
+        : 'text-electric-purple dark:text-lavender-glow'
+    }`;
+
+    switch (idx) {
+      case 0: return <Search className={iconClass} />;
+      case 1: return <Layout className={iconClass} />;
+      case 2: return <Zap className={iconClass} />;
+      case 3: return <Shield className={iconClass} />;
+      case 4: return <Rocket className={iconClass} />;
+      default: return <Sparkles className={iconClass} />;
+    }
+  };
+
+  // Safe normalized dash offset for pathLength="1"
+  const normalizedDashOffset = Math.max(0, 1 - scrollProgress);
 
   return (
     <section
-      ref={sectionRef}
       id="process"
-      className="relative h-[280vh] sm:h-[320vh] lg:h-[380vh] bg-light-100/70 dark:bg-midnight-900/70 border-t border-b border-light-border dark:border-midnight-border/50"
+      className="relative py-12 sm:py-16 lg:py-20 overflow-hidden bg-light-100/70 dark:bg-midnight-950 border-t border-b border-light-border dark:border-midnight-border/50"
     >
-      {/* Ambient background glows */}
-      <div className="absolute top-1/4 left-10 w-[500px] h-[500px] bg-electric-purple/5 dark:bg-electric-purple/10 blur-[130px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 right-10 w-[450px] h-[450px] bg-lavender-glow/5 dark:bg-deep-violet/15 blur-[120px] rounded-full pointer-events-none" />
+      {/* Ambient background glows - Consistent primary purple */}
+      <div className="absolute top-1/4 left-1/4 w-[450px] h-[450px] bg-electric-purple/10 dark:bg-electric-purple/15 blur-[130px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-electric-purple/10 dark:bg-electric-purple/15 blur-[130px] rounded-full pointer-events-none" />
 
-      {/* Pinned Sticky Viewport Container - Top padded to ALWAYS clear the navbar completely on all screens */}
-      <div className="sticky top-0 h-[100dvh] w-full flex flex-col justify-between pt-[76px] sm:pt-[84px] lg:pt-[96px] pb-2 sm:pb-6 overflow-hidden px-3.5 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col h-full justify-between min-h-0">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Section Header with compact, clean spacing */}
+        <div className="max-w-3xl mx-auto text-center mb-8 sm:mb-12 space-y-2.5 sm:space-y-3">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-light-text dark:text-white leading-[1.15]">
+            Discovery-to-Delivery <span className="text-gradient-purple">Process</span>
+          </h2>
+
+          <p className="text-light-subtext dark:text-muted-gray text-xs sm:text-sm lg:text-base leading-relaxed max-w-xl mx-auto">
+            A structured 5-stage engineering lifecycle executed from initial technical discovery to zero-downtime global deployment.
+          </p>
+        </div>
+
+        {/* Winding Flow Container with Dynamic S-Curve Tube */}
+        <div ref={containerRef} className="relative py-2 sm:py-4 max-w-4xl mx-auto">
           
-          {/* Section Header - Clears fixed navbar with calibrated spacing */}
-          <div className="max-w-3xl mx-auto text-center space-y-1 sm:space-y-2 mt-0 sm:mt-1 mb-1 sm:mb-3 flex-shrink-0">
-            <h2 className="text-xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-light-text dark:text-white leading-tight">
-              Discovery-to-Delivery <span className="text-gradient-purple">Process</span>
-            </h2>
-            <p className="text-light-subtext dark:text-muted-gray text-xs sm:text-sm lg:text-base leading-snug sm:leading-relaxed max-w-xl mx-auto">
-              A milestone-driven engineering lifecycle executed from architectural design to zero-downtime global deployment.
-            </p>
-          </div>
+          {/* Dynamic Multi-Layer SVG Tube */}
+          <svg
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none w-full h-full overflow-visible z-0"
+          >
+            <defs>
+              {/* Glowing Aura Filter */}
+              <filter id="tubeGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
 
-          {/* Main Layout: Desktop 2-Column Split (Left list + Right deck) | Mobile: Full-width Vertical Stacking Cards Deck */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 lg:gap-10 items-center flex-1 min-h-0 pb-1 sm:pb-2 w-full">
-            
-            {/* Left Column: ALL 5 STEPS - Visible on Desktop only */}
-            <div className="hidden lg:flex lg:col-span-5 flex-col justify-center min-w-0 space-y-2 sm:space-y-3">
-              {steps.map((step, idx) => {
-                const isActive = activeStep === idx;
+            {pathD && (
+              <>
+                {/* Layer 1: Ambient Drop Shadow & Deep Glow in Primary Purple */}
+                <path
+                  d={pathD}
+                  fill="none"
+                  stroke="#7C2CF5"
+                  strokeWidth={16}
+                  strokeLinecap="round"
+                  className="opacity-15 dark:opacity-25 blur-sm"
+                />
 
-                return (
-                  <button
-                    key={step.num}
-                    type="button"
-                    onClick={() => handleStepClick(idx)}
-                    className={`w-full flex items-center gap-3.5 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-left transition-all duration-300 group ${
-                      isActive
-                        ? 'bg-purple-50/80 dark:bg-white/[0.04] border-l-4 border-electric-purple'
-                        : 'bg-transparent hover:bg-slate-100/50 dark:hover:bg-white/[0.02] border-l-4 border-transparent opacity-60 hover:opacity-100'
-                    }`}
+                {/* Layer 2: Inactive Guide Track Channel (Ref for getTotalLength) */}
+                <path
+                  ref={pathRef}
+                  d={pathD}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={10}
+                  strokeLinecap="round"
+                  className="text-purple-100 dark:text-white/10"
+                />
+
+                {/* Layer 3: Active Neon Line - Solid Primary Purple (#7C2CF5), Zero Gradient, 100% Locked with Orb */}
+                <path
+                  d={pathD}
+                  pathLength={1}
+                  fill="none"
+                  stroke="#7C2CF5"
+                  strokeWidth={10}
+                  strokeLinecap="round"
+                  filter="url(#tubeGlow)"
+                  strokeDasharray={1}
+                  strokeDashoffset={normalizedDashOffset}
+                />
+
+                {/* Layer 4: Laser Core Dashed Highlight Line */}
+                <path
+                  d={pathD}
+                  pathLength={1}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeDasharray="0.015 0.02"
+                  strokeDashoffset={normalizedDashOffset}
+                  className="text-white/90 dark:text-white/70"
+                />
+
+                {/* Layer 5: Traveling Pulse Particle - Primary Purple, Sits Exactly on Tip */}
+                {scrollProgress > 0.005 && scrollProgress < 0.995 && (
+                  <g transform={`translate(${orbPos.x}, ${orbPos.y})`}>
+                    {/* Outer Pulsing Aura Ring */}
+                    <circle
+                      r={14}
+                      className="fill-electric-purple/25 animate-ping"
+                    />
+                    {/* Mid Glow Halo */}
+                    <circle
+                      r={9}
+                      className="fill-electric-purple/35"
+                    />
+                    {/* Solid Core Orb in Primary Purple with Crisp White Border */}
+                    <circle
+                      r={5.5}
+                      className="fill-electric-purple stroke-white dark:stroke-midnight-950 stroke-[2] shadow-md"
+                    />
+                  </g>
+                )}
+              </>
+            )}
+          </svg>
+
+          {/* Alternating Checkpoints List (1 to 5) with consistent primary purple theme */}
+          <ol className="relative z-10 flex flex-col gap-6 sm:gap-8 lg:gap-10">
+            {steps.map((step, idx) => {
+              const isEven = idx % 2 === 0;
+
+              // Step threshold along scroll progress
+              const stepThreshold = idx / Math.max(steps.length - 1, 1);
+              const isReached = scrollProgress >= stepThreshold - 0.03;
+              const isCurrent = activeStepIdx === idx;
+
+              return (
+                <li
+                  key={step.num}
+                  className={`relative flex items-center gap-3.5 sm:gap-6 lg:gap-8 transition-all duration-300 ${
+                    isEven ? 'flex-row' : 'flex-row-reverse'
+                  }`}
+                >
+                  {/* Checkpoint Circular Node - Consistent Primary Purple */}
+                  <div
+                    ref={(el) => {
+                      nodeRefs.current[idx] = el;
+                    }}
+                    className="relative flex-shrink-0 z-20 group cursor-pointer"
+                    onClick={() => handleScrollToCheckpoint(idx)}
                   >
-                    {/* Icon */}
+                    {/* Expanding Radar Ring when active/reached */}
+                    <span
+                      aria-hidden="true"
+                      className={`absolute -inset-1.5 rounded-full transition-all duration-500 pointer-events-none ${
+                        isReached
+                          ? 'ring-4 ring-purple-400/50 dark:ring-electric-purple/40 animate-pulse'
+                          : 'ring-0'
+                      }`}
+                    />
+
+                    {/* Main Circular Badge in Primary Purple */}
                     <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
-                        isActive
-                          ? 'bg-electric-purple text-white'
-                          : 'bg-purple-100/60 dark:bg-white/5 text-electric-purple dark:text-lavender-glow group-hover:bg-purple-100'
+                      className={`flex h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 items-center justify-center rounded-full border-[2.5px] transition-all duration-500 shadow-md relative ${
+                        isReached
+                          ? 'bg-gradient-to-br from-electric-purple to-deep-violet border-purple-300 dark:border-lavender-glow shadow-purple-600/30 text-white scale-105'
+                          : 'bg-white dark:bg-midnight-surface border-purple-200/90 dark:border-midnight-border hover:border-electric-purple/50'
                       }`}
                     >
-                      {renderStepIcon(idx, isActive)}
+                      {renderIcon(idx, isReached)}
                     </div>
 
-                    {/* Step Title & Number */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-3">
-                        <span
-                          className={`text-sm sm:text-base font-semibold truncate transition-colors ${
-                            isActive
-                              ? 'text-electric-purple dark:text-lavender-glow font-bold'
-                              : 'text-slate-700 dark:text-gray-300 group-hover:text-slate-900 dark:group-hover:text-white'
-                          }`}
-                        >
-                          {step.title}
-                        </span>
-                        <span
-                          className={`text-xs font-mono font-medium flex-shrink-0 px-2 py-0.5 rounded ${
-                            isActive
-                              ? 'bg-electric-purple/10 text-electric-purple dark:text-lavender-glow font-bold'
-                              : 'text-slate-400 dark:text-gray-500'
-                          }`}
-                        >
-                          {step.num}
-                        </span>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Right Column / Mobile Full Width: Premium 3D Kinetic Card Deck */}
-            <div className="w-full lg:col-span-7 flex flex-col justify-center items-center flex-1 h-full min-h-0 py-1 sm:py-2">
-              
-              {/* Mobile Stage Selector & Step Pills (01 to 05) */}
-              <div className="flex lg:hidden items-center justify-center gap-1.5 sm:gap-2 my-1 z-20 w-full px-2">
-                {steps.map((step, idx) => {
-                  const isActive = activeStep === idx;
-                  return (
-                    <button
-                      key={step.num}
-                      type="button"
-                      onClick={() => handleStepClick(idx)}
-                      className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-mono transition-all duration-300 cursor-pointer ${
-                        isActive
-                          ? 'bg-electric-purple text-white shadow-lg shadow-purple-600/40 scale-105 font-bold ring-2 ring-purple-400/50'
-                          : 'bg-black/40 dark:bg-white/5 text-slate-500 dark:text-gray-400 hover:text-white border border-white/10'
+                    {/* Number Badge Pill at Bottom */}
+                    <span
+                      className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 flex h-4.5 min-w-4.5 sm:h-5 sm:min-w-5 items-center justify-center rounded-full px-1.5 text-[9px] sm:text-[10px] font-mono font-bold text-white shadow z-30 transition-all duration-300 ${
+                        isReached
+                          ? 'bg-electric-purple ring-1.5 ring-white/60'
+                          : 'bg-slate-400 dark:bg-gray-600'
                       }`}
                     >
-                      <span>{step.num}</span>
-                      {isActive && (
-                        <span className="text-[10px] font-sans font-semibold max-w-[85px] truncate">
-                          {step.shortTitle || step.title}
-                        </span>
+                      {step.num}
+                    </span>
+                  </div>
+
+                  {/* Checkpoint Detail Card with enlarged, highly visible image */}
+                  <div className="flex-1 min-w-0">
+                    <div
+                      className={`group relative w-full rounded-2xl sm:rounded-3xl border transition-all duration-300 p-4 sm:p-5 lg:p-6 backdrop-blur-md ${
+                        isCurrent
+                          ? 'bg-white dark:bg-midnight-card border-purple-300 dark:border-electric-purple/50 shadow-lg shadow-purple-600/10'
+                          : isReached
+                          ? 'bg-white/95 dark:bg-midnight-card/90 border-purple-200/80 dark:border-midnight-border shadow-sm hover:shadow-md'
+                          : 'bg-white/80 dark:bg-midnight-card/60 border-light-border dark:border-midnight-border/60 shadow-sm opacity-90 hover:opacity-100 hover:shadow-md'
+                      }`}
+                    >
+                      {/* Title */}
+                      <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-light-text dark:text-white mb-1.5 group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-colors">
+                        {step.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="text-xs sm:text-sm text-light-subtext dark:text-gray-300 leading-relaxed mb-3.5">
+                        {step.description}
+                      </p>
+
+                      {/* Pure Floating 3D Transparent Illustration (No nested card/border/pills) */}
+                      {step.image && (
+                        <div className="relative w-full h-52 sm:h-64 lg:h-72 my-2 sm:my-3 flex items-center justify-center group/media">
+                          <img
+                            src={step.image}
+                            alt={step.title}
+                            loading={idx === 0 ? 'eager' : 'lazy'}
+                            decoding="async"
+                            className="w-full h-full object-contain object-center group-hover/media:scale-105 transition-transform duration-500 ease-out drop-shadow-md dark:drop-shadow-[0_12px_28px_rgba(124,44,245,0.22)]"
+                          />
+                        </div>
                       )}
-                    </button>
-                  );
-                })}
-              </div>
 
-              {/* 3D Kinetic Deck Container with Depth Perspective & Touch Swipe */}
-              <div 
-                className="relative w-full h-full max-h-[calc(100dvh-200px)] sm:max-h-[68vh] lg:h-[570px] max-w-sm sm:max-w-md lg:max-w-none mx-auto flex items-center justify-center overflow-hidden"
-                style={{
-                  perspective: '1200px',
-                  transformStyle: 'preserve-3d',
-                }}
-                onTouchStart={(e) => {
-                  touchStartY.current = e.touches[0].clientY;
-                }}
-                onTouchEnd={(e) => {
-                  const deltaY = e.changedTouches[0].clientY - touchStartY.current;
-                  if (Math.abs(deltaY) > 40) {
-                    if (deltaY < 0 && activeStep < steps.length - 1) {
-                      handleStepClick(activeStep + 1);
-                    } else if (deltaY > 0 && activeStep > 0) {
-                      handleStepClick(activeStep - 1);
-                    }
-                  }
-                }}
-              >
-                
-                {steps.map((step, idx) => {
-                  let transform = '';
-                  let opacity = 0;
-                  let brightness = 1;
-                  let shadowClass = 'shadow-2xl';
-                  const cardZIndex = (idx + 1) * 10;
-                  let isClickable = true;
-
-                  const enterProgress = Math.min(Math.max(scrubValue - (idx - 1), 0), 1);
-                  const depth = Math.max(0, scrubValue - idx);
-                  const overlapShift = isMobile ? 18 : 28;
-
-                  if (idx === 0) {
-                    // First card stays visible at top of stack, shifting up and tilting slightly into 3D space as newer cards overlay it
-                    opacity = 1;
-                    const shiftY = Math.min(depth * overlapShift, isMobile ? 54 : 96);
-                    const translateZ = -Math.min(depth * (isMobile ? 24 : 35), 110);
-                    const rotateX = Math.min(depth * (isMobile ? 2.5 : 3.5), 10);
-                    const scale = 1 - Math.min(depth * (isMobile ? 0.028 : 0.02), 0.08);
-                    brightness = 1 - Math.min(depth * 0.08, 0.28);
-                    shadowClass = depth > 0 ? 'shadow-xl' : 'shadow-2xl';
-                    transform = `perspective(1200px) translate3d(0, ${-shiftY}px, ${translateZ}px) rotateX(${rotateX}deg) scale(${scale})`;
-                  } else if (enterProgress <= 0) {
-                    // Card waiting below viewport in 3D perspective
-                    opacity = 0;
-                    transform = `perspective(1200px) translate3d(0, 110%, -60px) rotateX(-16deg) scale(0.92)`;
-                    isClickable = false;
-                  } else if (enterProgress < 1) {
-                    // Card smoothly gliding up from below over previous stacked card with 3D pitch tilt & elevation
-                    const currentY = (1 - enterProgress) * 110;
-                    const currentRotateX = (1 - enterProgress) * -16;
-                    const currentZ = (1 - enterProgress) * -60;
-                    const currentScale = 0.92 + enterProgress * 0.08;
-                    opacity = Math.min(enterProgress * 2.8, 1);
-                    brightness = 1;
-                    shadowClass = 'shadow-[0_-20px_50px_rgba(124,44,245,0.35),0_30px_60px_rgba(0,0,0,0.85)]';
-                    transform = `perspective(1200px) translate3d(0, ${currentY}%, ${currentZ}px) rotateX(${currentRotateX}deg) scale(${currentScale})`;
-                    isClickable = true;
-                  } else {
-                    // Card has fully entered, sits at rest or recedes backward in 3D stack
-                    opacity = 1;
-                    const shiftY = Math.min(depth * overlapShift, (4 - idx) * overlapShift);
-                    const translateZ = -Math.min(depth * (isMobile ? 24 : 35), 110);
-                    const rotateX = Math.min(depth * (isMobile ? 2.5 : 3.5), 10);
-                    const scale = 1 - Math.min(depth * (isMobile ? 0.028 : 0.02), 0.08);
-                    brightness = 1 - Math.min(depth * 0.08, 0.28);
-                    shadowClass = 'shadow-[0_-12px_35px_rgba(0,0,0,0.65),0_20px_45px_rgba(0,0,0,0.85)]';
-                    transform = `perspective(1200px) translate3d(0, ${-shiftY}px, ${translateZ}px) rotateX(${rotateX}deg) scale(${scale})`;
-                    isClickable = true;
-                  }
-
-                  return (
-                    <div
-                      key={step.num}
-                      style={{
-                        transform,
-                        opacity,
-                        zIndex: cardZIndex,
-                        filter: `brightness(${brightness})`,
-                        pointerEvents: isClickable ? 'auto' : 'none',
-                        WebkitMaskImage: '-webkit-radial-gradient(white, black)',
-                        transition: 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out, filter 0.2s ease-out'
-                      }}
-                      className={`absolute inset-0 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 border-2 border-purple-200/90 dark:border-electric-purple/60 ${shadowClass} will-change-transform isolate`}
-                    >
-                      {/* Top Radiant Laser Rim Light on Active Entering Card */}
-                      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-electric-purple to-transparent opacity-80 z-20 pointer-events-none" />
-
-                      {/* Image Frame with Full Bleed to all 4 rounded corners */}
-                      <div className="relative w-full h-full overflow-hidden rounded-[inherit]">
-                        <img
-                          src={step.image}
-                          alt={step.title}
-                          loading={idx === 0 ? "eager" : "lazy"}
-                          decoding="async"
-                          {...{ fetchpriority: idx === 0 ? "high" : "auto" }}
-                          className="w-full h-full object-cover object-center rounded-[inherit] transform transition-transform duration-700 ease-out"
-                        />
-
-                        {/* Dark Atmospheric Gradients for Text Contrast */}
-                        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/85 via-black/45 to-transparent pointer-events-none rounded-t-[inherit]" />
-                        <div className="absolute inset-x-0 bottom-0 h-44 sm:h-52 bg-gradient-to-t from-black/95 via-black/80 to-transparent pointer-events-none rounded-b-[inherit]" />
-
-                        {/* Top Stage Header Overlay - Sleek Stage Number in Corner */}
-                        <div className="absolute top-3 sm:top-5 right-3 sm:right-5 pointer-events-none z-10">
-                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-electric-purple text-white font-mono font-black text-xs sm:text-sm flex items-center justify-center shadow-lg border border-white/25">
-                            {step.num}
-                          </div>
-                        </div>
-
-                        {/* Bottom Overlay Info with Title & Deliverables - Content aligned over image */}
-                        <div className="absolute bottom-3.5 sm:bottom-5 left-3.5 sm:left-5 right-3.5 sm:right-5 space-y-2 pointer-events-none z-10">
-                          <div className="text-white text-base sm:text-xl font-extrabold tracking-tight drop-shadow-md">
-                            {step.title}
-                          </div>
-
-                          {/* Deliverables tags on image */}
-                          <div className="flex flex-wrap gap-1 sm:gap-1.5">
-                            {step.deliverables.map((item, dIdx) => (
-                              <div
-                                key={dIdx}
-                                className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[11px] font-medium text-white px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg bg-black/70 backdrop-blur-md border border-white/15"
-                              >
-                                <Check className="w-2.5 sm:w-3 h-2.5 sm:h-3 text-emerald-400 flex-shrink-0" />
-                                <span className="truncate max-w-[170px] sm:max-w-none">{item}</span>
-                              </div>
-                            ))}
-                          </div>
+                      {/* Deliverables Chip Pills */}
+                      <div className="space-y-1">
+                        <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-light-subtext/75 dark:text-muted-gray">
+                          Key Deliverables
+                        </span>
+                        <div className="flex flex-wrap gap-1 sm:gap-1.5">
+                          {step.deliverables.map((item, dIdx) => (
+                            <span
+                              key={dIdx}
+                              className="inline-flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-purple-50/70 dark:bg-white/[0.04] text-slate-700 dark:text-gray-200 border border-purple-100/70 dark:border-white/10 hover:border-electric-purple/40 dark:hover:border-lavender-glow/40 transition-colors"
+                            >
+                              <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
+                              <span className="truncate max-w-[190px] sm:max-w-none">{item}</span>
+                            </span>
+                          ))}
                         </div>
                       </div>
+
                     </div>
-                  );
-                })}
-
-              </div>
-            </div>
-
-          </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
 
         </div>
+
       </div>
     </section>
   );

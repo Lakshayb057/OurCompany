@@ -96,38 +96,6 @@ export const INITIAL_SERVICES: Service[] = [
       "Promotes campus affordability, resource reuse, and waste reduction",
       "Real-time in-app buyer-seller chat and moderation telemetry"
     ]
-  },
-  {
-    id: "srv-07",
-    slug: "kisan-vaani",
-    title: "Agricultural Intelligence & Indic Voice AI",
-    domain: "AI, Agritech & Voice Automation",
-    icon: "Bot",
-    image: "https://res.cloudinary.com/gymcfo5j/image/upload/v1795497734/codrix/services/kisan-vaani.webp",
-    summary: "Empowering agricultural ecosystems with multilingual voice-first conversational AI, Agmarknet mandi price comparisons, freight arbitrage algorithms, and multimodal crop pathology diagnosis.",
-    technologies: ["Python", "FastAPI", "Gnani AI", "WebSockets", "Groq", "Supabase", "Agmarknet API", "Computer Vision"],
-    benefits: [
-      "Localized Indic voice interface breaking literacy barriers across 8+ regional languages",
-      "Real-time mandi arbitrage engine maximizing net earnings on agricultural commodities",
-      "Instant crop leaf diagnosis preventing yield losses with verified ICAR advisories",
-      "Hyperlocal soil, weather, and government scheme intelligence delivered in seconds"
-    ]
-  },
-  {
-    id: "srv-08",
-    slug: "omnireach",
-    title: "Omnichannel Messaging & Workflow Automation",
-    domain: "Enterprise Communication & Automation",
-    icon: "Zap",
-    image: "https://res.cloudinary.com/gymcfo5j/image/upload/v1795497736/codrix/services/omnireach.webp",
-    summary: "Building high-throughput enterprise communication engines combining WhatsApp broadcasts, transactional email sequences, drag-and-drop journey automation, and live multi-agent chat desks.",
-    technologies: ["React", "TypeScript", "Node.js", "Express.js", "WhatsApp Baileys SDK", "PostgreSQL", "Redis", "Prisma"],
-    benefits: [
-      "Unified customer engagement across WhatsApp and email from a single command dashboard",
-      "Automated customer journey workflows triggered by inbound actions with zero manual latency",
-      "Enterprise multi-tenant isolation allowing secure multi-company administration",
-      "Real-time delivery receipts, open rates, and click-through campaign analytics"
-    ]
   }
 ];
 
