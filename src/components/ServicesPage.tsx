@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, BookOpen, ExternalLink, Github, Check, ArrowRight, Video, Layers } from 'lucide-react';
+import { BookOpen, ExternalLink, Github, Check, ArrowRight, Video, Layers } from 'lucide-react';
 import { Product, Service } from '../types';
 import { PlatformAdoptionModal } from './PlatformAdoptionModal';
 
@@ -56,7 +56,6 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
   onInquire,
   onExploreProjects,
 }) => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [adoptionModalProduct, setAdoptionModalProduct] = useState<Product | null>(null);
   const [isAdoptionModalOpen, setIsAdoptionModalOpen] = useState(false);
 
@@ -72,29 +71,17 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
 
     return products.filter((prod) => {
       if (prod.isVisible === false) return false;
-      const isInHouse = inHouseSlugs.includes(prod.slug || '') ||
+      return (
+        inHouseSlugs.includes(prod.slug || '') ||
         prod.name.toLowerCase().includes('universe') ||
         prod.name.toLowerCase().includes('chatleads') ||
         prod.name.toLowerCase().includes('nexus') ||
         prod.name.toLowerCase().includes('campxchange') ||
         prod.name.toLowerCase().includes('kisan') ||
-        prod.name.toLowerCase().includes('omnireach');
-      if (!isInHouse) return false;
-
-      // Search matching
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        return (
-          prod.name.toLowerCase().includes(q) ||
-          prod.subtitle.toLowerCase().includes(q) ||
-          prod.tagline.toLowerCase().includes(q) ||
-          prod.technologies.some(t => t.toLowerCase().includes(q))
-        );
-      }
-
-      return true;
+        prod.name.toLowerCase().includes('omnireach')
+      );
     });
-  }, [products, searchQuery]);
+  }, [products]);
 
   return (
     <div className="min-h-screen pt-20 sm:pt-32 pb-10 sm:pb-24 bg-light-100/60 dark:bg-midnight-900/60 relative overflow-hidden transition-colors duration-300">
@@ -105,43 +92,23 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Page Header */}
-        <div className="max-w-3xl space-y-3 sm:space-y-4 mb-6 sm:mb-12">
+        <div className="max-w-3xl space-y-3 sm:space-y-4 mb-8 sm:mb-14">
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-light-text dark:text-white leading-[1.12]">
             In-House Platforms as a <span className="text-gradient-purple">Service</span>
           </h1>
         </div>
 
-        {/* Search Controls */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-end gap-4 mb-6 pb-4 sm:mb-10 sm:pb-6 border-b border-light-border dark:border-midnight-border/70">
-          <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-light-subtext dark:text-muted-gray" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search in-house platforms..."
-              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white/90 dark:bg-midnight-card/90 border border-purple-100 dark:border-midnight-border text-xs sm:text-sm text-light-text dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-electric-purple/40"
-            />
-          </div>
-        </div>
-
-        {/* In-House Platforms Grid */}
+        {/* In-House Platforms Grid - 3 cards per row horizontally */}
         {inHousePlatforms.length === 0 ? (
           <div className="text-center py-20 space-y-3 bg-white/60 dark:bg-midnight-card/60 rounded-3xl border border-dashed border-purple-200 dark:border-midnight-border">
             <Layers className="w-10 h-10 text-electric-purple/60 mx-auto" />
-            <h3 className="text-lg font-bold text-light-text dark:text-white">No platforms found</h3>
+            <h3 className="text-lg font-bold text-light-text dark:text-white">No platforms available</h3>
             <p className="text-xs sm:text-sm text-light-subtext dark:text-muted-gray max-w-sm mx-auto">
-              No matching in-house services for &ldquo;{searchQuery}&rdquo;. Try another filter or reset.
+              In-house platforms will appear here soon.
             </p>
-            <button
-              onClick={() => setSearchQuery('')}
-              className="px-4 py-2 rounded-xl bg-electric-purple text-white text-xs font-semibold mt-2 cursor-pointer"
-            >
-              Reset Search
-            </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {inHousePlatforms.map((prod) => {
               const slugKey = prod.slug || '';
               const meta = IN_HOUSE_METADATA[slugKey] || {

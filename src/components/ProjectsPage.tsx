@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Search, Github, ExternalLink, BookOpen, Layers, Check, ArrowRight, Video } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { Github, ExternalLink, BookOpen, Layers, Check, ArrowRight, Video } from 'lucide-react';
 import { Product } from '../types';
 
 interface ProjectsPageProps {
@@ -15,8 +15,6 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
   onBackToHome,
   onInquire,
 }) => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
   // Filter projects to only display client collaborations & freelance projects:
   // ABV — SkillPort, SachiKheti, etc.
   // In-house & platform services (UniVerse, ChatLeads, Nexus, CampXChange, Kisan-Vaani, OmniReach) are strictly in /services
@@ -35,22 +33,9 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
         prod.name.toLowerCase().includes('campxchange') ||
         prod.name.toLowerCase().includes('kisan') ||
         prod.name.toLowerCase().includes('omnireach');
-      if (isInHouse) return false;
-
-      // Search query matching
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        return (
-          prod.name.toLowerCase().includes(q) ||
-          prod.subtitle.toLowerCase().includes(q) ||
-          prod.tagline.toLowerCase().includes(q) ||
-          prod.technologies.some(t => t.toLowerCase().includes(q))
-        );
-      }
-
-      return true;
+      return !isInHouse;
     });
-  }, [products, searchQuery]);
+  }, [products]);
 
   return (
     <div className="min-h-screen pt-20 sm:pt-32 pb-10 sm:pb-24 bg-light-100/60 dark:bg-midnight-900/60 relative overflow-hidden transition-colors duration-300">
@@ -61,24 +46,10 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Page Header */}
-        <div className="max-w-3xl space-y-3 sm:space-y-4 mb-6 sm:mb-12">
+        <div className="max-w-3xl space-y-3 sm:space-y-4 mb-8 sm:mb-14">
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-light-text dark:text-white leading-[1.12]">
             Client & Freelance <span className="text-gradient-purple">Projects</span>
           </h1>
-        </div>
-
-        {/* Search Control */}
-        <div className="flex flex-col md:flex-row md:items-center justify-end gap-4 mb-6 pb-4 sm:mb-10 sm:pb-6 border-b border-light-border dark:border-midnight-border/60">
-          <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by tech or keyword..."
-              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white/90 dark:bg-midnight-card/90 border border-purple-100 dark:border-midnight-border text-xs sm:text-sm text-light-text dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-electric-purple/40"
-            />
-          </div>
         </div>
 
         {/* Projects Grid */}
@@ -87,14 +58,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
             <Layers className="w-10 h-10 text-electric-purple/60 mx-auto" />
             <h3 className="text-lg font-bold text-light-text dark:text-white">No projects found</h3>
             <p className="text-xs sm:text-sm text-light-subtext dark:text-muted-gray max-w-sm mx-auto">
-              No matching projects for &ldquo;{searchQuery}&rdquo;. Try another category or clear your search query.
+              Client and freelance projects will appear here soon.
             </p>
-            <button
-              onClick={() => setSearchQuery('')}
-              className="px-4 py-2 rounded-xl bg-electric-purple text-white text-xs font-semibold mt-2"
-            >
-              Reset Search
-            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
