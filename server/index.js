@@ -1413,11 +1413,27 @@ if (fs.existsSync(PUBLIC_PATH)) {
 
 const DIST_PATH = path.join(__dirname, '..', 'dist');
 if (fs.existsSync(DIST_PATH)) {
-  app.use(express.static(DIST_PATH));
+  app.use(express.static(DIST_PATH, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      } else if (filePath.includes(path.sep + 'assets' + path.sep)) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+    }
+  }));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) {
       return next();
     }
+    // Never rewrite static assets or files with extensions to index.html (prevents strict MIME type error)
+    if (
+      req.path.startsWith('/assets/') ||
+      /\.(js|css|webp|png|jpg|jpeg|gif|svg|ico|woff2?|ttf|eot|json|map|webm|mp4|txt|xml)$/i.test(req.path)
+    ) {
+      return res.status(404).send('Asset not found');
+    }
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.sendFile(path.join(DIST_PATH, 'index.html'));
   });
 }
