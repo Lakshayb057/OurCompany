@@ -90,10 +90,10 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({
               No matching projects for &ldquo;{searchQuery}&rdquo;. Try another category or clear your search query.
             </p>
             <button
-              onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}
+              onClick={() => setSearchQuery('')}
               className="px-4 py-2 rounded-xl bg-electric-purple text-white text-xs font-semibold mt-2"
             >
-              Reset Filters
+              Reset Search
             </button>
           </div>
         ) : (

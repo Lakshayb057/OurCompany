@@ -134,10 +134,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
               No matching in-house services for &ldquo;{searchQuery}&rdquo;. Try another filter or reset.
             </p>
             <button
-              onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}
+              onClick={() => setSearchQuery('')}
               className="px-4 py-2 rounded-xl bg-electric-purple text-white text-xs font-semibold mt-2 cursor-pointer"
             >
-              Reset Filters
+              Reset Search
             </button>
           </div>
         ) : (
