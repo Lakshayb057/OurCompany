@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { Search, Layout, Zap, Shield, Rocket, Check, Sparkles, Trophy, ArrowRight } from 'lucide-react';
+import { Search, Layout, Zap, Shield, Rocket, Check, Sparkles, Trophy } from 'lucide-react';
 import { ProcessStage } from '../types';
 
 interface ProcessSectionProps {
@@ -72,7 +72,6 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
   const pathRef = useRef<SVGPathElement>(null);
 
   const [pathD, setPathD] = useState<string>('');
-  const [pathLength, setPathLength] = useState<number>(0);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [orbPos, setOrbPos] = useState<{ x: number; y: number }>({ x: -100, y: -100 });
   const [activeStepIdx, setActiveStepIdx] = useState<number>(0);
@@ -93,7 +92,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
       const node = nodeRefs.current[i];
       if (node) {
         const nodeRect = node.getBoundingClientRect();
-        // Calculate center relative to container
+        // Calculate node center relative to container
         const x = nodeRect.left - containerRect.left + nodeRect.width / 2;
         const y = nodeRect.top - containerRect.top + nodeRect.height / 2;
         points.push({ x, y });
@@ -148,35 +147,24 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
     };
   }, [calculateCurve]);
 
-  // Update total path length when path changes
-  useEffect(() => {
-    if (pathRef.current) {
-      try {
-        const totalLen = pathRef.current.getTotalLength();
-        if (totalLen > 0) {
-          setPathLength(totalLen);
-        }
-      } catch (e) {
-        // SVG may not be attached yet
-      }
-    }
-  }, [pathD]);
-
-  // Silky 60fps scroll listener and spring dampening loop
+  // Smooth scroll scrubbing calibrated to actual checkpoint node positions
   useEffect(() => {
     const handleScroll = () => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
+      const firstNode = nodeRefs.current[0];
+      const lastNode = nodeRefs.current[steps.length - 1];
+      if (!firstNode || !lastNode) return;
+
+      const firstRect = firstNode.getBoundingClientRect();
+      const lastRect = lastNode.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      // Start revealing when container enters 75% down screen
-      // Finish when container bottom reaches 35% above screen bottom
-      const startTrigger = windowHeight * 0.72;
-      const endTrigger = windowHeight * 0.38;
-      const totalDist = rect.height + (startTrigger - endTrigger);
-      const scrolledInto = startTrigger - rect.top;
+      // Flow starts when Checkpoint 01 reaches 62% down viewport
+      // and completes when Checkpoint 05 reaches 50% of viewport
+      const triggerStart = windowHeight * 0.62;
+      const totalScrollDist = Math.max(lastRect.top - firstRect.top, 80);
+      const scrolled = triggerStart - firstRect.top;
 
-      const raw = Math.min(Math.max(scrolledInto / (totalDist || 1), 0), 1);
+      const raw = Math.min(Math.max(scrolled / totalScrollDist, 0), 1);
       targetProgress.current = raw;
     };
 
@@ -188,8 +176,8 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
       if (!isRunning) return;
 
       const diff = targetProgress.current - currentProgress.current;
-      if (Math.abs(diff) > 0.0006) {
-        currentProgress.current += diff * 0.14; // smooth spring lerp
+      if (Math.abs(diff) > 0.0003) {
+        currentProgress.current += diff * 0.16; // smooth spring lerp
       } else {
         currentProgress.current = targetProgress.current;
       }
@@ -204,12 +192,15 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
       );
       setActiveStepIdx(activeIdx);
 
-      // Position traveling pulse orb along the curve
-      if (pathRef.current && pathLength > 0) {
+      // Calculate traveling pulse orb coordinates exactly at progress point
+      if (pathRef.current) {
         try {
-          const clamped = Math.min(Math.max(p, 0), 1);
-          const point = pathRef.current.getPointAtLength(clamped * pathLength);
-          setOrbPos({ x: point.x, y: point.y });
+          const totalLen = pathRef.current.getTotalLength();
+          if (totalLen > 0) {
+            const clamped = Math.min(Math.max(p, 0), 1);
+            const point = pathRef.current.getPointAtLength(clamped * totalLen);
+            setOrbPos({ x: point.x, y: point.y });
+          }
         } catch (err) {
           // Ignore transient SVG render glitches
         }
@@ -225,19 +216,18 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
       window.removeEventListener('scroll', handleScroll);
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, [pathLength, steps.length]);
+  }, [steps.length]);
 
-  // Click on a checkpoint smoothly scrolls to it
   const handleScrollToCheckpoint = (idx: number) => {
     const node = nodeRefs.current[idx];
     if (!node) return;
-    const yOffset = -120;
+    const yOffset = -140;
     const y = node.getBoundingClientRect().top + window.scrollY + yOffset;
     window.scrollTo({ top: y, behavior: 'smooth' });
   };
 
   const renderIcon = (idx: number, isReached: boolean) => {
-    const iconClass = `w-5 h-5 sm:w-6 sm:h-6 transition-colors duration-300 ${
+    const iconClass = `w-4.5 h-4.5 sm:w-5 sm:h-5 transition-colors duration-300 ${
       isReached
         ? 'text-white'
         : 'text-electric-purple dark:text-lavender-glow'
@@ -253,34 +243,34 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
     }
   };
 
-  // Safe calculated dash offset
-  const dashOffset = pathLength > 0 ? pathLength * (1 - scrollProgress) : 0;
+  // Safe normalized dash offset for pathLength="1"
+  const normalizedDashOffset = Math.max(0, 1 - scrollProgress);
 
   return (
     <section
       id="process"
-      className="relative py-20 sm:py-28 lg:py-32 overflow-hidden bg-light-100/70 dark:bg-midnight-950 border-t border-b border-light-border dark:border-midnight-border/50"
+      className="relative py-12 sm:py-16 lg:py-20 overflow-hidden bg-light-100/70 dark:bg-midnight-950 border-t border-b border-light-border dark:border-midnight-border/50"
     >
       {/* Ambient background glows */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-electric-purple/10 dark:bg-electric-purple/15 blur-[140px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-lavender-glow/10 dark:bg-deep-violet/20 blur-[130px] rounded-full pointer-events-none" />
-      <div className="absolute top-2/3 left-1/3 w-[350px] h-[350px] bg-sky-400/5 dark:bg-sky-500/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-[450px] h-[450px] bg-electric-purple/10 dark:bg-electric-purple/15 blur-[130px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-lavender-glow/10 dark:bg-deep-violet/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-2/3 left-1/3 w-[300px] h-[300px] bg-sky-400/5 dark:bg-sky-500/10 blur-[110px] rounded-full pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16 sm:mb-24 space-y-3 sm:space-y-4">
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-light-text dark:text-white leading-[1.15]">
+        {/* Section Header with compact, clean spacing */}
+        <div className="max-w-3xl mx-auto text-center mb-8 sm:mb-12 space-y-2.5 sm:space-y-3">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-light-text dark:text-white leading-[1.15]">
             Discovery-to-Delivery <span className="text-gradient-purple">Process</span>
           </h2>
 
-          <p className="text-light-subtext dark:text-muted-gray text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl mx-auto">
+          <p className="text-light-subtext dark:text-muted-gray text-xs sm:text-sm lg:text-base leading-relaxed max-w-xl mx-auto">
             A structured 5-stage engineering lifecycle executed from initial technical discovery to zero-downtime global deployment.
           </p>
         </div>
 
         {/* Winding Flow Container with Dynamic S-Curve Tube */}
-        <div ref={containerRef} className="relative py-6 sm:py-10 max-w-4xl mx-auto">
+        <div ref={containerRef} className="relative py-2 sm:py-4 max-w-4xl mx-auto">
           
           {/* Dynamic Multi-Layer SVG Tube */}
           <svg
@@ -298,7 +288,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
 
               {/* Glowing Aura Filter */}
               <filter id="tubeGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="6" result="blur" />
+                <feGaussianBlur stdDeviation="5" result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
@@ -313,66 +303,65 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                   d={pathD}
                   fill="none"
                   stroke="#7C2CF5"
-                  strokeWidth={18}
+                  strokeWidth={16}
                   strokeLinecap="round"
                   className="opacity-15 dark:opacity-25 blur-sm"
                 />
 
-                {/* Layer 2: Inactive Guide Track Channel */}
+                {/* Layer 2: Inactive Guide Track Channel (Ref for getTotalLength) */}
                 <path
                   ref={pathRef}
                   d={pathD}
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth={11}
+                  strokeWidth={10}
                   strokeLinecap="round"
                   className="text-purple-100 dark:text-white/10"
                 />
 
-                {/* Layer 3: Active Neon Glowing Progress Line */}
+                {/* Layer 3: Active Neon Glowing Progress Line - 100% Locked with Orb via pathLength="1" */}
                 <path
                   d={pathD}
+                  pathLength={1}
                   fill="none"
                   stroke="url(#processTubeGradient)"
-                  strokeWidth={11}
+                  strokeWidth={10}
                   strokeLinecap="round"
                   filter="url(#tubeGlow)"
-                  strokeDasharray={pathLength || 1000}
-                  strokeDashoffset={dashOffset}
-                  style={{
-                    transition: 'stroke-dashoffset 0.1s linear'
-                  }}
+                  strokeDasharray={1}
+                  strokeDashoffset={normalizedDashOffset}
                 />
 
                 {/* Layer 4: Laser Core Dashed Highlight Line */}
                 <path
                   d={pathD}
+                  pathLength={1}
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth={2.5}
+                  strokeWidth={2}
                   strokeLinecap="round"
-                  strokeDasharray="10 12"
-                  strokeDashoffset={dashOffset}
+                  strokeDasharray="0.015 0.02"
+                  strokeDashoffset={normalizedDashOffset}
                   className="text-white/90 dark:text-white/70"
                 />
 
-                {/* Layer 5: Traveling Pulse Particle & Glow Beacon */}
-                {scrollProgress > 0.02 && scrollProgress < 0.99 && (
+                {/* Layer 5: Traveling Pulse Particle - Sits Exactly on Tip of Neon Stroke */}
+                {scrollProgress > 0.005 && scrollProgress < 0.995 && (
                   <g transform={`translate(${orbPos.x}, ${orbPos.y})`}>
                     {/* Outer Pulsing Aura Ring */}
                     <circle
-                      r={18}
-                      className="fill-electric-purple/20 animate-ping"
+                      r={14}
+                      className="fill-electric-purple/25 animate-ping"
                     />
                     {/* Mid Glow Halo */}
                     <circle
-                      r={12}
-                      className="fill-lavender-glow/35 dark:fill-cyan-400/30"
+                      r={9}
+                      className="fill-lavender-glow/40 dark:fill-cyan-400/35"
                     />
                     {/* Solid Core Orb with High-Contrast Border */}
                     <circle
-                      r={6.5}
-                      className="fill-electric-purple dark:fill-cyan-300 stroke-white dark:stroke-midnight-950 stroke-[2.5] shadow-lg"
+                      r={5.5}
+                      className="fill-electric-purple dark:fill-cyan-300 stroke-white dark:stroke-midnight-950 stroke-[2] shadow-md"
                     />
                   </g>
                 )}
@@ -380,21 +369,21 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
             )}
           </svg>
 
-          {/* Alternating Checkpoints List (1 to 5) */}
-          <ol className="relative z-10 flex flex-col gap-10 sm:gap-16 lg:gap-20">
+          {/* Alternating Checkpoints List (1 to 5) with tight, refined spacing */}
+          <ol className="relative z-10 flex flex-col gap-5 sm:gap-7 lg:gap-8">
             {steps.map((step, idx) => {
               const isEven = idx % 2 === 0;
               const isFinal = idx === steps.length - 1;
 
               // Step threshold along scroll progress
               const stepThreshold = idx / Math.max(steps.length - 1, 1);
-              const isReached = scrollProgress >= stepThreshold - 0.04;
+              const isReached = scrollProgress >= stepThreshold - 0.03;
               const isCurrent = activeStepIdx === idx;
 
               return (
                 <li
                   key={step.num}
-                  className={`relative flex items-center gap-4 sm:gap-8 lg:gap-12 transition-all duration-300 ${
+                  className={`relative flex items-center gap-3.5 sm:gap-6 lg:gap-8 transition-all duration-300 ${
                     isEven ? 'flex-row' : 'flex-row-reverse'
                   }`}
                 >
@@ -409,7 +398,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                     {/* Expanding Radar Ring when active/reached */}
                     <span
                       aria-hidden="true"
-                      className={`absolute -inset-2 rounded-full transition-all duration-500 pointer-events-none ${
+                      className={`absolute -inset-1.5 rounded-full transition-all duration-500 pointer-events-none ${
                         isFinal
                           ? isReached
                             ? 'ring-4 ring-amber-400/50 dark:ring-amber-400/40 animate-pulse'
@@ -422,18 +411,18 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
 
                     {/* Main Circular Badge */}
                     <div
-                      className={`flex h-13 w-13 sm:h-16 sm:w-16 lg:h-18 lg:w-18 items-center justify-center rounded-full border-[3px] transition-all duration-500 shadow-lg relative ${
+                      className={`flex h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 items-center justify-center rounded-full border-[2.5px] transition-all duration-500 shadow-md relative ${
                         isFinal
                           ? isReached
                             ? 'bg-gradient-to-br from-amber-500 to-amber-600 border-amber-300 shadow-amber-500/30 text-white scale-105'
-                            : 'bg-white dark:bg-midnight-surface border-amber-300/60 dark:border-amber-500/40 shadow-slate-200 dark:shadow-none'
+                            : 'bg-white dark:bg-midnight-surface border-amber-300/60 dark:border-amber-500/40'
                           : isReached
                           ? 'bg-gradient-to-br from-electric-purple to-deep-violet border-purple-300 dark:border-lavender-glow shadow-purple-600/30 text-white scale-105'
-                          : 'bg-white dark:bg-midnight-surface border-purple-200 dark:border-midnight-border shadow-slate-200 dark:shadow-none hover:border-electric-purple/50'
+                          : 'bg-white dark:bg-midnight-surface border-purple-200/90 dark:border-midnight-border hover:border-electric-purple/50'
                       }`}
                     >
                       {isFinal && isReached ? (
-                        <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                        <Trophy className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-white" />
                       ) : (
                         renderIcon(idx, isReached)
                       )}
@@ -441,11 +430,11 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
 
                     {/* Number Badge Pill at Bottom */}
                     <span
-                      className={`absolute -bottom-2 left-1/2 -translate-x-1/2 flex h-5 min-w-5 sm:h-6 sm:min-w-6 items-center justify-center rounded-full px-1.5 text-[10px] sm:text-[11px] font-mono font-bold text-white shadow-md z-30 transition-all duration-300 ${
+                      className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 flex h-4.5 min-w-4.5 sm:h-5 sm:min-w-5 items-center justify-center rounded-full px-1.5 text-[9px] sm:text-[10px] font-mono font-bold text-white shadow z-30 transition-all duration-300 ${
                         isFinal
                           ? 'bg-amber-500'
                           : isReached
-                          ? 'bg-electric-purple ring-2 ring-white/50'
+                          ? 'bg-electric-purple ring-1.5 ring-white/60'
                           : 'bg-slate-400 dark:bg-gray-600'
                       }`}
                     >
@@ -453,39 +442,34 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                     </span>
                   </div>
 
-                  {/* Checkpoint Detail Card */}
+                  {/* Checkpoint Detail Card with clean border and compact spacing */}
                   <div className="flex-1 min-w-0">
                     <div
-                      className={`group relative w-full rounded-2xl sm:rounded-3xl border transition-all duration-500 p-4 sm:p-6 lg:p-7 backdrop-blur-md ${
+                      className={`group relative w-full rounded-2xl sm:rounded-3xl border transition-all duration-300 p-3.5 sm:p-5 lg:p-6 backdrop-blur-md ${
                         isFinal
                           ? isReached
-                            ? 'bg-amber-50/70 dark:bg-midnight-card/90 border-amber-300/80 dark:border-amber-500/50 shadow-xl shadow-amber-500/5 ring-1 ring-amber-400/30'
-                            : 'bg-white/90 dark:bg-midnight-card/80 border-amber-200/50 dark:border-amber-900/30 shadow-md'
+                            ? 'bg-amber-50/70 dark:bg-midnight-card/90 border-amber-300/80 dark:border-amber-500/50 shadow-lg shadow-amber-500/5'
+                            : 'bg-white/90 dark:bg-midnight-card/80 border-amber-200/50 dark:border-amber-900/30 shadow-sm'
                           : isCurrent
-                          ? 'bg-white dark:bg-midnight-card border-purple-300 dark:border-electric-purple/60 shadow-xl shadow-purple-600/10 ring-1 ring-purple-400/30'
+                          ? 'bg-white dark:bg-midnight-card border-purple-300 dark:border-electric-purple/50 shadow-lg shadow-purple-600/10'
                           : isReached
-                          ? 'bg-white/95 dark:bg-midnight-card/90 border-purple-200/90 dark:border-midnight-border shadow-lg hover:shadow-xl'
-                          : 'bg-white/80 dark:bg-midnight-card/60 border-light-border dark:border-midnight-border/60 shadow-sm opacity-85 hover:opacity-100 hover:shadow-md'
+                          ? 'bg-white/95 dark:bg-midnight-card/90 border-purple-200/80 dark:border-midnight-border shadow-sm hover:shadow-md'
+                          : 'bg-white/80 dark:bg-midnight-card/60 border-light-border dark:border-midnight-border/60 shadow-sm opacity-90 hover:opacity-100 hover:shadow-md'
                       }`}
                     >
-                      {/* Laser Rim Light at top of card when active */}
-                      {isCurrent && (
-                        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-electric-purple to-transparent opacity-90 rounded-t-2xl sm:rounded-t-3xl pointer-events-none" />
-                      )}
-
                       {/* Title */}
-                      <h3 className="text-base sm:text-xl lg:text-2xl font-bold text-light-text dark:text-white mb-2 group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-colors">
+                      <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-light-text dark:text-white mb-1.5 group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-colors">
                         {step.title}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-xs sm:text-sm text-light-subtext dark:text-gray-300 leading-relaxed mb-4">
+                      <p className="text-xs sm:text-sm text-light-subtext dark:text-gray-300 leading-relaxed mb-3">
                         {step.description}
                       </p>
 
-                      {/* Media Image Banner Preview */}
+                      {/* Compact Media Image Banner Preview */}
                       {step.image && (
-                        <div className="relative w-full h-28 sm:h-36 lg:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-4 border border-purple-100 dark:border-midnight-border group/media">
+                        <div className="relative w-full h-24 sm:h-30 lg:h-34 rounded-xl sm:rounded-2xl overflow-hidden mb-3 border border-purple-100/80 dark:border-midnight-border group/media">
                           <img
                             src={step.image}
                             alt={step.title}
@@ -493,14 +477,14 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                             decoding="async"
                             className="w-full h-full object-cover object-center group-hover/media:scale-105 transition-transform duration-700 ease-out"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
 
                           {/* Image Bottom Overlay Caption */}
-                          <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[11px] font-medium pointer-events-none">
+                          <div className="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between text-white text-[10px] sm:text-[11px] font-medium pointer-events-none">
                             <span className="truncate drop-shadow-sm font-semibold">
                               {step.shortTitle || step.title}
                             </span>
-                            <span className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md border border-white/20">
+                            <span className="font-mono text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-md border border-white/20">
                               Verified Asset
                             </span>
                           </div>
@@ -508,18 +492,18 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                       )}
 
                       {/* Deliverables Chip Pills */}
-                      <div className="space-y-1.5 pt-1">
-                        <span className="text-[10px] font-semibold uppercase tracking-wider text-light-subtext/75 dark:text-muted-gray">
+                      <div className="space-y-1">
+                        <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-light-subtext/75 dark:text-muted-gray">
                           Key Deliverables
                         </span>
-                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                        <div className="flex flex-wrap gap-1 sm:gap-1.5">
                           {step.deliverables.map((item, dIdx) => (
                             <span
                               key={dIdx}
-                              className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium px-2.5 py-1 rounded-lg bg-purple-50/70 dark:bg-white/[0.04] text-slate-700 dark:text-gray-200 border border-purple-100 dark:border-white/10 hover:border-electric-purple/40 dark:hover:border-lavender-glow/40 transition-colors"
+                              className="inline-flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-purple-50/70 dark:bg-white/[0.04] text-slate-700 dark:text-gray-200 border border-purple-100/70 dark:border-white/10 hover:border-electric-purple/40 dark:hover:border-lavender-glow/40 transition-colors"
                             >
-                              <Check className="w-3 h-3 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
-                              <span className="truncate max-w-[200px] sm:max-w-none">{item}</span>
+                              <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
+                              <span className="truncate max-w-[190px] sm:max-w-none">{item}</span>
                             </span>
                           ))}
                         </div>
