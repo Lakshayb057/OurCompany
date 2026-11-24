@@ -421,7 +421,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                   {/* Checkpoint Detail Card with enlarged, highly visible image */}
                   <div className="flex-1 min-w-0">
                     <div
-                      className={`group relative w-full flex flex-col justify-between rounded-2xl sm:rounded-3xl border transition-all duration-300 p-5 sm:p-7 lg:p-8 backdrop-blur-md min-h-[460px] sm:min-h-[520px] lg:min-h-[560px] ${
+                      className={`group relative w-full flex flex-col justify-between rounded-2xl sm:rounded-3xl border transition-all duration-300 p-4.5 sm:p-6 lg:p-7 backdrop-blur-md h-[440px] sm:h-[490px] lg:h-[530px] ${
                         isCurrent
                           ? 'bg-white dark:bg-midnight-card border-purple-300 dark:border-electric-purple/50 shadow-lg shadow-purple-600/10'
                           : isReached
@@ -429,9 +429,9 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                           : 'bg-white/80 dark:bg-midnight-card/60 border-light-border dark:border-midnight-border/60 shadow-sm opacity-90 hover:opacity-100 hover:shadow-md'
                       }`}
                     >
-                      {/* Title & Description */}
-                      <div>
-                        <h3 className="text-base sm:text-xl lg:text-2xl font-bold text-light-text dark:text-white mb-2 group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-colors">
+                      {/* Title & Description with unified min-height for identical text alignment across all screen sizes */}
+                      <div className="flex-shrink-0 min-h-[112px] sm:min-h-[105px] lg:min-h-[100px] flex flex-col justify-start">
+                        <h3 className="text-base sm:text-xl lg:text-2xl font-bold text-light-text dark:text-white mb-1.5 sm:mb-2 group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-colors">
                           {step.title}
                         </h3>
 
@@ -442,7 +442,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
 
                       {/* Real High-Fidelity 16:9 Showcase Photography with Portrait Depth of Field */}
                       {step.image && (
-                        <div className="relative w-full flex-1 min-h-[260px] sm:min-h-[320px] lg:min-h-[380px] h-64 sm:h-80 lg:h-96 mt-4 rounded-xl sm:rounded-2xl overflow-hidden border border-purple-100/90 dark:border-white/10 shadow-md group-hover/media:shadow-xl transition-shadow duration-300 group/media bg-slate-900/10">
+                        <div className="relative w-full flex-1 min-h-0 mt-3 sm:mt-4 rounded-xl sm:rounded-2xl overflow-hidden border border-purple-100/90 dark:border-white/10 shadow-md group-hover/media:shadow-xl transition-shadow duration-300 group/media bg-slate-900/10">
                           <img
                             src={step.image}
                             alt={step.title}
