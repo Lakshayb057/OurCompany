@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, BookOpen, ExternalLink, Github, Check, ArrowRight, Video, Layers } from 'lucide-react';
+import { BookOpen, ExternalLink, Github, Check, ArrowRight, Video, Layers } from 'lucide-react';
 import { Product, Service } from '../types';
 import { PlatformAdoptionModal } from './PlatformAdoptionModal';
 
@@ -36,6 +36,16 @@ const IN_HOUSE_METADATA: Record<string, {
     serviceDomain: 'P2P Circular Marketplace & Sharing OS',
     serviceBadge: 'IN-HOUSE PLATFORM • CIRCULAR COMMERCE',
     tieUpPitch: 'Complete peer-to-peer campus marketplace and sharing platform with institutional domain verification, student ID authentication, and rental logistics.'
+  },
+  'kisan-vaani': {
+    serviceDomain: 'AI & Agritech Intelligence',
+    serviceBadge: 'IN-HOUSE PLATFORM • VOICE AI & ARBITRAGE',
+    tieUpPitch: 'Voice-first AI agricultural intelligence platform featuring Indic voice assistants, Agmarknet mandi arbitrage, ICAR disease diagnosis, and hyperlocal weather telemetry.'
+  },
+  'omnireach': {
+    serviceDomain: 'Omnichannel & Campaign Automation',
+    serviceBadge: 'IN-HOUSE PLATFORM • ENTERPRISE AUTOMATION',
+    tieUpPitch: 'Enterprise omnichannel communication platform unifying WhatsApp and email campaigns, visual journey automation, and multi-tenant telemetry into one workspace.'
   }
 };
 
@@ -46,8 +56,6 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
   onInquire,
   onExploreProjects,
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [adoptionModalProduct, setAdoptionModalProduct] = useState<Product | null>(null);
   const [isAdoptionModalOpen, setIsAdoptionModalOpen] = useState(false);
 
@@ -56,55 +64,24 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
     setIsAdoptionModalOpen(true);
   };
 
-  const categories = [
-    'All',
-    'Campus & Food OS',
-    'AI & Automation',
-    'Enterprise CRM',
-    'Circular Commerce'
-  ];
-
   // In-House Platforms offered "as a service" with minimal updates / tie-ups:
-  // UniVerse, ChatLeads AI, Nexus CRM, CampXChange
+  // UniVerse, ChatLeads AI, Nexus CRM, CampXChange, Kisan-Vaani, OmniReach
   const inHousePlatforms = useMemo(() => {
-    const inHouseSlugs = ['universe', 'chatleads-ai', 'nexus-crm', 'campxchange'];
+    const inHouseSlugs = ['universe', 'chatleads-ai', 'nexus-crm', 'campxchange', 'kisan-vaani', 'omnireach'];
 
     return products.filter((prod) => {
       if (prod.isVisible === false) return false;
-      const isInHouse = inHouseSlugs.includes(prod.slug || '') ||
+      return (
+        inHouseSlugs.includes(prod.slug || '') ||
         prod.name.toLowerCase().includes('universe') ||
         prod.name.toLowerCase().includes('chatleads') ||
         prod.name.toLowerCase().includes('nexus') ||
-        prod.name.toLowerCase().includes('campxchange');
-      if (!isInHouse) return false;
-
-      // Category matching
-      let matchesCat = true;
-      if (selectedCategory === 'Campus & Food OS') {
-        matchesCat = prod.name.includes('UniVerse') || (prod.slug || '').includes('universe');
-      } else if (selectedCategory === 'AI & Automation') {
-        matchesCat = prod.name.includes('ChatLeads') || (prod.slug || '').includes('chatleads');
-      } else if (selectedCategory === 'Enterprise CRM') {
-        matchesCat = prod.name.includes('Nexus') || (prod.slug || '').includes('nexus');
-      } else if (selectedCategory === 'Circular Commerce') {
-        matchesCat = prod.name.includes('CampXChange') || (prod.slug || '').includes('campxchange');
-      }
-
-      // Search matching
-      let matchesSearch = true;
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        matchesSearch = (
-          prod.name.toLowerCase().includes(q) ||
-          prod.subtitle.toLowerCase().includes(q) ||
-          prod.tagline.toLowerCase().includes(q) ||
-          prod.technologies.some(t => t.toLowerCase().includes(q))
-        );
-      }
-
-      return matchesCat && matchesSearch;
+        prod.name.toLowerCase().includes('campxchange') ||
+        prod.name.toLowerCase().includes('kisan') ||
+        prod.name.toLowerCase().includes('omnireach')
+      );
     });
-  }, [products, selectedCategory, searchQuery]);
+  }, [products]);
 
   return (
     <div className="min-h-screen pt-20 sm:pt-32 pb-10 sm:pb-24 bg-light-100/60 dark:bg-midnight-900/60 relative overflow-hidden transition-colors duration-300">
@@ -115,68 +92,23 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Page Header */}
-        <div className="max-w-3xl space-y-3 sm:space-y-4 mb-6 sm:mb-12">
+        <div className="max-w-3xl space-y-3 sm:space-y-4 mb-8 sm:mb-14">
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-light-text dark:text-white leading-[1.12]">
             In-House Platforms as a <span className="text-gradient-purple">Service</span>
           </h1>
-
-          <p className="text-base sm:text-lg text-light-subtext dark:text-muted-gray leading-relaxed max-w-2xl font-medium">
-            Production-grade, battle-tested proprietary software platforms engineered in-house by Codrix. We partner with companies, colleges, and organizations to deliver these systems with turnkey custom branding and minimal updates as a full service.
-          </p>
         </div>
 
-        {/* Category Filters & Search Controls */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6 pb-4 sm:mb-10 sm:pb-6 border-b border-light-border dark:border-midnight-border/70">
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2">
-            {categories.map((cat) => {
-              const isSelected = selectedCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
-                    isSelected
-                      ? 'bg-electric-purple text-white shadow-md shadow-electric-purple/30 scale-[1.02]'
-                      : 'bg-white/80 dark:bg-midnight-card/80 text-light-subtext dark:text-muted-gray border border-purple-100 dark:border-midnight-border hover:border-purple-300 dark:hover:border-midnight-border/80'
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Search Input Bar */}
-          <div className="relative min-w-[260px] md:w-72">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-light-subtext dark:text-muted-gray" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search in-house platforms..."
-              className="w-full pl-9 pr-4 py-2 rounded-xl bg-white/90 dark:bg-midnight-card/90 border border-purple-100 dark:border-midnight-border text-xs sm:text-sm text-light-text dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-electric-purple/40"
-            />
-          </div>
-        </div>
-
-        {/* In-House Platforms Grid */}
+        {/* In-House Platforms Grid - 3 cards per row horizontally */}
         {inHousePlatforms.length === 0 ? (
           <div className="text-center py-20 space-y-3 bg-white/60 dark:bg-midnight-card/60 rounded-3xl border border-dashed border-purple-200 dark:border-midnight-border">
             <Layers className="w-10 h-10 text-electric-purple/60 mx-auto" />
-            <h3 className="text-lg font-bold text-light-text dark:text-white">No platforms found</h3>
+            <h3 className="text-lg font-bold text-light-text dark:text-white">No platforms available</h3>
             <p className="text-xs sm:text-sm text-light-subtext dark:text-muted-gray max-w-sm mx-auto">
-              No matching in-house services for &ldquo;{searchQuery}&rdquo;. Try another filter or reset.
+              In-house platforms will appear here soon.
             </p>
-            <button
-              onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}
-              className="px-4 py-2 rounded-xl bg-electric-purple text-white text-xs font-semibold mt-2 cursor-pointer"
-            >
-              Reset Filters
-            </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {inHousePlatforms.map((prod) => {
               const slugKey = prod.slug || '';
               const meta = IN_HOUSE_METADATA[slugKey] || {
@@ -225,13 +157,6 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
 
                     {/* Gradient Overlay for Crisp Text Readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent pointer-events-none" />
-
-                    {/* Top Badges */}
-                    <div className="absolute top-4 left-4 right-4 flex items-center justify-between gap-2">
-                      <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-lavender-glow border border-white/20 shadow-md">
-                        {meta.serviceBadge}
-                      </span>
-                    </div>
 
                     {/* Bottom Domain Ribbon */}
                     <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white text-xs font-mono">

@@ -15,12 +15,16 @@ const CLIPART_MAP: Record<string, string> = {
   'srv-04': '/services/cliparts/4.webp',
   'srv-05': '/services/cliparts/5.webp',
   'srv-06': '/services/cliparts/6.webp',
+  'srv-07': 'https://res.cloudinary.com/gymcfo5j/image/upload/v1795497734/codrix/services/kisan-vaani.webp',
+  'srv-08': 'https://res.cloudinary.com/gymcfo5j/image/upload/v1795497736/codrix/services/omnireach.webp',
   'cloud-systems': '/services/cliparts/1.webp',
   'ai-agents': '/services/cliparts/2.webp',
   'crm-automation': '/services/cliparts/3.webp',
   'institutional-erp': '/services/cliparts/4.webp',
   'agri-commerce': '/services/cliparts/5.webp',
   'campus-marketplaces': '/services/cliparts/6.webp',
+  'kisan-vaani': 'https://res.cloudinary.com/gymcfo5j/image/upload/v1795497734/codrix/services/kisan-vaani.webp',
+  'omnireach': 'https://res.cloudinary.com/gymcfo5j/image/upload/v1795497736/codrix/services/omnireach.webp',
 };
 
 export const ServicesSection: React.FC<ServicesSectionProps> = ({ 

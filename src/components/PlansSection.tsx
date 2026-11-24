@@ -29,13 +29,13 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, pla
 
   return (
     <section id="plans" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden bg-white/70 dark:bg-midnight-900/70 border-t border-b border-light-border dark:border-midnight-border/60">
-      
+
       {/* Ambient background decorative glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-electric-purple/10 dark:bg-electric-purple/15 blur-[140px] rounded-full pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-lavender-glow/10 dark:bg-deep-violet/20 blur-[130px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 mb-10 sm:mb-14">
           <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-light-text dark:text-white">
@@ -65,11 +65,10 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, pla
             return (
               <div
                 key={plan.id}
-                className={`group relative flex flex-col justify-between rounded-2xl sm:rounded-3xl p-6 sm:p-7 transition-all duration-300 ${
-                  plan.isPopular || plan.isBestValue
-                    ? 'bg-gradient-to-b from-purple-50/90 via-white to-white dark:from-white/[0.08] dark:via-midnight-card dark:to-midnight-card border-2 border-electric-purple shadow-xl shadow-purple-600/15'
-                    : 'bg-white dark:bg-midnight-card border border-purple-100 dark:border-midnight-border hover:border-purple-300 dark:hover:border-electric-purple/50 shadow-md hover:shadow-xl'
-                }`}
+                className={`group relative flex flex-col justify-between rounded-2xl sm:rounded-3xl p-6 sm:p-7 transition-all duration-300 ${plan.isPopular || plan.isBestValue
+                  ? 'bg-gradient-to-b from-purple-50/90 via-white to-white dark:from-white/[0.08] dark:via-midnight-card dark:to-midnight-card border-2 border-electric-purple shadow-xl shadow-purple-600/15'
+                  : 'bg-white dark:bg-midnight-card border border-purple-100 dark:border-midnight-border hover:border-purple-300 dark:hover:border-electric-purple/50 shadow-md hover:shadow-xl'
+                  }`}
               >
                 {/* Floating Badges */}
                 <div className="flex items-center justify-between gap-2 mb-3">
@@ -77,11 +76,10 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, pla
                     {categoryLabels[plan.category] || plan.category.replace('-', ' ')}
                   </span>
                   {plan.badge && (
-                    <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full ${
-                      plan.isPopular
-                        ? 'bg-electric-purple text-white shadow-sm'
-                        : 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
-                    }`}>
+                    <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full ${plan.isPopular
+                      ? 'bg-electric-purple text-white shadow-sm'
+                      : 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                      }`}>
                       {plan.badge}
                     </span>
                   )}
@@ -118,9 +116,8 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, pla
                       <Clock className="w-3.5 h-3.5 text-electric-purple" />
                       <span>{plan.turnaroundTime}</span>
                     </span>
-                    <span className={`font-semibold flex items-center gap-1 ${
-                      plan.domainIncluded ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-gray-400'
-                    }`}>
+                    <span className={`font-semibold flex items-center gap-1 ${plan.domainIncluded ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-gray-400'
+                      }`}>
                       <Globe className="w-3.5 h-3.5" />
                       <span>{plan.domainIncluded ? '1-Yr Domain Free' : 'Domain Optional'}</span>
                     </span>
@@ -146,11 +143,10 @@ export const PlansSection: React.FC<PlansSectionProps> = ({ onOpenPlansPage, pla
                 <button
                   type="button"
                   onClick={() => handleRegisterClick(plan)}
-                  className={`w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
-                    plan.isPopular || plan.isBestValue
-                      ? 'bg-electric-purple hover:bg-electric-purple/90 text-white shadow-lg shadow-purple-600/30 hover:scale-[1.01]'
-                      : 'bg-white dark:bg-midnight-card border border-purple-200 dark:border-white/15 text-electric-purple dark:text-lavender-glow hover:bg-purple-50 dark:hover:bg-white/5'
-                  }`}
+                  className={`w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${plan.isPopular || plan.isBestValue
+                    ? 'bg-electric-purple hover:bg-electric-purple/90 text-white shadow-lg shadow-purple-600/30 hover:scale-[1.01]'
+                    : 'bg-white dark:bg-midnight-card border border-purple-200 dark:border-white/15 text-electric-purple dark:text-lavender-glow hover:bg-purple-50 dark:hover:bg-white/5'
+                    }`}
                 >
                   <span>Register for Plan</span>
                   <ArrowRight className="w-4 h-4" />
