@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { Search, Layout, Zap, Shield, Rocket, Check, Sparkles } from 'lucide-react';
+import { Search, Layout, Zap, Shield, Rocket, Sparkles } from 'lucide-react';
 import { ProcessStage } from '../types';
 
 interface ProcessSectionProps {
@@ -441,7 +441,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
 
                       {/* Real High-Fidelity 16:9 Showcase Photography with Portrait Depth of Field */}
                       {step.image && (
-                        <div className="relative w-full h-44 sm:h-52 lg:h-56 my-3 rounded-xl sm:rounded-2xl overflow-hidden border border-purple-100/90 dark:border-white/10 shadow-md group-hover/media:shadow-xl transition-shadow duration-300 group/media bg-slate-900/10">
+                        <div className="relative w-full h-44 sm:h-52 lg:h-56 mt-3 rounded-xl sm:rounded-2xl overflow-hidden border border-purple-100/90 dark:border-white/10 shadow-md group-hover/media:shadow-xl transition-shadow duration-300 group/media bg-slate-900/10">
                           <img
                             src={step.image}
                             alt={step.title}
@@ -453,24 +453,6 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
                         </div>
                       )}
-
-                      {/* Deliverables Chip Pills */}
-                      <div className="space-y-1">
-                        <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-light-subtext/75 dark:text-muted-gray">
-                          Key Deliverables
-                        </span>
-                        <div className="flex flex-wrap gap-1 sm:gap-1.5">
-                          {step.deliverables.map((item, dIdx) => (
-                            <span
-                              key={dIdx}
-                              className="inline-flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[10px] font-medium px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-purple-50/70 dark:bg-white/[0.04] text-slate-700 dark:text-gray-200 border border-purple-100/70 dark:border-white/10 hover:border-electric-purple/40 dark:hover:border-lavender-glow/40 transition-colors"
-                            >
-                              <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500 dark:text-emerald-400 flex-shrink-0" />
-                              <span className="truncate max-w-[190px] sm:max-w-none">{item}</span>
-                            </span>
-                          ))}
-                        </div>
-                      </div>
 
                     </div>
                   </div>
