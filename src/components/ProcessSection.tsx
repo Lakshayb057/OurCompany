@@ -439,16 +439,18 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                         {step.description}
                       </p>
 
-                      {/* Pure Floating 3D Transparent Illustration (No nested card/border/pills) */}
+                      {/* Real High-Fidelity 16:9 Showcase Photography with Portrait Depth of Field */}
                       {step.image && (
-                        <div className="relative w-full h-52 sm:h-64 lg:h-72 my-2 sm:my-3 flex items-center justify-center group/media">
+                        <div className="relative w-full h-44 sm:h-52 lg:h-56 my-3 rounded-xl sm:rounded-2xl overflow-hidden border border-purple-100/90 dark:border-white/10 shadow-md group-hover/media:shadow-xl transition-shadow duration-300 group/media bg-slate-900/10">
                           <img
                             src={step.image}
                             alt={step.title}
                             loading={idx === 0 ? 'eager' : 'lazy'}
                             decoding="async"
-                            className="w-full h-full object-contain object-center group-hover/media:scale-105 transition-transform duration-500 ease-out drop-shadow-md dark:drop-shadow-[0_12px_28px_rgba(124,44,245,0.22)]"
+                            className="w-full h-full object-cover object-center group-hover/media:scale-105 transition-transform duration-700 ease-out"
                           />
+                          {/* Ambient subtle vignette */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
                         </div>
                       )}
 
