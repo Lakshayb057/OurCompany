@@ -439,25 +439,26 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                         {step.description}
                       </p>
 
-                      {/* Enlarged & Highly-Visible Media Image Preview */}
+                      {/* Enlarged & Highly-Visible Transparent Media Image Preview */}
                       {step.image && (
-                        <div className="relative w-full h-48 sm:h-64 lg:h-72 rounded-xl sm:rounded-2xl overflow-hidden mb-3.5 border border-purple-100/80 dark:border-midnight-border group/media bg-slate-900 shadow-inner">
+                        <div className="relative w-full h-52 sm:h-64 lg:h-72 rounded-xl sm:rounded-2xl overflow-hidden mb-3.5 border border-purple-100/80 dark:border-midnight-border group/media bg-gradient-to-b from-purple-500/[0.04] to-purple-500/[0.01] dark:from-white/[0.03] dark:to-transparent flex items-center justify-center">
+                          {/* Ambient radial purple glow behind transparent illustration */}
+                          <div className="absolute inset-0 bg-hero-glow opacity-50 dark:opacity-40 pointer-events-none" />
+
                           <img
                             src={step.image}
                             alt={step.title}
                             loading={idx === 0 ? 'eager' : 'lazy'}
                             decoding="async"
-                            className="w-full h-full object-cover object-top group-hover/media:scale-105 transition-transform duration-700 ease-out"
+                            className="w-full h-full object-contain object-center p-2 sm:p-3 group-hover/media:scale-105 transition-transform duration-700 ease-out relative z-10"
                           />
-                          {/* Subtle bottom fade only for caption readability */}
-                          <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/80 via-black/35 to-transparent pointer-events-none" />
 
                           {/* Image Bottom Overlay Caption */}
-                          <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[10px] sm:text-[11px] font-medium pointer-events-none">
-                            <span className="truncate drop-shadow-sm font-semibold">
+                          <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-[10px] sm:text-[11px] font-medium pointer-events-none z-20">
+                            <span className="truncate drop-shadow-sm font-semibold px-2 py-0.5 rounded-md bg-white/85 dark:bg-black/70 text-slate-800 dark:text-white backdrop-blur-md border border-purple-100 dark:border-white/15 shadow-sm">
                               {step.shortTitle || step.title}
                             </span>
-                            <span className="font-mono text-[9px] sm:text-[10px] px-2 py-0.5 rounded bg-black/60 backdrop-blur-md border border-white/20">
+                            <span className="font-mono text-[9px] sm:text-[10px] px-2 py-0.5 rounded-md bg-white/85 dark:bg-black/70 text-slate-700 dark:text-gray-200 backdrop-blur-md border border-purple-100 dark:border-white/15 shadow-sm">
                               Verified Asset
                             </span>
                           </div>
