@@ -96,6 +96,38 @@ export const INITIAL_SERVICES: Service[] = [
       "Promotes campus affordability, resource reuse, and waste reduction",
       "Real-time in-app buyer-seller chat and moderation telemetry"
     ]
+  },
+  {
+    id: "srv-07",
+    slug: "kisan-vaani",
+    title: "Agricultural Intelligence & Indic Voice AI",
+    domain: "AI, Agritech & Voice Automation",
+    icon: "Bot",
+    image: "https://res.cloudinary.com/gymcfo5j/image/upload/v1795497734/codrix/services/kisan-vaani.webp",
+    summary: "Empowering agricultural ecosystems with multilingual voice-first conversational AI, Agmarknet mandi price comparisons, freight arbitrage algorithms, and multimodal crop pathology diagnosis.",
+    technologies: ["Python", "FastAPI", "Gnani AI", "WebSockets", "Groq", "Supabase", "Agmarknet API", "Computer Vision"],
+    benefits: [
+      "Localized Indic voice interface breaking literacy barriers across 8+ regional languages",
+      "Real-time mandi arbitrage engine maximizing net earnings on agricultural commodities",
+      "Instant crop leaf diagnosis preventing yield losses with verified ICAR advisories",
+      "Hyperlocal soil, weather, and government scheme intelligence delivered in seconds"
+    ]
+  },
+  {
+    id: "srv-08",
+    slug: "omnireach",
+    title: "Omnichannel Messaging & Workflow Automation",
+    domain: "Enterprise Communication & Automation",
+    icon: "Zap",
+    image: "https://res.cloudinary.com/gymcfo5j/image/upload/v1795497736/codrix/services/omnireach.webp",
+    summary: "Building high-throughput enterprise communication engines combining WhatsApp broadcasts, transactional email sequences, drag-and-drop journey automation, and live multi-agent chat desks.",
+    technologies: ["React", "TypeScript", "Node.js", "Express.js", "WhatsApp Baileys SDK", "PostgreSQL", "Redis", "Prisma"],
+    benefits: [
+      "Unified customer engagement across WhatsApp and email from a single command dashboard",
+      "Automated customer journey workflows triggered by inbound actions with zero manual latency",
+      "Enterprise multi-tenant isolation allowing secure multi-company administration",
+      "Real-time delivery receipts, open rates, and click-through campaign analytics"
+    ]
   }
 ];
 
@@ -249,6 +281,70 @@ export const INITIAL_PRODUCTS: Product[] = [
     ],
     liveUrl: "https://sachikheti.com",
     githubUrl: "https://github.com/codrix114/SachiKheti"
+  },
+  {
+    id: "prod-07",
+    slug: "kisan-vaani",
+    name: "Kisan-Vaani",
+    subtitle: "AI-Powered Agricultural Intelligence Platform",
+    badge: "AI & AGRITECH • VOICE INTELLIGENCE",
+    status: "Live",
+    image: "https://res.cloudinary.com/gymcfo5j/image/upload/v1795497734/codrix/services/kisan-vaani.webp",
+    previewUrl: "https://res.cloudinary.com/gymcfo5j/image/upload/v1795497734/codrix/services/kisan-vaani.webp",
+    videoUrl: "https://res.cloudinary.com/gymcfo5j/video/upload/v1795497741/codrix/services/kisan-vaani-demo.mp4",
+    video: "https://res.cloudinary.com/gymcfo5j/video/upload/v1795497741/codrix/services/kisan-vaani-demo.mp4",
+    mediaType: "both",
+    imageAlignment: "center",
+    videoAlignment: "cover",
+    tagline: "Voice-first agricultural assistant with Indic speech AI, real-time Agmarknet mandi arbitrage, and ICAR-grounded crop disease diagnosis.",
+    lead: "Architected with Indic Speech AI & Agricultural Arbitrage Engine",
+    technologies: ["Python", "FastAPI", "WebSockets", "Gnani AI", "Groq Llama-3", "Supabase", "Agmarknet API", "Open-Meteo", "Tailwind CSS"],
+    metrics: [
+      { label: "Indic Languages", value: "8+ Supported" },
+      { label: "Mandi Arbitrage", value: "Real-Time NRV" },
+      { label: "Disease Accuracy", value: "94% Diagnostic" },
+      { label: "Voice Latency", value: "< 1.2s" }
+    ],
+    highlights: [
+      "Voice-first agricultural assistant supporting Hindi, Punjabi, Marathi, Telugu, Tamil, Gujarati, Bengali, and English with VAD voice interruption.",
+      "Real-time Smart Mandi Arbitrage calculating Net Realizable Value (NRV) factoring freight, transport, diesel, hamali, and APMC cess.",
+      "Multimodal crop disease diagnosis grounded in ICAR advisories with botanical treatments and chemical mitigation guides.",
+      "Hyperlocal weather telemetry, soil condition insights, and government subsidy intelligence via Agmarknet and Open-Meteo APIs."
+    ],
+    liveUrl: "https://github.com/ParthSharma2404/Kisan_Vanni",
+    githubUrl: "https://github.com/ParthSharma2404/Kisan_Vanni"
+  },
+  {
+    id: "prod-08",
+    slug: "omnireach",
+    name: "OmniReach",
+    subtitle: "Omnichannel Communication & Campaign Automation",
+    badge: "LIVE PRODUCTION • OMNICHANNEL",
+    status: "Live",
+    image: "https://res.cloudinary.com/gymcfo5j/image/upload/v1795497736/codrix/services/omnireach.webp",
+    previewUrl: "https://res.cloudinary.com/gymcfo5j/image/upload/v1795497736/codrix/services/omnireach.webp",
+    videoUrl: "https://res.cloudinary.com/gymcfo5j/video/upload/v1795497747/codrix/services/omnireach-demo.mp4",
+    video: "https://res.cloudinary.com/gymcfo5j/video/upload/v1795497747/codrix/services/omnireach-demo.mp4",
+    mediaType: "both",
+    imageAlignment: "center",
+    videoAlignment: "cover",
+    tagline: "Enterprise omnichannel communication platform uniting WhatsApp and email broadcasts, visual customer journey automation, and centralized contact intelligence.",
+    lead: "Enterprise Distributed Architecture & Campaign Automation Engine",
+    technologies: ["React 18", "TypeScript", "Node.js", "Express.js", "WhatsApp Baileys SDK", "PostgreSQL", "Prisma ORM", "Redis", "Tailwind CSS"],
+    metrics: [
+      { label: "Broadcast Delivery", value: "99.8% Success" },
+      { label: "Channels Unified", value: "WhatsApp & Email" },
+      { label: "Automation Funnel", value: "Visual Journey" },
+      { label: "Tenant Isolation", value: "Multi-Company" }
+    ],
+    highlights: [
+      "Multi-channel broadcast campaign engine orchestrating mass WhatsApp announcements and transactional email workflows.",
+      "Centralized contact repository with dynamic tagging, audience segmentation, and automated opt-out compliance.",
+      "Visual drag-and-drop workflow builder automating customer engagement sequences triggered by lead activity.",
+      "Unified inbox for live agent conversation handling, response analytics, and multi-tenant organizational management."
+    ],
+    liveUrl: "https://omnireach-z4mo.onrender.com/",
+    githubUrl: "https://github.com/codrix114/OmniReach"
   }
 ];
 

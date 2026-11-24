@@ -36,6 +36,16 @@ const IN_HOUSE_METADATA: Record<string, {
     serviceDomain: 'P2P Circular Marketplace & Sharing OS',
     serviceBadge: 'IN-HOUSE PLATFORM • CIRCULAR COMMERCE',
     tieUpPitch: 'Complete peer-to-peer campus marketplace and sharing platform with institutional domain verification, student ID authentication, and rental logistics.'
+  },
+  'kisan-vaani': {
+    serviceDomain: 'AI & Agritech Intelligence',
+    serviceBadge: 'IN-HOUSE PLATFORM • VOICE AI & ARBITRAGE',
+    tieUpPitch: 'Voice-first AI agricultural intelligence platform featuring Indic voice assistants, Agmarknet mandi arbitrage, ICAR disease diagnosis, and hyperlocal weather telemetry.'
+  },
+  'omnireach': {
+    serviceDomain: 'Omnichannel & Campaign Automation',
+    serviceBadge: 'IN-HOUSE PLATFORM • ENTERPRISE AUTOMATION',
+    tieUpPitch: 'Enterprise omnichannel communication platform unifying WhatsApp and email campaigns, visual journey automation, and multi-tenant telemetry into one workspace.'
   }
 };
 
@@ -60,14 +70,16 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
     'All',
     'Campus & Food OS',
     'AI & Automation',
+    'Agritech & Voice AI',
+    'Omnichannel & Marketing',
     'Enterprise CRM',
     'Circular Commerce'
   ];
 
   // In-House Platforms offered "as a service" with minimal updates / tie-ups:
-  // UniVerse, ChatLeads AI, Nexus CRM, CampXChange
+  // UniVerse, ChatLeads AI, Nexus CRM, CampXChange, Kisan-Vaani, OmniReach
   const inHousePlatforms = useMemo(() => {
-    const inHouseSlugs = ['universe', 'chatleads-ai', 'nexus-crm', 'campxchange'];
+    const inHouseSlugs = ['universe', 'chatleads-ai', 'nexus-crm', 'campxchange', 'kisan-vaani', 'omnireach'];
 
     return products.filter((prod) => {
       if (prod.isVisible === false) return false;
@@ -75,7 +87,9 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
         prod.name.toLowerCase().includes('universe') ||
         prod.name.toLowerCase().includes('chatleads') ||
         prod.name.toLowerCase().includes('nexus') ||
-        prod.name.toLowerCase().includes('campxchange');
+        prod.name.toLowerCase().includes('campxchange') ||
+        prod.name.toLowerCase().includes('kisan') ||
+        prod.name.toLowerCase().includes('omnireach');
       if (!isInHouse) return false;
 
       // Category matching
@@ -83,9 +97,13 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
       if (selectedCategory === 'Campus & Food OS') {
         matchesCat = prod.name.includes('UniVerse') || (prod.slug || '').includes('universe');
       } else if (selectedCategory === 'AI & Automation') {
-        matchesCat = prod.name.includes('ChatLeads') || (prod.slug || '').includes('chatleads');
+        matchesCat = prod.name.includes('ChatLeads') || (prod.slug || '').includes('chatleads') || prod.name.includes('Kisan') || (prod.slug || '').includes('kisan');
+      } else if (selectedCategory === 'Agritech & Voice AI') {
+        matchesCat = prod.name.includes('Kisan') || (prod.slug || '').includes('kisan');
+      } else if (selectedCategory === 'Omnichannel & Marketing') {
+        matchesCat = prod.name.includes('OmniReach') || (prod.slug || '').includes('omnireach');
       } else if (selectedCategory === 'Enterprise CRM') {
-        matchesCat = prod.name.includes('Nexus') || (prod.slug || '').includes('nexus');
+        matchesCat = prod.name.includes('Nexus') || (prod.slug || '').includes('nexus') || prod.name.includes('OmniReach') || (prod.slug || '').includes('omnireach');
       } else if (selectedCategory === 'Circular Commerce') {
         matchesCat = prod.name.includes('CampXChange') || (prod.slug || '').includes('campxchange');
       }
