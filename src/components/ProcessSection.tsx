@@ -439,29 +439,16 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                         {step.description}
                       </p>
 
-                      {/* Enlarged & Highly-Visible Transparent Media Image Preview */}
+                      {/* Pure Floating 3D Transparent Illustration (No nested card/border/pills) */}
                       {step.image && (
-                        <div className="relative w-full h-52 sm:h-64 lg:h-72 rounded-xl sm:rounded-2xl overflow-hidden mb-3.5 border border-purple-100/80 dark:border-midnight-border group/media bg-gradient-to-b from-purple-500/[0.04] to-purple-500/[0.01] dark:from-white/[0.03] dark:to-transparent flex items-center justify-center">
-                          {/* Ambient radial purple glow behind transparent illustration */}
-                          <div className="absolute inset-0 bg-hero-glow opacity-50 dark:opacity-40 pointer-events-none" />
-
+                        <div className="relative w-full h-52 sm:h-64 lg:h-72 my-2 sm:my-3 flex items-center justify-center group/media">
                           <img
                             src={step.image}
                             alt={step.title}
                             loading={idx === 0 ? 'eager' : 'lazy'}
                             decoding="async"
-                            className="w-full h-full object-contain object-center p-2 sm:p-3 group-hover/media:scale-105 transition-transform duration-700 ease-out relative z-10"
+                            className="w-full h-full object-contain object-center group-hover/media:scale-105 transition-transform duration-500 ease-out drop-shadow-md dark:drop-shadow-[0_12px_28px_rgba(124,44,245,0.22)]"
                           />
-
-                          {/* Image Bottom Overlay Caption */}
-                          <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-[10px] sm:text-[11px] font-medium pointer-events-none z-20">
-                            <span className="truncate drop-shadow-sm font-semibold px-2 py-0.5 rounded-md bg-white/85 dark:bg-black/70 text-slate-800 dark:text-white backdrop-blur-md border border-purple-100 dark:border-white/15 shadow-sm">
-                              {step.shortTitle || step.title}
-                            </span>
-                            <span className="font-mono text-[9px] sm:text-[10px] px-2 py-0.5 rounded-md bg-white/85 dark:bg-black/70 text-slate-700 dark:text-gray-200 backdrop-blur-md border border-purple-100 dark:border-white/15 shadow-sm">
-                              Verified Asset
-                            </span>
-                          </div>
                         </div>
                       )}
 
