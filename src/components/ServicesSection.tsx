@@ -15,16 +15,12 @@ const CLIPART_MAP: Record<string, string> = {
   'srv-04': '/services/cliparts/4.webp',
   'srv-05': '/services/cliparts/5.webp',
   'srv-06': '/services/cliparts/6.webp',
-  'srv-07': 'https://res.cloudinary.com/gymcfo5j/image/upload/v1795497734/codrix/services/kisan-vaani.webp',
-  'srv-08': 'https://res.cloudinary.com/gymcfo5j/image/upload/v1795497736/codrix/services/omnireach.webp',
   'cloud-systems': '/services/cliparts/1.webp',
   'ai-agents': '/services/cliparts/2.webp',
   'crm-automation': '/services/cliparts/3.webp',
   'institutional-erp': '/services/cliparts/4.webp',
   'agri-commerce': '/services/cliparts/5.webp',
   'campus-marketplaces': '/services/cliparts/6.webp',
-  'kisan-vaani': 'https://res.cloudinary.com/gymcfo5j/image/upload/v1795497734/codrix/services/kisan-vaani.webp',
-  'omnireach': 'https://res.cloudinary.com/gymcfo5j/image/upload/v1795497736/codrix/services/omnireach.webp',
 };
 
 export const ServicesSection: React.FC<ServicesSectionProps> = ({ 
@@ -35,6 +31,19 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
   const sectionRef = useRef<HTMLElement>(null);
   const [isInView, setIsInView] = useState(false);
   const hasExitedRef = useRef(false);
+
+  // Only display the 6 core engineering capabilities in this section (exclude Kisan-Vaani, OmniReach, etc.)
+  const displayServices = services.filter((service) => {
+    const isExcluded =
+      service.id === 'srv-07' ||
+      service.id === 'srv-08' ||
+      service.slug === 'kisan-vaani' ||
+      service.slug === 'kisanvaani' ||
+      service.slug === 'omnireach' ||
+      service.title.toLowerCase().includes('agricultural intelligence') ||
+      service.title.toLowerCase().includes('omnichannel messaging');
+    return !isExcluded;
+  });
 
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -117,7 +126,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
 
         {/* 3-Column Clipart Showcase Grid with Staggered Cascading 3D Physics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {services.map((service, idx) => {
+          {displayServices.map((service, idx) => {
             const imgSrc = getClipartSrc(service, idx);
             const staggerDelay = 150 + idx * 95;
 
