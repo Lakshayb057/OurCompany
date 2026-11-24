@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { Search, Layout, Zap, Shield, Rocket, Check, Sparkles, Trophy } from 'lucide-react';
+import { Search, Layout, Zap, Shield, Rocket, Check, Sparkles } from 'lucide-react';
 import { ProcessStage } from '../types';
 
 interface ProcessSectionProps {
@@ -251,10 +251,9 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
       id="process"
       className="relative py-12 sm:py-16 lg:py-20 overflow-hidden bg-light-100/70 dark:bg-midnight-950 border-t border-b border-light-border dark:border-midnight-border/50"
     >
-      {/* Ambient background glows */}
+      {/* Ambient background glows - Consistent primary purple */}
       <div className="absolute top-1/4 left-1/4 w-[450px] h-[450px] bg-electric-purple/10 dark:bg-electric-purple/15 blur-[130px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-lavender-glow/10 dark:bg-deep-violet/20 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute top-2/3 left-1/3 w-[300px] h-[300px] bg-sky-400/5 dark:bg-sky-500/10 blur-[110px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-electric-purple/10 dark:bg-electric-purple/15 blur-[130px] rounded-full pointer-events-none" />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -278,14 +277,6 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
             className="absolute inset-0 pointer-events-none w-full h-full overflow-visible z-0"
           >
             <defs>
-              {/* Luminous Neon Gradient for Active Tube */}
-              <linearGradient id="processTubeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#7C2CF5" />
-                <stop offset="40%" stopColor="#9550F8" />
-                <stop offset="70%" stopColor="#B66CFF" />
-                <stop offset="100%" stopColor="#38BDF8" />
-              </linearGradient>
-
               {/* Glowing Aura Filter */}
               <filter id="tubeGlow" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="5" result="blur" />
@@ -298,7 +289,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
 
             {pathD && (
               <>
-                {/* Layer 1: Ambient Drop Shadow & Deep Glow */}
+                {/* Layer 1: Ambient Drop Shadow & Deep Glow in Primary Purple */}
                 <path
                   d={pathD}
                   fill="none"
@@ -319,12 +310,12 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                   className="text-purple-100 dark:text-white/10"
                 />
 
-                {/* Layer 3: Active Neon Glowing Progress Line - 100% Locked with Orb via pathLength="1" */}
+                {/* Layer 3: Active Neon Line - Solid Primary Purple (#7C2CF5), Zero Gradient, 100% Locked with Orb */}
                 <path
                   d={pathD}
                   pathLength={1}
                   fill="none"
-                  stroke="url(#processTubeGradient)"
+                  stroke="#7C2CF5"
                   strokeWidth={10}
                   strokeLinecap="round"
                   filter="url(#tubeGlow)"
@@ -345,7 +336,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                   className="text-white/90 dark:text-white/70"
                 />
 
-                {/* Layer 5: Traveling Pulse Particle - Sits Exactly on Tip of Neon Stroke */}
+                {/* Layer 5: Traveling Pulse Particle - Primary Purple, Sits Exactly on Tip */}
                 {scrollProgress > 0.005 && scrollProgress < 0.995 && (
                   <g transform={`translate(${orbPos.x}, ${orbPos.y})`}>
                     {/* Outer Pulsing Aura Ring */}
@@ -356,12 +347,12 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                     {/* Mid Glow Halo */}
                     <circle
                       r={9}
-                      className="fill-lavender-glow/40 dark:fill-cyan-400/35"
+                      className="fill-electric-purple/35"
                     />
-                    {/* Solid Core Orb with High-Contrast Border */}
+                    {/* Solid Core Orb in Primary Purple with Crisp White Border */}
                     <circle
                       r={5.5}
-                      className="fill-electric-purple dark:fill-cyan-300 stroke-white dark:stroke-midnight-950 stroke-[2] shadow-md"
+                      className="fill-electric-purple stroke-white dark:stroke-midnight-950 stroke-[2] shadow-md"
                     />
                   </g>
                 )}
@@ -369,11 +360,10 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
             )}
           </svg>
 
-          {/* Alternating Checkpoints List (1 to 5) with tight, refined spacing */}
-          <ol className="relative z-10 flex flex-col gap-5 sm:gap-7 lg:gap-8">
+          {/* Alternating Checkpoints List (1 to 5) with consistent primary purple theme */}
+          <ol className="relative z-10 flex flex-col gap-6 sm:gap-8 lg:gap-10">
             {steps.map((step, idx) => {
               const isEven = idx % 2 === 0;
-              const isFinal = idx === steps.length - 1;
 
               // Step threshold along scroll progress
               const stepThreshold = idx / Math.max(steps.length - 1, 1);
@@ -387,7 +377,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                     isEven ? 'flex-row' : 'flex-row-reverse'
                   }`}
                 >
-                  {/* Checkpoint Circular Node */}
+                  {/* Checkpoint Circular Node - Consistent Primary Purple */}
                   <div
                     ref={(el) => {
                       nodeRefs.current[idx] = el;
@@ -399,58 +389,40 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                     <span
                       aria-hidden="true"
                       className={`absolute -inset-1.5 rounded-full transition-all duration-500 pointer-events-none ${
-                        isFinal
-                          ? isReached
-                            ? 'ring-4 ring-amber-400/50 dark:ring-amber-400/40 animate-pulse'
-                            : 'ring-0'
-                          : isReached
+                        isReached
                           ? 'ring-4 ring-purple-400/50 dark:ring-electric-purple/40 animate-pulse'
                           : 'ring-0'
                       }`}
                     />
 
-                    {/* Main Circular Badge */}
+                    {/* Main Circular Badge in Primary Purple */}
                     <div
                       className={`flex h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 items-center justify-center rounded-full border-[2.5px] transition-all duration-500 shadow-md relative ${
-                        isFinal
-                          ? isReached
-                            ? 'bg-gradient-to-br from-amber-500 to-amber-600 border-amber-300 shadow-amber-500/30 text-white scale-105'
-                            : 'bg-white dark:bg-midnight-surface border-amber-300/60 dark:border-amber-500/40'
-                          : isReached
+                        isReached
                           ? 'bg-gradient-to-br from-electric-purple to-deep-violet border-purple-300 dark:border-lavender-glow shadow-purple-600/30 text-white scale-105'
                           : 'bg-white dark:bg-midnight-surface border-purple-200/90 dark:border-midnight-border hover:border-electric-purple/50'
                       }`}
                     >
-                      {isFinal && isReached ? (
-                        <Trophy className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-white" />
-                      ) : (
-                        renderIcon(idx, isReached)
-                      )}
+                      {renderIcon(idx, isReached)}
                     </div>
 
                     {/* Number Badge Pill at Bottom */}
                     <span
                       className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 flex h-4.5 min-w-4.5 sm:h-5 sm:min-w-5 items-center justify-center rounded-full px-1.5 text-[9px] sm:text-[10px] font-mono font-bold text-white shadow z-30 transition-all duration-300 ${
-                        isFinal
-                          ? 'bg-amber-500'
-                          : isReached
+                        isReached
                           ? 'bg-electric-purple ring-1.5 ring-white/60'
                           : 'bg-slate-400 dark:bg-gray-600'
                       }`}
                     >
-                      {isFinal ? '★' : step.num}
+                      {step.num}
                     </span>
                   </div>
 
-                  {/* Checkpoint Detail Card with clean border and compact spacing */}
+                  {/* Checkpoint Detail Card with enlarged, highly visible image */}
                   <div className="flex-1 min-w-0">
                     <div
-                      className={`group relative w-full rounded-2xl sm:rounded-3xl border transition-all duration-300 p-3.5 sm:p-5 lg:p-6 backdrop-blur-md ${
-                        isFinal
-                          ? isReached
-                            ? 'bg-amber-50/70 dark:bg-midnight-card/90 border-amber-300/80 dark:border-amber-500/50 shadow-lg shadow-amber-500/5'
-                            : 'bg-white/90 dark:bg-midnight-card/80 border-amber-200/50 dark:border-amber-900/30 shadow-sm'
-                          : isCurrent
+                      className={`group relative w-full rounded-2xl sm:rounded-3xl border transition-all duration-300 p-4 sm:p-5 lg:p-6 backdrop-blur-md ${
+                        isCurrent
                           ? 'bg-white dark:bg-midnight-card border-purple-300 dark:border-electric-purple/50 shadow-lg shadow-purple-600/10'
                           : isReached
                           ? 'bg-white/95 dark:bg-midnight-card/90 border-purple-200/80 dark:border-midnight-border shadow-sm hover:shadow-md'
@@ -463,28 +435,29 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                       </h3>
 
                       {/* Description */}
-                      <p className="text-xs sm:text-sm text-light-subtext dark:text-gray-300 leading-relaxed mb-3">
+                      <p className="text-xs sm:text-sm text-light-subtext dark:text-gray-300 leading-relaxed mb-3.5">
                         {step.description}
                       </p>
 
-                      {/* Compact Media Image Banner Preview */}
+                      {/* Enlarged & Highly-Visible Media Image Preview */}
                       {step.image && (
-                        <div className="relative w-full h-24 sm:h-30 lg:h-34 rounded-xl sm:rounded-2xl overflow-hidden mb-3 border border-purple-100/80 dark:border-midnight-border group/media">
+                        <div className="relative w-full h-48 sm:h-64 lg:h-72 rounded-xl sm:rounded-2xl overflow-hidden mb-3.5 border border-purple-100/80 dark:border-midnight-border group/media bg-slate-900 shadow-inner">
                           <img
                             src={step.image}
                             alt={step.title}
                             loading={idx === 0 ? 'eager' : 'lazy'}
                             decoding="async"
-                            className="w-full h-full object-cover object-center group-hover/media:scale-105 transition-transform duration-700 ease-out"
+                            className="w-full h-full object-cover object-top group-hover/media:scale-105 transition-transform duration-700 ease-out"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                          {/* Subtle bottom fade only for caption readability */}
+                          <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/80 via-black/35 to-transparent pointer-events-none" />
 
                           {/* Image Bottom Overlay Caption */}
-                          <div className="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between text-white text-[10px] sm:text-[11px] font-medium pointer-events-none">
+                          <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-[10px] sm:text-[11px] font-medium pointer-events-none">
                             <span className="truncate drop-shadow-sm font-semibold">
                               {step.shortTitle || step.title}
                             </span>
-                            <span className="font-mono text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-md border border-white/20">
+                            <span className="font-mono text-[9px] sm:text-[10px] px-2 py-0.5 rounded bg-black/60 backdrop-blur-md border border-white/20">
                               Verified Asset
                             </span>
                           </div>
