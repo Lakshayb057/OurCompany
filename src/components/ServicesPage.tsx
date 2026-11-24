@@ -56,7 +56,6 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
   onInquire,
   onExploreProjects,
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [adoptionModalProduct, setAdoptionModalProduct] = useState<Product | null>(null);
   const [isAdoptionModalOpen, setIsAdoptionModalOpen] = useState(false);
@@ -65,16 +64,6 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
     setAdoptionModalProduct(prod);
     setIsAdoptionModalOpen(true);
   };
-
-  const categories = [
-    'All',
-    'Campus & Food OS',
-    'AI & Automation',
-    'Agritech & Voice AI',
-    'Omnichannel & Marketing',
-    'Enterprise CRM',
-    'Circular Commerce'
-  ];
 
   // In-House Platforms offered "as a service" with minimal updates / tie-ups:
   // UniVerse, ChatLeads AI, Nexus CRM, CampXChange, Kisan-Vaani, OmniReach
@@ -92,27 +81,10 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
         prod.name.toLowerCase().includes('omnireach');
       if (!isInHouse) return false;
 
-      // Category matching
-      let matchesCat = true;
-      if (selectedCategory === 'Campus & Food OS') {
-        matchesCat = prod.name.includes('UniVerse') || (prod.slug || '').includes('universe');
-      } else if (selectedCategory === 'AI & Automation') {
-        matchesCat = prod.name.includes('ChatLeads') || (prod.slug || '').includes('chatleads') || prod.name.includes('Kisan') || (prod.slug || '').includes('kisan');
-      } else if (selectedCategory === 'Agritech & Voice AI') {
-        matchesCat = prod.name.includes('Kisan') || (prod.slug || '').includes('kisan');
-      } else if (selectedCategory === 'Omnichannel & Marketing') {
-        matchesCat = prod.name.includes('OmniReach') || (prod.slug || '').includes('omnireach');
-      } else if (selectedCategory === 'Enterprise CRM') {
-        matchesCat = prod.name.includes('Nexus') || (prod.slug || '').includes('nexus') || prod.name.includes('OmniReach') || (prod.slug || '').includes('omnireach');
-      } else if (selectedCategory === 'Circular Commerce') {
-        matchesCat = prod.name.includes('CampXChange') || (prod.slug || '').includes('campxchange');
-      }
-
       // Search matching
-      let matchesSearch = true;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
-        matchesSearch = (
+        return (
           prod.name.toLowerCase().includes(q) ||
           prod.subtitle.toLowerCase().includes(q) ||
           prod.tagline.toLowerCase().includes(q) ||
@@ -120,9 +92,9 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
         );
       }
 
-      return matchesCat && matchesSearch;
+      return true;
     });
-  }, [products, selectedCategory, searchQuery]);
+  }, [products, searchQuery]);
 
   return (
     <div className="min-h-screen pt-20 sm:pt-32 pb-10 sm:pb-24 bg-light-100/60 dark:bg-midnight-900/60 relative overflow-hidden transition-colors duration-300">
@@ -137,36 +109,11 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-light-text dark:text-white leading-[1.12]">
             In-House Platforms as a <span className="text-gradient-purple">Service</span>
           </h1>
-
-          <p className="text-base sm:text-lg text-light-subtext dark:text-muted-gray leading-relaxed max-w-2xl font-medium">
-            Production-grade, battle-tested proprietary software platforms engineered in-house by Codrix. We partner with companies, colleges, and organizations to deliver these systems with turnkey custom branding and minimal updates as a full service.
-          </p>
         </div>
 
-        {/* Category Filters & Search Controls */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-6 pb-4 sm:mb-10 sm:pb-6 border-b border-light-border dark:border-midnight-border/70">
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center gap-2">
-            {categories.map((cat) => {
-              const isSelected = selectedCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer ${
-                    isSelected
-                      ? 'bg-electric-purple text-white shadow-md shadow-electric-purple/30 scale-[1.02]'
-                      : 'bg-white/80 dark:bg-midnight-card/80 text-light-subtext dark:text-muted-gray border border-purple-100 dark:border-midnight-border hover:border-purple-300 dark:hover:border-midnight-border/80'
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Search Input Bar */}
-          <div className="relative min-w-[260px] md:w-72">
+        {/* Search Controls */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-end gap-4 mb-6 pb-4 sm:mb-10 sm:pb-6 border-b border-light-border dark:border-midnight-border/70">
+          <div className="relative w-full md:w-80">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-light-subtext dark:text-muted-gray" />
             <input
               type="text"
@@ -243,13 +190,6 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
 
                     {/* Gradient Overlay for Crisp Text Readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent pointer-events-none" />
-
-                    {/* Top Badges */}
-                    <div className="absolute top-4 left-4 right-4 flex items-center justify-between gap-2">
-                      <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-lavender-glow border border-white/20 shadow-md">
-                        {meta.serviceBadge}
-                      </span>
-                    </div>
 
                     {/* Bottom Domain Ribbon */}
                     <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white text-xs font-mono">
