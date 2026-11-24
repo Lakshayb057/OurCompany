@@ -361,7 +361,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
           </svg>
 
           {/* Alternating Checkpoints List (1 to 5) with consistent primary purple theme */}
-          <ol className="relative z-10 flex flex-col gap-6 sm:gap-8 lg:gap-10">
+          <ol className="relative z-10 flex flex-col gap-8 sm:gap-12 lg:gap-16">
             {steps.map((step, idx) => {
               const isEven = idx % 2 === 0;
 
@@ -421,7 +421,7 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                   {/* Checkpoint Detail Card with enlarged, highly visible image */}
                   <div className="flex-1 min-w-0">
                     <div
-                      className={`group relative w-full rounded-2xl sm:rounded-3xl border transition-all duration-300 p-4 sm:p-5 lg:p-6 backdrop-blur-md ${
+                      className={`group relative w-full flex flex-col justify-between rounded-2xl sm:rounded-3xl border transition-all duration-300 p-5 sm:p-7 lg:p-8 backdrop-blur-md min-h-[460px] sm:min-h-[520px] lg:min-h-[560px] ${
                         isCurrent
                           ? 'bg-white dark:bg-midnight-card border-purple-300 dark:border-electric-purple/50 shadow-lg shadow-purple-600/10'
                           : isReached
@@ -429,19 +429,20 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                           : 'bg-white/80 dark:bg-midnight-card/60 border-light-border dark:border-midnight-border/60 shadow-sm opacity-90 hover:opacity-100 hover:shadow-md'
                       }`}
                     >
-                      {/* Title */}
-                      <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-light-text dark:text-white mb-1.5 group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-colors">
-                        {step.title}
-                      </h3>
+                      {/* Title & Description */}
+                      <div>
+                        <h3 className="text-base sm:text-xl lg:text-2xl font-bold text-light-text dark:text-white mb-2 group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-colors">
+                          {step.title}
+                        </h3>
 
-                      {/* Description */}
-                      <p className="text-xs sm:text-sm text-light-subtext dark:text-gray-300 leading-relaxed mb-3.5">
-                        {step.description}
-                      </p>
+                        <p className="text-xs sm:text-sm lg:text-base text-light-subtext dark:text-gray-300 leading-relaxed">
+                          {step.description}
+                        </p>
+                      </div>
 
                       {/* Real High-Fidelity 16:9 Showcase Photography with Portrait Depth of Field */}
                       {step.image && (
-                        <div className="relative w-full h-44 sm:h-52 lg:h-56 mt-3 rounded-xl sm:rounded-2xl overflow-hidden border border-purple-100/90 dark:border-white/10 shadow-md group-hover/media:shadow-xl transition-shadow duration-300 group/media bg-slate-900/10">
+                        <div className="relative w-full flex-1 min-h-[260px] sm:min-h-[320px] lg:min-h-[380px] h-64 sm:h-80 lg:h-96 mt-4 rounded-xl sm:rounded-2xl overflow-hidden border border-purple-100/90 dark:border-white/10 shadow-md group-hover/media:shadow-xl transition-shadow duration-300 group/media bg-slate-900/10">
                           <img
                             src={step.image}
                             alt={step.title}
