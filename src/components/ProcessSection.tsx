@@ -270,11 +270,6 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
         
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-16 sm:mb-24 space-y-3 sm:space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-purple-200/80 dark:border-electric-purple/30 bg-purple-50/80 dark:bg-electric-purple/10 text-electric-purple dark:text-lavender-glow text-xs sm:text-sm font-semibold shadow-sm backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-electric-purple dark:bg-lavender-glow animate-pulse" />
-            Milestone-Driven Execution
-          </div>
-
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-light-text dark:text-white leading-[1.15]">
             Discovery-to-Delivery <span className="text-gradient-purple">Process</span>
           </h2>
@@ -282,31 +277,6 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
           <p className="text-light-subtext dark:text-muted-gray text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl mx-auto">
             A structured 5-stage engineering lifecycle executed from initial technical discovery to zero-downtime global deployment.
           </p>
-
-          {/* Quick-Jump Milestone Navigator Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-            {steps.map((st, i) => {
-              const isPassed = activeStepIdx >= i;
-              const isCurrent = activeStepIdx === i;
-              return (
-                <button
-                  key={st.num}
-                  type="button"
-                  onClick={() => handleScrollToCheckpoint(i)}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono transition-all duration-300 cursor-pointer ${
-                    isCurrent
-                      ? 'bg-electric-purple text-white shadow-md shadow-purple-600/30 scale-105 font-bold ring-2 ring-purple-400/40'
-                      : isPassed
-                      ? 'bg-purple-100 dark:bg-white/10 text-electric-purple dark:text-lavender-glow hover:bg-purple-200 dark:hover:bg-white/20'
-                      : 'bg-white/60 dark:bg-white/5 text-slate-500 dark:text-gray-400 border border-light-border dark:border-white/10 hover:border-purple-300'
-                  }`}
-                >
-                  <span>{st.num}</span>
-                  <span className="font-sans hidden md:inline">{st.shortTitle}</span>
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         {/* Winding Flow Container with Dynamic S-Curve Tube */}
@@ -502,34 +472,6 @@ export const ProcessSection: React.FC<ProcessSectionProps> = ({ stages }) => {
                       {isCurrent && (
                         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-electric-purple to-transparent opacity-90 rounded-t-2xl sm:rounded-t-3xl pointer-events-none" />
                       )}
-
-                      {/* Header Pill */}
-                      <div className="flex items-center justify-between gap-3 mb-2.5">
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono font-bold tracking-wide transition-colors ${
-                            isFinal
-                              ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
-                              : isReached
-                              ? 'bg-purple-100 dark:bg-electric-purple/20 text-electric-purple dark:text-lavender-glow border border-purple-200 dark:border-electric-purple/40'
-                              : 'bg-slate-100 text-slate-500 border border-slate-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
-                          }`}
-                        >
-                          <span
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              isFinal
-                                ? 'bg-amber-500 animate-pulse'
-                                : isReached
-                                ? 'bg-electric-purple dark:bg-lavender-glow animate-pulse'
-                                : 'bg-slate-300 dark:bg-gray-600'
-                            }`}
-                          />
-                          {isFinal ? 'Final Milestone (05)' : `Checkpoint ${step.num}`}
-                        </span>
-
-                        <span className="text-[11px] font-medium text-light-subtext dark:text-muted-gray/80 hidden sm:inline">
-                          Phase {step.num} of 05
-                        </span>
-                      </div>
 
                       {/* Title */}
                       <h3 className="text-base sm:text-xl lg:text-2xl font-bold text-light-text dark:text-white mb-2 group-hover:text-electric-purple dark:group-hover:text-lavender-glow transition-colors">
